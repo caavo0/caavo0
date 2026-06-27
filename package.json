@@ -2,7 +2,11 @@
   "name": "caavo0-site",
   "version": "1.0.0",
   "type": "module",
+  "main": "api/gemini.js",
+  "scripts": {
+    "start": "node api/gemini.js"
+  },
   "dependencies": {
-    "@google/generative-ai": "0.19.0"
+    "@google/generative-ai": "^0.19.0"
   }
 }
