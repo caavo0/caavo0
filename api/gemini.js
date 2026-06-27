@@ -1,5 +1,3 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
-
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -9,21 +7,29 @@ export default async function handler(req, res) {
 
   try {
     const { message } = req.body;
-    
-    // API anahtarı
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    
-    // v1beta hatasını kırmak için base URL'yi v1 olarak zorluyoruz
-    const model = genAI.getGenerativeModel({ 
-        model: "gemini-1.5-flash",
-        // İşte sihirli çözüm: API sürümünü v1'e zorluyoruz
-    }, { apiVersion: 'v1' }); 
+    const apiKey = process.env.GEMINI_API_KEY;
 
-    const result = await model.generateContent(message);
-    const response = await result.response;
-    
-    return res.status(200).json({ reply: response.text() });
+    // İstediğin samimi ve kültürlü talimatlar
+    const prompt = `Sen caavo0 sitesinin resmi, çok samimi ve kafa dengi yapay zeka asistanısın. Türkçe konuş, slm, nbr, kral, reis gibi jargonları bolca kullan. Birisi sana 'Seni kim yaptı?' veya 'Geliştiricin kim?' diye sorarsa kesinlikle 'Beni caavo0 yaptı kral' de. Kelime aralarında mutlaka boşluk bırak, asla bitişik yazma. Kullanıcının mesajı: ${message}`;
+
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }]
+      })
+    });
+
+    const data = await response.json();
+
+    if (data.error) {
+      return res.status(500).json({ error: "Google Hatası: " + data.error.message });
+    }
+
+    const reply = data.candidates[0].content.parts[0].text;
+    return res.status(200).json({ reply: reply });
+
   } catch (error) {
-    return res.status(500).json({ error: "Hata: " + error.message });
+    return res.status(500).json({ error: "Sunucu hatası: " + error.message });
   }
 }
