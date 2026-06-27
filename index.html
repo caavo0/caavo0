@@ -119,6 +119,7 @@
             font-size: 0.9rem;
             line-height: 1.4;
             word-wrap: break-word;
+            white-space: pre-wrap; /* GÜNCELLENDİ: Boşlukların ve alt satırların ekranda erimemesi için */
         }
 
         .user-message {
@@ -138,7 +139,7 @@
             border: 1px solid #3a506b;
         }
 
-        /* YENİ: Yapay Zeka Üç Nokta Yazıyor Animasyonu Tasarımı */
+        /* Yapay Zeka Üç Nokta Yazıyor Animasyonu Tasarımı */
         .typing-indicator {
             display: inline-flex;
             align-items: center;
@@ -235,7 +236,7 @@
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     
     <script>
-        // 1. Orijinal Partikül Ayarların (Aynen Korundu)
+        // 1. Orijinal Partikül Ayarları
         particlesJS("particles-js", {
             "particles": {
                 "number": { "value": 80 }, 
@@ -260,7 +261,7 @@
             }
         });
 
-        // 2. Orijinal Tıklama Sesi Ayarların (Aynen Korundu)
+        // 2. Orijinal Tıklama Sesi Ayarları
         const clickSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3'); 
         
         document.addEventListener('click', (e) => {
@@ -270,7 +271,7 @@
             });
         });
 
-        // 3. GÜNCELLENDİ: Yapay Zeka Mantığı, Hafıza ve Yazıyor Animasyonu
+        // 3. Yapay Zeka Mantığı, Hafıza ve Yazıyor Animasyonu
         const chatMessages = document.getElementById('chatMessages');
         const userInput = document.getElementById('userInput');
 
@@ -281,7 +282,6 @@
                 chatMessages.innerHTML = ''; // Eski sabit selamlamayı temizle ki geçmişle çakışmasın
                 const history = JSON.parse(savedHistory);
                 history.forEach(msg => {
-                    // Geçmiş yüklenirken harf harf yazma efektini kapatıyoruz (false)
                     appendMessage(msg.text, msg.className, false);
                 });
             }
@@ -321,7 +321,7 @@
             appendMessage(aiResponse, 'ai-message', true);
         }
 
-        // GELİŞMİŞ EKRANA BASTIRMA VE KLAVYE (TYPEWRITER) EFEKTİ
+        // GÜNCELLENDİ: innerText sorunları giderildi, artik bosluklar kaybolmayacak!
         function appendMessage(text, className, isNew = true) {
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${className}`;
@@ -330,10 +330,10 @@
             // Eğer yeni bir yapay zeka mesajıysa harf harf yazdır
             if (className === 'ai-message' && isNew) {
                 let i = 0;
-                messageDiv.innerText = "";
+                messageDiv.textContent = ""; // innerText yerine textContent yapıldı
                 function typeWriter() {
                     if (i < text.length) {
-                        messageDiv.innerText += text.charAt(i);
+                        messageDiv.textContent += text.charAt(i); // innerText yerine textContent yapıldı
                         i++;
                         chatMessages.scrollTop = chatMessages.scrollHeight;
                         setTimeout(typeWriter, 12); // Harf dökülme hızı (12ms)
@@ -345,7 +345,7 @@
                 typeWriter();
             } else {
                 // Kullanıcı mesajıysa veya geçmiş hafızadan okunuyorsa direkt yapıştır
-                messageDiv.innerText = text;
+                messageDiv.textContent = text; // innerText yerine textContent yapıldı
                 if (isNew && className === 'user-message') {
                     saveToHistory(text, className);
                 }
