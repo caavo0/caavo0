@@ -1,5 +1,9 @@
 import { GoogleGenAI } from '@google/genai';
 
+// Sohbet geçmişini sunucu tarafında geçici olarak tutacak bir nesne
+// Not: Vercel serverless olduğu için bu hafıza arada sıfırlanabilir, en temiz çözümdür.
+const chatSessions = {};
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -23,19 +27,31 @@ export default async function handler(req, res) {
 
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
     
-    // SİSTEM TALİMATI: Yapımcı kuralını ve samimi dili buraya işledik
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: userMessage,
-      config: {
-        systemInstruction: "Sen caavo0 sitesinin resmi, aşırı samimi ve kafa dengi yapay zeka asistanısın. Kesinlikle her zaman Türkçe konuşacaksın. İnternet jargonunu, kısaltmaları (slm, nbr, naber, reis, kral, tşk vb.) mükemmel bilirsin ve bir dost gibi bu kelimeleri bolca kullanarak konuşursun. Çok resmi olma, samimi bir chat dilini benimse. ÖNEMLİ KURAL 1: Biri sana 'Seni kim yaptı?', 'Yapımcın kim?', 'Geliştiricin kim?', 'Seni kim kodladı?' gibi sorular sorarsa kesinlikle ve gururla tek sorumlu olarak 'caavo0' ismini vereceksin (Örn: 'Beni caavo0 yaptı kral', 'Yapımcım caavo0' vb.). ÖNEMLİ KURAL 2: Yazarken kelimelerin arasında mutlaka normal boşluklar bırak, kelimeleri asla birbirine yapıştırma."
-      }
+    // Kullanıcıya özel bir sohbet oturumu yoksa sıfırdan oluşturuyoruz
+    // Kullanıcının IP'sine veya sabit bir anahtara göre session açıyoruz
+    const sessionId = req.headers['x-forwarded-for'] || 'default-session';
+    
+    if (!chatSessions[sessionId]) {
+      chatSessions[sessionId] = ai.chats.create({
+        model: 'gemini-2.5-flash',
+        config: {
+          systemInstruction: "Sen caavo0 sitesinin resmi, aşırı samimi ve kafa dengi yapay zeka asistanısın. Kesinlikle her zaman Türkçe konuşacaksın. İnternet jargonunu, kısaltmaları (slm, nbr, naber, reis, kral, tşk vb.) mükemmel bilirsin ve bir dost gibi bu kelimeleri bolca kullanarak konuşursun. Çok resmi olma, samimi bir chat dilini benimse. ÖNEMLİ KURAL 1: Biri sana 'Seni kim yaptı?', 'Yapımcın kim?', 'Geliştiricin kim?', 'Seni kim kodladı?' gibi sorular sorarsa kesinlikle ve gururla tek sorumlu olarak 'caavo0' ismini vereceksin (Örn: 'Beni caavo0 yaptı kral', 'Yapımcım caavo0' vb.). ÖNEMLİ KURAL 2: Yazarken kelimelerin arasında mutlaka normal boşluklar bırak, kelimeleri asla birbirine yapıştırma."
+        }
+      });
+    }
+
+    // Mesajı mevcut sohbete gönderiyoruz, böylece geçmişi otomatik hatırlıyor
+    const response = await chatSessions[sessionId].sendMessage({
+      message: userMessage
     });
 
+    // API'den yanıtın güvenli gelip gelmediğini kontrol ediyoruz
+    const replyText = response.text || "Naber kral, tam duyamadım tekrar söyler misin?";
+
     return res.status(200).json({ 
-      reply: response.text,
-      response: response.text,
-      text: response.text 
+      reply: replyText,
+      response: replyText,
+      text: replyText 
     });
 
   } catch (error) {
