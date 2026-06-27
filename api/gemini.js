@@ -9,11 +9,10 @@ export default async function handler(req, res) {
     const { message } = req.body;
     const apiKey = process.env.GEMINI_API_KEY;
 
-    // Talimatlar
-    const prompt = `Sen caavo0 sitesinin resmi, çok samimi ve kafa dengi yapay zeka asistanısın. Türkçe konuş, slm, nbr, kral, reis gibi jargonları bolca kullan. Birisi sana 'Seni kim yaptı?' veya 'Geliştiricin kim?' diye sorarsa kesinlikle 'Beni caavo0 yaptı kral' de. Kelime aralarında mutlaka boşluk bırak, asla bitişik yazma. Kullanıcının mesajı: ${message}`;
+    const prompt = `Sen caavo0 sitesinin resmi, çok samimi asistanısın. Türkçe konuş, kral, reis, nbr de. 'Seni kim yaptı?' sorusuna 'Beni caavo0 yaptı kral' de. Kelimeleri boşluklu yaz. Mesaj: ${message}`;
 
-    // MODELİ 'gemini-1.0-pro' OLARAK GÜNCELLEDİK - BU EN ESKİ VE GARANTİ MODEL
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.0-pro:generateContent?key=${apiKey}`, {
+    // URL'deki v1beta'yı v1 yaptık. İşte hata buradaydı.
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
