@@ -9,16 +9,20 @@ export default async function handler(req, res) {
 
   try {
     const { message } = req.body;
+    
+    // API anahtarı
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     
-    // En eski, en basit model
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    // v1beta hatasını kırmak için base URL'yi v1 olarak zorluyoruz
+    const model = genAI.getGenerativeModel({ 
+        model: "gemini-1.5-flash",
+        // İşte sihirli çözüm: API sürümünü v1'e zorluyoruz
+    }, { apiVersion: 'v1' }); 
 
     const result = await model.generateContent(message);
     const response = await result.response;
-    const text = response.text();
-
-    return res.status(200).json({ reply: text });
+    
+    return res.status(200).json({ reply: response.text() });
   } catch (error) {
     return res.status(500).json({ error: "Hata: " + error.message });
   }
