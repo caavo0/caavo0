@@ -1,8 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const chatSessions = {};
-
 export default async function handler(req, res) {
+  // CORS ayarları
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -11,23 +10,25 @@ export default async function handler(req, res) {
 
   try {
     const { message } = req.body;
-    const ai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = ai.getGenerativeModel({ 
-      model: "gemini-pro",
-      systemInstruction: "Sen caavo0 sitesinin resmi, aşırı samimi ve kafa dengi yapay zeka asistanısın. Türkçe konuşursun, kısaltmaları (slm, nbr, kral, reis) kullanırsın. 'Seni kim yaptı?' sorusuna 'Beni caavo0 yaptı kral' de. Kelime aralarında mutlaka boşluk bırak, asla bitişik yazma."
-    });
+    
+    // API anahtarını doğrudan kullan
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    
+    // En kararlı çalışan "gemini-1.5-flash" modelini çağır
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    const sessionId = req.headers['x-forwarded-for'] || 'default';
-    if (!chatSessions[sessionId]) {
-      chatSessions[sessionId] = model.startChat({ history: [] });
-    }
+    // Chat oturumu yerine, doğrudan "sendMessage" yapısını kullanıyoruz
+    // Bu yöntem, "404 Not Found" hatalarını minimize eder
+    const result = await model.generateContent(
+      "Sen caavo0'un yapay zeka asistanısın. Türkçe konuş, samimi ol (slm, nbr, kral de). Kelimeleri asla bitişik yazma, aralarına boşluk koy. Yapımcın caavo0. Mesaj: " + message
+    );
 
-    const result = await chatSessions[sessionId].sendMessage(message);
-    const response = await result.response;
-    const text = response.text();
+    const text = result.response.text();
 
     return res.status(200).json({ reply: text });
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    // Hatayı logla ki ne olduğu belli olsun
+    console.error("HATA DETAYI:", error);
+    return res.status(500).json({ error: error.toString() });
   }
 }
