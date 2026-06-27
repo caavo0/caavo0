@@ -14,22 +14,22 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start; /* Elemanların yukarıdan aşağı sıralanması için */
+            justify-content: flex-start;
             min-height: 100vh;
             box-sizing: border-box;
             padding: 40px 20px;
             overflow-x: hidden;
-            overflow-y: auto; /* İçerik uzarsa dikey kaydırmaya izin verir */
+            overflow-y: auto;
         }
 
-        /* Partikül Arka Planının Konumu (Sayfa kaysa bile sabit kalması için FIXED yapıldı) */
+        /* Partikül Arka Planının Konumu */
         #particles-js {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1; /* Yazıların ve butonların arkasında kalması için */
+            z-index: -1;
         }
 
         /* caavo0 Başlığı */
@@ -69,7 +69,6 @@
             border: 2px solid transparent;
         }
 
-        /* Tuşların Üzerine Gelince (Hover) Olacaklar */
         a.social-btn:hover {
             transform: scale(1.05) translateY(-3px);
             box-shadow: 0 8px 25px rgba(0, 180, 216, 0.6);
@@ -81,7 +80,7 @@
             width: 100%;
             max-width: 320px;
             height: 380px;
-            background: rgba(26, 39, 68, 0.75); /* Yarı şeffaf, arkadan partiküller gözüksün diye */
+            background: rgba(26, 39, 68, 0.75);
             border-radius: 20px;
             box-shadow: 0 8px 32px 0 rgba(0, 180, 216, 0.3);
             border: 2px solid #00b4d8;
@@ -119,7 +118,7 @@
             font-size: 0.9rem;
             line-height: 1.4;
             word-wrap: break-word;
-            white-space: pre-wrap; /* GÜNCELLENDİ: Boşlukların ve alt satırların ekranda erimemesi için */
+            white-space: pre-wrap; /* Boşlukların ve satırların erimemesi için */
         }
 
         .user-message {
@@ -236,7 +235,7 @@
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     
     <script>
-        // 1. Orijinal Partikül Ayarları
+        // Partikül Ayarları
         particlesJS("particles-js", {
             "particles": {
                 "number": { "value": 80 }, 
@@ -261,25 +260,24 @@
             }
         });
 
-        // 2. Orijinal Tıklama Sesi Ayarları
+        // Tıklama Sesi Ayarları
         const clickSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3'); 
         
         document.addEventListener('click', (e) => {
             clickSound.currentTime = 0; 
             clickSound.play().catch(error => {
-                console.log("Ses çalma engellendi veya henüz tetiklenmedi.", error);
+                console.log("Ses çalma engellendi.", error);
             });
         });
 
-        // 3. Yapay Zeka Mantığı, Hafıza ve Yazıyor Animasyonu
         const chatMessages = document.getElementById('chatMessages');
         const userInput = document.getElementById('userInput');
 
-        // SAYFA AÇILDIĞINDA GEÇMİŞİ LOKAL HAFIZADAN YÜKLE
+        // Geçmişi Lokal Hafızadan Yükle
         window.addEventListener('DOMContentLoaded', () => {
             const savedHistory = localStorage.getItem('chatHistory');
             if (savedHistory) {
-                chatMessages.innerHTML = ''; // Eski sabit selamlamayı temizle ki geçmişle çakışmasın
+                chatMessages.innerHTML = '';
                 const history = JSON.parse(savedHistory);
                 history.forEach(msg => {
                     appendMessage(msg.text, msg.className, false);
@@ -287,7 +285,6 @@
             }
         });
 
-        // MESAJLARI TARAYICI HAFIZASINA KAYDETME
         function saveToHistory(text, className) {
             let history = localStorage.getItem('chatHistory') ? JSON.parse(localStorage.getItem('chatHistory')) : [];
             history.push({ text: text, className: className });
@@ -304,48 +301,38 @@
             const text = userInput.value.trim();
             if (text === '') return;
 
-            // Kullanıcı mesajını ekrana bas ve hafızaya ekle
             appendMessage(text, 'user-message', true);
             userInput.value = '';
 
-            // Üç noktalı "Yazıyor..." animasyon kutusunu oluştur ve göster
             const typingIndicator = showTypingIndicator();
-
-            // Sunucu üzerinden gizli API isteği gönderiyoruz
             const aiResponse = await getAIResponse(text);
-            
-            // Cevap geldiği an animasyon kutusunu kaldır
             typingIndicator.remove();
             
-            // Yapay zeka cevabını harf harf yazdırarak ekrana bas
             appendMessage(aiResponse, 'ai-message', true);
         }
 
-        // GÜNCELLENDİ: innerText sorunları giderildi, artik bosluklar kaybolmayacak!
+        // Karakter Yazdırma Fonksiyonu (Boşlukları yutmayan yeni nesil textContent sistemi)
         function appendMessage(text, className, isNew = true) {
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${className}`;
             chatMessages.appendChild(messageDiv);
             
-            // Eğer yeni bir yapay zeka mesajıysa harf harf yazdır
             if (className === 'ai-message' && isNew) {
                 let i = 0;
-                messageDiv.textContent = ""; // innerText yerine textContent yapıldı
+                messageDiv.textContent = "";
                 function typeWriter() {
                     if (i < text.length) {
-                        messageDiv.textContent += text.charAt(i); // innerText yerine textContent yapıldı
+                        messageDiv.textContent += text.charAt(i);
                         i++;
                         chatMessages.scrollTop = chatMessages.scrollHeight;
-                        setTimeout(typeWriter, 12); // Harf dökülme hızı (12ms)
+                        setTimeout(typeWriter, 12);
                     } else {
-                        // Harf harf yazma tamamen bitince hafızaya kalıcı kaydet
                         saveToHistory(text, className);
                     }
                 }
                 typeWriter();
             } else {
-                // Kullanıcı mesajıysa veya geçmiş hafızadan okunuyorsa direkt yapıştır
-                messageDiv.textContent = text; // innerText yerine textContent yapıldı
+                messageDiv.textContent = text;
                 if (isNew && className === 'user-message') {
                     saveToHistory(text, className);
                 }
@@ -355,7 +342,6 @@
             return messageDiv;
         }
 
-        // ANIMASYON KUTUSUNU TETİKLEYEN FONKSİYON
         function showTypingIndicator() {
             const indicatorDiv = document.createElement('div');
             indicatorDiv.className = 'typing-indicator';
@@ -365,6 +351,7 @@
             return indicatorDiv;
         }
 
+        // Geliştirilmiş Akıllı Veri Yakalama Fonksiyonu
         async function getAIResponse(userText) {
             try {
                 const response = await fetch('/api/gemini', {
@@ -374,7 +361,14 @@
                 });
                 
                 const data = await response.json();
-                return data.reply || "Yapay zekadan boş yanıt döndü.";
+
+                if (data.reply) return data.reply;
+                if (data.text) return data.text;
+                if (data.response) return data.response;
+                if (typeof data === 'string') return data;
+                if (data.error) return `Sorun var kral: ${data.error}`;
+
+                return "Mesajını aldım ama düzgün metne çeviremedim reis, tekrar yazar mısın?";
             } catch (error) {
                 console.error("Hata:", error);
                 return "Bağlantı kurulurken bir sorun oluştu, lütfen sitenin canlı versiyonunda dene.";
