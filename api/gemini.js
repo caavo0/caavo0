@@ -1,7 +1,6 @@
 import { GoogleGenAI } from '@google/genai';
 
-// Sohbet geçmişini sunucu tarafında geçici olarak tutacak bir nesne
-// Not: Vercel serverless olduğu için bu hafıza arada sıfırlanabilir, en temiz çözümdür.
+// Oturum bazlı sohbet hafızası nesnesi
 const chatSessions = {};
 
 export default async function handler(req, res) {
@@ -27,8 +26,7 @@ export default async function handler(req, res) {
 
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
     
-    // Kullanıcıya özel bir sohbet oturumu yoksa sıfırdan oluşturuyoruz
-    // Kullanıcının IP'sine veya sabit bir anahtara göre session açıyoruz
+    // Kullanıcının IP adresine göre benzersiz bir sohbet oturumu oluşturulur
     const sessionId = req.headers['x-forwarded-for'] || 'default-session';
     
     if (!chatSessions[sessionId]) {
@@ -40,13 +38,12 @@ export default async function handler(req, res) {
       });
     }
 
-    // Mesajı mevcut sohbete gönderiyoruz, böylece geçmişi otomatik hatırlıyor
+    // Mesaj hafızalı sohbete gönderilir
     const response = await chatSessions[sessionId].sendMessage({
       message: userMessage
     });
 
-    // API'den yanıtın güvenli gelip gelmediğini kontrol ediyoruz
-    const replyText = response.text || "Naber kral, tam duyamadım tekrar söyler misin?";
+    const replyText = response.text || "Naber kral, tam anlayamadım tekrar söyler misin?";
 
     return res.status(200).json({ 
       reply: replyText,
