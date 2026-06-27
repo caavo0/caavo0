@@ -1,27 +1,41 @@
+import { GoogleGenAI } from '@google/genai';
+
 export default async function handler(req, res) {
-  const { message } = req.body;
-  const apiKey = process.env.GEMINI_API_KEY;
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Sadece POST istekleri atılabilir.' });
+  }
 
   try {
-    // Model ismini 'gemini-1.5-flash' yerine 'gemini-1.0-pro' olarak değiştiriyoruz
-    // Eğer bu da olmazsa, anahtarında "kısıtlama" var demektir.
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.0-pro:generateContent?key=${apiKey}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: message }] }]
-      })
-    });
+    const { message, prompt } = req.body;
+    const userMessage = message || prompt;
 
-    const data = await response.json();
-    
-    if (data.error) {
-       return res.status(200).json({ reply: "Hata: " + data.error.message });
+    if (!userMessage) {
+      return res.status(400).json({ error: 'Mesaj içeriği boş olamaz.' });
     }
 
-    const reply = data.candidates[0].content.parts[0].text;
-    res.status(200).json({ reply: reply });
-  } catch (e) {
-    res.status(200).json({ reply: "Kod Hatası: " + e.message });
+    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+    
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.5-flash',
+      contents: userMessage,
+    });
+
+    return res.status(200).json({ 
+      reply: response.text,
+      response: response.text,
+      text: response.text 
+    });
+
+  } catch (error) {
+    console.error("Gemini Hatası:", error);
+    return res.status(500).json({ error: 'Yapay zeka şu an müsait değil.', details: error.message });
   }
 }
