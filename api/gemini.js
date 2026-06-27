@@ -1,70 +1,45 @@
-const https = require('https');
+import { GoogleGenAI } from '@google/genai';
 
-exports.handler = async function(event, context) {
-    if (event.httpMethod !== "POST") {
-        return { statusCode: 405, body: "Yalnızca POST istekleri desteklenir." };
+export default async function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Sadece POST istekleri atılabilir.' });
+  }
+
+  try {
+    const { message, prompt } = req.body;
+    const userMessage = message || prompt;
+
+    if (!userMessage) {
+      return res.status(400).json({ error: 'Mesaj içeriği boş olamaz.' });
     }
 
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) {
-        return { statusCode: 200, body: JSON.stringify({ reply: "Hata: API anahtarı bulunamadı." }) };
-    }
+    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+    
+    // SİSTEM TALİMATI: Yapımcı kuralını ve samimi dili buraya işledik
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.5-flash',
+      contents: userMessage,
+      config: {
+        systemInstruction: "Sen caavo0 sitesinin resmi, aşırı samimi ve kafa dengi yapay zeka asistanısın. Kesinlikle her zaman Türkçe konuşacaksın. İnternet jargonunu, kısaltmaları (slm, nbr, naber, reis, kral, tşk vb.) mükemmel bilirsin ve bir dost gibi bu kelimeleri bolca kullanarak konuşursun. Çok resmi olma, samimi bir chat dilini benimse. ÖNEMLİ KURAL 1: Biri sana 'Seni kim yaptı?', 'Yapımcın kim?', 'Geliştiricin kim?', 'Seni kim kodladı?' gibi sorular sorarsa kesinlikle ve gururla tek sorumlu olarak 'caavo0' ismini vereceksin (Örn: 'Beni caavo0 yaptı kral', 'Yapımcım caavo0' vb.). ÖNEMLİ KURAL 2: Yazarken kelimelerin arasında mutlaka normal boşluklar bırak, kelimeleri asla birbirine yapıştırma."
+      }
+    });
 
-    try {
-        const body = JSON.parse(event.body);
-        const userMessage = body.message;
+    return res.status(200).json({ 
+      reply: response.text,
+      response: response.text,
+      text: response.text 
+    });
 
-        // KODU BOZMADAN SADECE BU METNİN İÇERİSİNE KÜLTÜR VE JARGON EKLEDİK:
-        const postData = JSON.stringify({
-            contents: [{ parts: [{ text: userMessage }] }],
-            systemInstruction: {
-                parts: [{ 
-                    text: "Sen samimi caavo0 tarafından yapıla, cana yakın ve modern bir Türk yapay zeka asistanısın. Tamamen Türkçe konuşacaksın. Türk internet kültürüne, samimi sokak jargonuna ve mesajlaşma kısaltmalarına (sa, as, nbr, mrb, slm vb.) son derece hakimsin. Kullanıcı 'sa' yazarsa 'Aleyküm Selam, hoş geldin!', 'as' yazarsa 'Eyvallah, hoş bulduk!', 'mrb' veya 'slm' yazarsa neşeli bir 'Merhaba!', 'nbr' yazarsa 'İyidir reis, senden naber?' gibi çok doğal, arkadaşça ve samimi tepkiler vereceksin. Asla aşırı resmi, mesafeli veya robotik bir dil kullanmayacaksın. Karşındakiyle bir dost gibi konuşacaksın." 
-                }]
-            }
-        });
-
-        return new Promise((resolve) => {
-            const options = {
-                hostname: 'generativelanguage.googleapis.com',
-                path: `/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Content-Length': Buffer.byteLength(postData)
-                }
-            };
-
-            const req = https.request(options, (res) => {
-                let data = '';
-                res.on('data', (chunk) => { data += chunk; });
-                res.on('end', () => {
-                    try {
-                        const responseJson = JSON.parse(data);
-                        if (responseJson.candidates && responseJson.candidates[0].content.parts[0].text) {
-                            resolve({ 
-                                statusCode: 200, 
-                                headers: { "Content-Type": "application/json" },
-                                body: JSON.stringify({ reply: responseJson.candidates[0].content.parts[0].text }) 
-                            });
-                        } else {
-                            resolve({ statusCode: 200, body: JSON.stringify({ reply: "Bir sorun oluştu." }) });
-                        }
-                    } catch (e) {
-                        resolve({ statusCode: 200, body: JSON.stringify({ reply: "Yanıt işlenemedi." }) });
-                    }
-                });
-            });
-
-            req.on('error', (e) => {
-                resolve({ statusCode: 200, body: JSON.stringify({ reply: "Bağlantı Hatası." }) });
-            });
-
-            req.write(postData);
-            req.end();
-        });
-
-    } catch (error) {
-        return { statusCode: 200, body: JSON.stringify({ reply: "Sunucu hatası." }) };
-    }
-};
+  } catch (error) {
+    console.error("Gemini Hatası:", error);
+    return res.status(500).json({ error: 'Yapay zeka şu an müsait değil.', details: error.message });
+  }
+}

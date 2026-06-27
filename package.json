@@ -1,0 +1,8 @@
+{
+  "name": "caavo0-site",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "@google/genai": "latest"
+  }
+}
