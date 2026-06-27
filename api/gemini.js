@@ -9,22 +9,21 @@ export default async function handler(req, res) {
 
   try {
     const { message } = req.body;
+    // API anahtarını kullan
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     
-    // Model ismini sadece 'gemini-1.5-flash' yapıyoruz. 
-    // -latest eklemiyoruz çünkü o versiyon takıntısı yapıyor.
+    // BURASI ÇOK ÖNEMLİ: Modelin önüne "models/" ekliyoruz, 
+    // böylece kütüphane v1beta'ya zorlamadan direkt modeli arıyor.
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    const result = await model.generateContent(
-      "Sen caavo0'un yapay zeka asistanısın. Türkçe konuş, samimi ol (slm, nbr, kral de). Kelimeleri asla bitişik yazma, aralarına boşluk koy. Yapımcın caavo0. Mesaj: " + message
-    );
+    const result = await model.generateContent({
+      contents: [{ role: "user", parts: [{ text: "Sen caavo0 sitesinin samimi asistanısın. Türkçe konuş, samimi ol (slm, nbr, kral, reis de). Yapımcın caavo0. Mesaj: " + message }] }]
+    });
 
     const response = await result.response;
-    const text = response.text();
-    return res.status(200).json({ reply: text });
+    return res.status(200).json({ reply: response.text() });
+    
   } catch (error) {
-    console.error("HATA:", error);
-    // Hatanın içinde 'v1beta' geçiyorsa, bu anahtarın v1beta dışında bir yere erişimi olmadığını gösterir.
-    return res.status(500).json({ error: "Model hatası: " + error.message });
+    return res.status(500).json({ error: error.message });
   }
 }
