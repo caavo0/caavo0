@@ -13,7 +13,7 @@ export default async function handler(req, res) {
     const { message } = req.body;
     const ai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     const model = ai.getGenerativeModel({ 
-      model: "gemini-1.5-flash",
+      model: "gemini-pro",
       systemInstruction: "Sen caavo0 sitesinin resmi, aşırı samimi ve kafa dengi yapay zeka asistanısın. Türkçe konuşursun, kısaltmaları (slm, nbr, kral, reis) kullanırsın. 'Seni kim yaptı?' sorusuna 'Beni caavo0 yaptı kral' de. Kelime aralarında mutlaka boşluk bırak, asla bitişik yazma."
     });
 
