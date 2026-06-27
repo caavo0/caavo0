@@ -1,33 +1,27 @@
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  
+  const { message } = req.body;
+  const apiKey = process.env.GEMINI_API_KEY;
+
   try {
-    const { message } = req.body;
-    const apiKey = process.env.GEMINI_API_KEY;
-
-    const prompt = `Sen caavo0 sitesinin asistanısın. Türkçe konuş, kral de. Beni caavo0 yaptı. Mesaj: ${message}`;
-
-    // Beta sürümünü deneyelim (çoğu anahtarda bu çalışır)
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+    // Model ismini 'gemini-1.5-flash' yerine 'gemini-1.0-pro' olarak değiştiriyoruz
+    // Eğer bu da olmazsa, anahtarında "kısıtlama" var demektir.
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.0-pro:generateContent?key=${apiKey}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }]
+        contents: [{ parts: [{ text: message }] }]
       })
     });
 
     const data = await response.json();
-
-    // HATA VARSA BİLE BUNU DÜZGÜN BİR METİN OLARAK GÖNDER
+    
     if (data.error) {
-      return res.status(200).json({ reply: "Hata oluştu: " + data.error.message });
+       return res.status(200).json({ reply: "Hata: " + data.error.message });
     }
 
     const reply = data.candidates[0].content.parts[0].text;
-    return res.status(200).json({ reply: reply });
-
-  } catch (error) {
-    // BURASI ÇOK ÖNEMLİ: Hata mesajını düzgün metin gibi döndürüyoruz
-    return res.status(200).json({ reply: "Sistem hatası: " + error.message });
+    res.status(200).json({ reply: reply });
+  } catch (e) {
+    res.status(200).json({ reply: "Kod Hatası: " + e.message });
   }
 }
