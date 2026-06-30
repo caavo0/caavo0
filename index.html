@@ -88,7 +88,6 @@
             font-size: 1.1rem;
         }
 
-        /* Chat */
         .chat-container {
             width: 100%;
             max-width: 340px;
@@ -157,38 +156,6 @@
         @keyframes bounce {
             0%, 80%, 100% { transform: scale(0); }
             40% { transform: scale(1); }
-        }
-
-        /* Input + Buton Düzeltilmiş */
-        .chat-input-area {
-            display: flex;
-            padding: 12px 16px;
-            background: #0b132b;
-            gap: 10px;
-            border-top: 1px solid rgba(0, 180, 216, 0.2);
-        }
-
-        .chat-input-area input {
-            flex: 1;
-            background: #1d2d44;
-            border: 1px solid #3a506b;
-            padding: 14px 16px;
-            border-radius: 30px;
-            color: white;
-            font-size: 1rem;
-            min-width: 0;
-        }
-
-        .chat-input-area button {
-            background: linear-gradient(45deg, #0077b6, #00b4d8);
-            border: none;
-            color: white;
-            padding: 0 28px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-weight: bold;
-            white-space: nowrap;
-            flex-shrink: 0;
         }
     </style>
 </head>
@@ -259,7 +226,7 @@
             const text = userInput.value.trim();
             if (!text) return;
 
-            appendMessage(text, 'user-message');
+            appendMessage(text, 'user-message', true);
             userInput.value = '';
 
             const typing = showTypingIndicator();
@@ -272,19 +239,37 @@
                 });
                 const data = await res.json();
                 typing.remove();
-                appendMessage(data.reply || "Cevap alamadım.", 'ai-message');
+                typeWriterEffect(data.reply || "Cevap alamadım.", 'ai-message');
             } catch (err) {
                 typing.remove();
-                appendMessage("Bağlantı hatası, tekrar dene.", 'ai-message');
+                typeWriterEffect("Bağlantı hatası, tekrar dene.", 'ai-message');
             }
         }
 
-        function appendMessage(text, className) {
+        function appendMessage(text, className, isNew = false) {
             const div = document.createElement('div');
             div.className = `message ${className}`;
             div.textContent = text;
             chatMessages.appendChild(div);
             chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function typeWriterEffect(text, className) {
+            const div = document.createElement('div');
+            div.className = `message ${className}`;
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            let i = 0;
+            function type() {
+                if (i < text.length) {
+                    div.textContent += text.charAt(i);
+                    i++;
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                    setTimeout(type, 15); // Yazma hızı (15ms)
+                }
+            }
+            type();
         }
 
         function showTypingIndicator() {
