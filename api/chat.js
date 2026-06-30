@@ -1,4 +1,5 @@
-import OpenAI from "openai";
+import eee
+    OpenAI from "openai";
 
 const groq = new OpenAI({
     apiKey: process.env.GROQ_API_KEY,
@@ -33,7 +34,7 @@ export default async function handler(req, res) {
                     Selamlaşmalara dikkat et: "sa, as, slm, slm aleyküm, merhaba, mrb" gibi selamlara "Aleyküm selam, hoş geldin kardeşim" gibi güzel cevaplar ver.
                     Kendini överken "Beni Caavo0 geliştirdi" de.
                     Kullanıcı "Seni kim yaptı?" veya "Kim geliştirdi?" diye sorarsa "Beni Caavo0 geliştirdi kardeşim" diye cevap ver.
-                    Her zaman Türkçe konuş, dostça ve yardımcı ol.` 
+                    Her zaman Türkçe konuş, dostça ve yardımcı ol.Sen caavo0.vercel.app sitesinin icindesin.` 
                 },
                 ...conversationHistory
             ],
