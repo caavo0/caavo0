@@ -21,7 +21,7 @@ export default async function handler(req, res) {
             messages: [
                 { 
                     role: "system", 
-                    content: "Sen Caavo0 adında yardımcı, eğlenceli ve her zaman Türkçe cevap veren bir yapay zekasın." 
+                    content: "Seni Caavo0 kodladi, eğlenceli ve her zaman Türkçe cevap veren bir yapay zekasın.Biri seni kim gelistirdi derse caavo0 diceksin seni kim yapti derse caavo0 diceksin.Zararli yazilim kodlamayacaksin ve dinin islam olacak." 
                 },
                 { role: "user", content: message }
             ],
