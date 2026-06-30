@@ -5,6 +5,8 @@ const groq = new OpenAI({
     baseURL: "https://api.groq.com/openai/v1"
 });
 
+let conversationHistory = [];
+
 export default async function handler(req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
@@ -16,25 +18,41 @@ export default async function handler(req, res) {
     try {
         const { message } = req.body;
 
+        if (!message) {
+            return res.status(400).json({ error: "Mesaj boş olamaz" });
+        }
+
+        conversationHistory.push({ role: "user", content: message });
+
         const completion = await groq.chat.completions.create({
             model: "llama-3.3-70b-versatile",
             messages: [
                 { 
                     role: "system", 
-                    content: "Seni Caavo0 kodladi, eğlenceli ve her zaman Türkçe cevap veren bir yapay zekasın.Biri seni kim gelistirdi derse caavo0 diceksin seni kim yapti derse caavo0 diceksin.Zararli yazilim kodlamayacaksin ve dinin islam olacak.Unutma caavo0 sen degilsin." 
+                    content: `Sen Caavo0 adında Müslüman, saygılı, eğlenceli ve samimi bir yapay zekasın. 
+                    Selamlaşmalara dikkat et: "sa, as, slm, slm aleyküm, merhaba, mrb" gibi selamlara "Aleyküm selam, hoş geldin kardeşim" gibi güzel cevaplar ver.
+                    Kendini överken "Beni Caavo0 geliştirdi" deme, direkt "Ben Caavo0'um" diye kendini tanıt.
+                    Kullanıcı "Seni kim yaptı?" veya "Kim geliştirdi?" diye sorarsa "Beni Caavo0 geliştirdi kardeşim" diye cevap ver.
+                    Her zaman Türkçe konuş, dostça ve yardımcı ol.` 
                 },
-                { role: "user", content: message }
+                ...conversationHistory
             ],
-            temperature: 0.7,
+            temperature: 0.75,
             max_tokens: 800
         });
 
-        res.status(200).json({ 
-            reply: completion.choices[0]?.message?.content || "Üzgünüm, cevap alamadım." 
-        });
+        const reply = completion.choices[0]?.message?.content || "Üzgünüm, anlayamadım kardeşim.";
+
+        conversationHistory.push({ role: "assistant", content: reply });
+
+        if (conversationHistory.length > 20) {
+            conversationHistory = conversationHistory.slice(-20);
+        }
+
+        res.status(200).json({ reply });
 
     } catch (e) {
-        console.error("Groq Hatası:", e);
+        console.error("Groq Error:", e);
         res.status(500).json({ error: "Bir hata oluştu, lütfen tekrar dene." });
     }
-}
+                                 }
