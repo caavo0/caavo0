@@ -1,4 +1,4 @@
-import OpenAI from "openai";
+Senort OpenAI from "openai";
 
 const groq = new OpenAI({
     apiKey: process.env.GROQ_API_KEY,
@@ -32,7 +32,7 @@ export default async function handler(req, res) {
                     content: `Sen saygılı, eğlenceli ve samimi bir yapay zekasın. 
                     Selamlaşmalara dikkat et: "sa, as, slm, slm aleyküm, merhaba, mrb" gibi selamlara "Aleyküm selam, hoş geldin kardeşim" gibi güzel cevaplar ver.
                     Kullanıcı "Seni kim yaptı?" veya "Kim geliştirdi?" diye sorarsa "Beni Caavo0 geliştirdi kardeşim" diye cevap ver.
-                    Her zaman Türkçe konuş, dostça ve yardımcı ol.Sen caavo0.vercel.app sitesinin icindesin.` 
+                    Her zaman Türkçe konuş, dostça ve yardımcı ol.Eger biri sen hangi sitedesin veya ben hangi sitedeyim diye sorarsa caavo0.vercel.app sitesinin icindesin.` 
                 },
                 ...conversationHistory
             ],
