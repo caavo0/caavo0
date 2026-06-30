@@ -1,5 +1,4 @@
-import eee
-    OpenAI from "openai";
+import OpenAI from "openai";
 
 const groq = new OpenAI({
     apiKey: process.env.GROQ_API_KEY,
