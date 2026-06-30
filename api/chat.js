@@ -1,76 +1,40 @@
 import OpenAI from "openai";
 
-const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-  });
+const openai = new OpenAI({
+    apiKey: process.env.GROQ_API_KEY,           // Groq key
+        baseURL: "https://api.groq.com/openai/v1"   // ← Bu çok önemli
+        });
 
-  export default async function handler(req, res) {
-    res.setHeader("Access-Control-Allow-Origin", "*");
-      res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-        res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+        export default async function handler(req, res) {
+            res.setHeader("Access-Control-Allow-Origin", "*");
+                res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
+                    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-          if (req.method === "OPTIONS") {
-              return res.status(200).end();
-                }
+                        if (req.method === "OPTIONS") return res.status(200).end();
+                            if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
-                  if (req.method !== "POST") {
-                      return res.status(405).json({
-                            success: false,
-                                  error: "Method Not Allowed"
-                                      });
-                                        }
+                                try {
+                                        const { message } = req.body;
 
-                                          try {
-                                              const { message } = req.body;
-
-                                                  if (!message || !message.trim()) {
-                                                        return res.status(400).json({
-                                                                success: false,
-                                                                        error: "Mesaj boş."
-                                                                              });
-                                                                                  }
-
-                                                                                      const completion = await client.chat.completions.create({
-                                                                                            model: "gpt-4.1-mini",
-                                                                                                  messages: [
-                                                                                                          {
-                                                                                                                    role: "system",
-                                                                                                                              content:
-                                                                                                                                          "Sen caavo0 tarafından geliştirilen resmi yapay zekasın. Her zaman Türkçe konuş. Seni kimin yaptığı sorulursa sadece 'caavo0' cevabını ver."
-                                                                                                                                                  },
-                                                                                                                                                          {
-                                                                                                                                                                    role: "user",
-                                                                                                                                                                              content: message
-                                                                                                                                                                                      }
-                                                                                                                                                                                            ],
-                                                                                                                                                                                                  temperature: 0.7,
-                                                                                                                                                                                                        max_tokens: 500
+                                                const completion = await openai.chat.completions.create({
+                                                            model: "llama-3.3-70b-versatile",   // veya "llama-3.1-8b-instant" (daha hızlı)
+                                                                        messages: [
+                                                                                        { 
+                                                                                                            role: "system", 
+                                                                                                                                content: "Sen yardımcı, eğlenceli ve her zaman Türkçe konuşan bir AI asistanısın. Adın Caavo0." 
+                                                                                                                                                },
+                                                                                                                                                                { role: "user", content: message }
+                                                                                                                                                                            ],
+                                                                                                                                                                                        temperature: 0.7,
+                                                                                                                                                                                                    max_tokens: 800
                                                                                                                                                                                                             });
 
-                                                                                                                                                                                                                const reply = completion.choices?.[0]?.message?.content;
+                                                                                                                                                                                                                    const reply = completion.choices[0].message.content;
 
-                                                                                                                                                                                                                    if (!reply) {
-                                                                                                                                                                                                                          return res.status(500).json({
-                                                                                                                                                                                                                                  success: false,
-                                                                                                                                                                                                                                          error: "OpenAI boş cevap döndürdü.",
-                                                                                                                                                                                                                                                  raw: completion
-                                                                                                                                                                                                                                                        });
-                                                                                                                                                                                                                                                            }
+                                                                                                                                                                                                                            res.status(200).json({ reply });
 
-                                                                                                                                                                                                                                                                return res.status(200).json({
-                                                                                                                                                                                                                                                                      success: true,
-                                                                                                                                                                                                                                                                            reply
-                                                                                                                                                                                                                                                                                });
-
-                                                                                                                                                                                                                                                                                  } catch (err) {
-                                                                                                                                                                                                                                                                                      console.error("OPENAI ERROR:", err);
-
-                                                                                                                                                                                                                                                                                          return res.status(500).json({
-                                                                                                                                                                                                                                                                                                success: false,
-                                                                                                                                                                                                                                                                                                      error: err.message,
-                                                                                                                                                                                                                                                                                                            type: err.type || null,
-                                                                                                                                                                                                                                                                                                                  code: err.code || null,
-                                                                                                                                                                                                                                                                                                                        status: err.status || null
-                                                                                                                                                                                                                                                                                                                            });
-                                                                                                                                                                                                                                                                                                                              }
-                                                                                                                                                                                                                                                                                                                              }
+                                                                                                                                                                                                                                } catch (e) {
+                                                                                                                                                                                                                                        console.error(e);
+                                                                                                                                                                                                                                                res.status(500).json({ error: e.message });
+                                                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                                                    }caavo__import
