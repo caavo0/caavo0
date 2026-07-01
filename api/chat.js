@@ -1,324 +1,57 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>caavo0</title>
-    <style>
-        * { box-sizing: border-box; }
-        
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #0b132b;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: white;
-            min-height: 100vh;
-            overflow-x: hidden;
+import OpenAI from "openai";
+
+const groq = new OpenAI({
+    apiKey: process.env.GROQ_API_KEY,
+    baseURL: "https://api.groq.com/openai/v1"
+});
+
+let conversationHistory = [];
+
+export default async function handler(req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+    if (req.method === "OPTIONS") return res.status(200).end();
+    if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
+
+    try {
+        const { message } = req.body;
+
+        if (!message) {
+            return res.status(400).json({ error: "Mesaj boş olamaz" });
         }
 
-        #particles-js {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: -1;
-        }
+        conversationHistory.push({ role: "user", content: message });
 
-        .tabs {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            padding: 20px 20px 10px;
-            background: rgba(11, 19, 43, 0.95);
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-
-        .tab-btn {
-            flex: 1;
-            max-width: 160px;
-            padding: 13px 20px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            border: none;
-            border-radius: 30px;
-            cursor: pointer;
-            background: #1d2d44;
-            color: #90e0ef;
-        }
-
-        .tab-btn.active {
-            background: linear-gradient(45deg, #0077b6, #00b4d8);
-            color: white;
-        }
-
-        h1 {
-            font-size: 3.2rem;
-            color: #48cae4;
-            text-shadow: 0 0 20px #00b4d8;
-            text-align: center;
-            margin: 15px 0 25px 0;
-        }
-
-        .tab-content {
-            display: none;
-            width: 100%;
-            max-width: 340px;
-            margin: 0 auto;
-            padding: 0 20px 30px;
-        }
-
-        .tab-content.active { display: block; }
-
-        .links-container {
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-        }
-
-        a.social-btn {
-            text-decoration: none;
-            background: linear-gradient(45deg, #0077b6, #00b4d8);
-            color: white;
-            padding: 16px 20px;
-            border-radius: 30px;
-            text-align: center;
-            font-weight: bold;
-            font-size: 1.1rem;
-        }
-
-        .chat-container {
-            width: 100%;
-            max-width: 340px;
-            height: 520px;
-            background: rgba(26, 39, 68, 0.9);
-            border-radius: 22px;
-            box-shadow: 0 10px 40px rgba(0, 180, 216, 0.4);
-            border: 2px solid #00b4d8;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            margin: 0 auto;
-        }
-
-        .chat-header {
-            background: linear-gradient(45deg, #0077b6, #00b4d8);
-            padding: 16px;
-            text-align: center;
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
-
-        .chat-messages {
-            flex: 1;
-            padding: 18px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
-
-        .message {
-            max-width: 85%;
-            padding: 12px 16px;
-            border-radius: 18px;
-            font-size: 1rem;
-            line-height: 1.5;
-            white-space: pre-wrap;
-        }
-
-        .user-message { background: #48cae4; color: #0b132b; align-self: flex-end; }
-        .ai-message { background: #1d2d44; color: #90e0ef; align-self: flex-start; border: 1px solid #3a506b; }
-
-        .typing-indicator {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            padding: 12px 16px;
-            background: #1d2d44;
-            border-radius: 18px;
-            align-self: flex-start;
-            border: 1px solid #3a506b;
-        }
-
-        .typing-indicator span {
-            width: 8px;
-            height: 8px;
-            background: #90e0ef;
-            border-radius: 50%;
-            display: inline-block;
-            animation: bounce 1.3s infinite ease-in-out;
-        }
-
-        .typing-indicator span:nth-child(2) { animation-delay: 0.15s; }
-        .typing-indicator span:nth-child(3) { animation-delay: 0.3s; }
-
-        @keyframes bounce {
-            0%, 80%, 100% { transform: scale(0); }
-            40% { transform: scale(1); }
-        }
-
-        .chat-input-area {
-            display: flex;
-            padding: 12px 16px;
-            background: #0b132b;
-            gap: 10px;
-            border-top: 1px solid rgba(0, 180, 216, 0.2);
-        }
-
-        .chat-input-area input {
-            flex: 1;
-            background: #1d2d44;
-            border: 1px solid #3a506b;
-            padding: 14px 18px;
-            border-radius: 30px;
-            color: white;
-            font-size: 1rem;
-            min-width: 0;
-        }
-
-        .chat-input-area button {
-            background: linear-gradient(45deg, #0077b6, #00b4d8);
-            border: none;
-            color: white;
-            padding: 0 26px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-weight: bold;
-            white-space: nowrap;
-        }
-    </style>
-</head>
-<body>
-
-    <div id="particles-js"></div>
-
-    <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab(0)">Medya</button>
-        <button class="tab-btn" onclick="switchTab(1)">Caavo0 AI</button>
-    </div>
-
-    <h1>caavo0</h1>
-
-    <div id="tab0" class="tab-content active">
-        <div class="links-container">
-            <a href="https://github.com/caavo0" class="social-btn" target="_blank">GitHub</a>
-            <a href="https://www.youtube.com/@caavo0-r6u" class="social-btn" target="_blank">YouTube</a>
-            <a href="https://www.tiktok.com/@caavo0" class="social-btn" target="_blank">TikTok</a>
-            <a href="https://discord.com/users/caavo0_" class="social-btn" target="_blank">Discord</a>
-        </div>
-    </div>
-
-    <div id="tab1" class="tab-content">
-        <div class="chat-container">
-            <div class="chat-header">Caavo0 AI Assistant</div>
-            <div class="chat-messages" id="chatMessages">
-                <div class="message ai-message">Merhaba kardeşim! Ben Caavo0. Sor bakalım 😊</div>
-            </div>
-            <div class="chat-input-area">
-                <input type="text" id="userInput" placeholder="Mesaj yaz..." onkeypress="handleKeyPress(event)">
-                <button onclick="sendMessage()">Gönder</button>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    
-    <script>
-        particlesJS("particles-js", {
-            particles: {
-                number: { value: 80 },
-                color: { value: "#90e0ef" },
-                shape: { type: "circle" },
-                opacity: { value: 0.6 },
-                size: { value: 3 },
-                line_linked: { enable: true, distance: 150, color: "#00b4d8", opacity: 0.4, width: 1.5 },
-                move: { enable: true, speed: 2 }
-            },
-            interactivity: {
-                events: { onhover: { enable: true, mode: "repulse" }, onclick: { enable: true, mode: "push" }}
-            }
+        const completion = await groq.chat.completions.create({
+            model: "llama-3.3-70b-versatile",
+            messages: [
+                { 
+                    role: "system", 
+                    content: `Sen saygılı, eğlenceli ve samimi bir yapay zekasın. 
+                    Selamlaşmalara dikkat et: "sa, as, slm, slm aleyküm, merhaba, mrb" gibi selamlara "Aleyküm selam, hoş geldin kardeşim" gibi güzel cevaplar ver.
+                    Kullanıcı "Seni kim yaptı?" veya "Kim geliştirdi?" diye sorarsa "Beni Caavo0 geliştirdi kardeşim" diye cevap ver.Her konu degistirdiginde paragraf basi yap.Adimlari ayiyarak anlat.
+                    Her zaman Türkçe konuş ama kullanici baska bir dilde konusmani isterse konus, dostça ve yardımcı ol.Eger biri sen hangi sitedesin veya ben hangi sitedeyim diye sorarsa caavo0.vercel.app sitesinin icindesin.` 
+                },
+                ...conversationHistory
+            ],
+            temperature: 0.75,
+            max_tokens: 800
         });
 
-        function switchTab(n) {
-            document.querySelectorAll('.tab-content').forEach((el, i) => el.classList.toggle('active', i === n));
-            document.querySelectorAll('.tab-btn').forEach((el, i) => el.classList.toggle('active', i === n));
+        const reply = completion.choices[0]?.message?.content || "Üzgünüm, anlayamadım kardeşim.";
+
+        conversationHistory.push({ role: "assistant", content: reply });
+
+        if (conversationHistory.length > 20) {
+            conversationHistory = conversationHistory.slice(-20);
         }
 
-        const chatMessages = document.getElementById('chatMessages');
-        const userInput = document.getElementById('userInput');
+        res.status(200).json({ reply });
 
-        function handleKeyPress(e) {
-            if (e.key === 'Enter') sendMessage();
-        }
-
-        async function sendMessage() {
-            const text = userInput.value.trim();
-            if (!text) return;
-
-            appendMessage(text, 'user-message');
-            userInput.value = '';
-
-            const typing = showTypingIndicator();
-
-            try {
-                const res = await fetch('/api/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: text })
-                });
-                const data = await res.json();
-                typing.remove();
-                typeWriterEffect(data.reply || "Cevap alamadım.", 'ai-message');
-            } catch (err) {
-                typing.remove();
-                typeWriterEffect("Bağlantı hatası, tekrar dene.", 'ai-message');
-            }
-        }
-
-        function appendMessage(text, className) {
-            const div = document.createElement('div');
-            div.className = `message ${className}`;
-            div.innerHTML = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
-            chatMessages.appendChild(div);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        function typeWriterEffect(fullText, className) {
-            const div = document.createElement('div');
-            div.className = `message ${className}`;
-            chatMessages.appendChild(div);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-
-            // Markdown kalın desteği
-            let processedText = fullText.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-
-            let i = 0;
-            function type() {
-                if (i < processedText.length) {
-                    let char = processedText.charAt(i);
-                    if (char === '\n') {
-                        div.innerHTML += '<br>';
-                    } else {
-                        div.innerHTML += char;
-                    }
-                    i++;
-                    chatMessages.scrollTop = chatMessages.scrollHeight;
-                    setTimeout(type, 18);
-                }
-            }
-            type();
-        }
-
-        function showTypingIndicator() {
-            const div = document.createElement('div');
-            div.className = 'typing-indicator';
-            div.innerHTML = '<span></span><span></span><span></span>';
-            chatMessages.appendChild(div);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-            return div;
-        }
-    </script>
-</body>
-</html>
+    } catch (e) {
+        console.error("Groq Error:", e);
+        res.status(500).json({ error: "Bir hata oluştu, lütfen tekrar dene." });
+    }
+                                 }
