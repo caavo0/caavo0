@@ -280,7 +280,6 @@
         function appendMessage(text, className) {
             const div = document.createElement('div');
             div.className = `message ${className}`;
-            // Markdown kalın desteği
             div.innerHTML = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
             chatMessages.appendChild(div);
             chatMessages.scrollTop = chatMessages.scrollHeight;
