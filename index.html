@@ -18,6 +18,7 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            position: relative;
         }
 
         html {
@@ -25,6 +26,7 @@
             height: -webkit-fill-available;
         }
 
+        /* Üst Menü / Sekmeler */
         .tabs {
             display: flex;
             justify-content: center;
@@ -32,6 +34,7 @@
             padding: 12px 20px;
             background: #080c14;
             flex-shrink: 0;
+            z-index: 10;
         }
 
         .tab-btn {
@@ -108,6 +111,32 @@
             flex-shrink: 0;
         }
 
+        /* Sol Üst Köşedeki İki Çizgili Menü Butonu */
+        .menu-toggle-btn {
+            position: absolute;
+            left: 20px;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 6px;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        .menu-toggle-btn span {
+            width: 100%;
+            height: 2px;
+            background-color: #90e0ef;
+            border-radius: 2px;
+        }
+
+        .menu-toggle-btn:hover {
+            opacity: 1;
+        }
+
         .chat-header {
             font-size: 1.1rem;
             color: #90e0ef;
@@ -124,7 +153,6 @@
             gap: 16px;
         }
 
-        /* SVG Yeni Sohbet İkon Butonu */
         .new-chat-btn {
             width: 24px;
             height: 24px;
@@ -154,14 +182,86 @@
             transition: opacity 0.2s;
         }
 
-        .settings-btn:hover, .new-chat-btn:hover {
-            opacity: 1;
-        }
-        
-        .new-chat-btn:active {
-            transform: scale(0.95);
+        .settings-btn:hover, .new-chat-btn:hover { opacity: 1; }
+        .new-chat-btn:active { transform: scale(0.95); }
+
+        /* Kayarak Açılan Geçmiş Paneli (Sidebar) */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -280px;
+            width: 280px;
+            height: 100%;
+            background-color: #0c1322;
+            border-right: 1px solid #1f2d44;
+            z-index: 50;
+            transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
         }
 
+        .sidebar.open {
+            left: 0;
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            color: #48cae4;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .close-sidebar-btn {
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #90e0ef;
+        }
+
+        .history-list {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .history-item {
+            padding: 12px 15px;
+            background: #151e2e;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .history-item:hover {
+            background: #1f2d44;
+            border-color: #0077b6;
+        }
+
+        /* Karartma Katmanı (Panel açılınca arkası kararsın diye) */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 45;
+            display: none;
+        }
+
+        .sidebar-overlay.show {
+            display: block;
+        }
+
+        /* Mesaj Alanları */
         .chat-messages {
             flex: 1;
             padding: 10px 20px;
@@ -279,7 +379,7 @@
             background: #080c14;
             display: none;
             flex-direction: column;
-            z-index: 40;
+            z-index: 60;
         }
 
         .settings-page.show { display: flex; }
@@ -319,10 +419,15 @@
     <div id="tab1" class="tab-content">
         <div class="chat-container">
             <div class="chat-header-wrapper">
+                <!-- Sol Üstteki İki Çizgili Buton -->
+                <div class="menu-toggle-btn" onclick="toggleSidebar()">
+                    <span></span>
+                    <span></span>
+                </div>
+
                 <div class="chat-header" id="chatHeader">Caavo0 AI</div>
                 
                 <div class="actions-wrapper">
-                    <!-- Gerçek Çizgisel SVG Yeni Sohbet İkonu -->
                     <div class="new-chat-btn" onclick="createNewChat()" title="Yeni Sohbet Başlat">
                         <svg viewBox="0 0 24 24">
                             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
@@ -342,6 +447,18 @@
                     <button onclick="sendMessage()" id="sendBtn">➔</button>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Yan Menü (Sohbet Geçmişi) Kapsayıcıları -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <span>Sohbet Geçmişi</span>
+            <span class="close-sidebar-btn" onclick="toggleSidebar()">×</span>
+        </div>
+        <div class="history-list" id="historyList">
+            <!-- Geçmiş sohbetler buraya dinamik eklenecek -->
         </div>
     </div>
 
@@ -365,37 +482,24 @@
 
     <script>
         let currentLang = "tr";
+        let chatSessions = []; // Tüm geçmiş sohbet odalarını tutacak dizi
+        let currentSessionId = null;
 
         const translations = {
             tr: {
-                mediaTab: "Medya",
-                aiTab: "Caavo0 AI",
-                chatHeader: "Caavo0 AI",
-                welcomeMessage: "Merhaba! Nasıl yardımcı olabilirim?",
-                inputPlaceholder: "Caavo0'a sorun...",
-                settingsTitle: "Ayarlar",
-                languageLabel: "Dil Seçimi",
-                errorMessage: "Bağlantı hatası, tekrar dene."
+                mediaTab: "Medya", aiTab: "Caavo0 AI", chatHeader: "Caavo0 AI",
+                welcomeMessage: "Merhaba! Nasıl yardımcı olabilirim?", inputPlaceholder: "Caavo0'a sorun...",
+                settingsTitle: "Ayarlar", languageLabel: "Dil Seçimi", errorMessage: "Bağlantı hatası, tekrar dene."
             },
             en: {
-                mediaTab: "Media",
-                aiTab: "Caavo0 AI",
-                chatHeader: "Caavo0 AI",
-                welcomeMessage: "Hello! How can I help you today?",
-                inputPlaceholder: "Ask Caavo0...",
-                settingsTitle: "Settings",
-                languageLabel: "Language",
-                errorMessage: "Connection error, please try again."
+                mediaTab: "Media", aiTab: "Caavo0 AI", chatHeader: "Caavo0 AI",
+                welcomeMessage: "Hello! How can I help you today?", inputPlaceholder: "Ask Caavo0...",
+                settingsTitle: "Settings", languageLabel: "Language", errorMessage: "Connection error, please try again."
             },
             de: {
-                mediaTab: "Medien",
-                aiTab: "Caavo0 AI",
-                chatHeader: "Caavo0 AI",
-                welcomeMessage: "Hallo! Wie kann ich dir heute helfen?",
-                inputPlaceholder: "Frag Caavo0...",
-                settingsTitle: "Einstellungen",
-                languageLabel: "Sprache",
-                errorMessage: "Verbindungsfehler, bitte erneut versuchen."
+                mediaTab: "Medien", aiTab: "Caavo0 AI", chatHeader: "Caavo0 AI",
+                welcomeMessage: "Hallo! Wie kann ich dir heute helfen?", inputPlaceholder: "Frag Caavo0...",
+                settingsTitle: "Einstellungen", languageLabel: "Sprache", errorMessage: "Verbindungsfehler, bitte erneut versuchen."
             }
         };
 
@@ -410,18 +514,39 @@
         const mediaTab = document.getElementById('mediaTab');
         const aiTab = document.getElementById('aiTab');
         const languageSelect = document.getElementById('languageSelect');
+        const historyList = document.getElementById('historyList');
 
         function handleKeyPress(e) {
             if (e.key === 'Enter') sendMessage();
+        }
+
+        // Yan menüyü açıp kapatma fonksiyonu
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('sidebarOverlay').classList.toggle('show');
         }
 
         async function sendMessage() {
             const text = userInput.value.trim();
             if (!text) return;
 
+            // Eğer şu an aktif bir sohbet kimliği yoksa yeni session oluştur
+            if (!currentSessionId) {
+                currentSessionId = Date.now();
+                chatSessions.push({
+                    id: currentSessionId,
+                    title: text.substring(0, 24) + (text.length > 24 ? "..." : ""),
+                    messages: []
+                });
+                updateSidebarUI();
+            }
+
             const wm = document.getElementById('welcomeMessage');
             if(wm) wm.remove();
 
+            // Kullanıcı mesajını kaydet ve ekrana bas
+            const activeSession = chatSessions.find(s => s.id === currentSessionId);
+            activeSession.messages.push({ type: 'user', text: text });
             appendMessage(text, 'user-message');
             userInput.value = '';
 
@@ -435,10 +560,15 @@
                 });
                 const data = await res.json();
                 typing.remove();
-                typeWriterEffect(data.reply || translations[currentLang].errorMessage, 'ai-message');
+                
+                const replyText = data.reply || translations[currentLang].errorMessage;
+                activeSession.messages.push({ type: 'ai', text: replyText });
+                typeWriterEffect(replyText, 'ai-message');
             } catch (err) {
                 typing.remove();
-                typeWriterEffect(translations[currentLang].errorMessage, 'ai-message');
+                const replyText = translations[currentLang].errorMessage;
+                activeSession.messages.push({ type: 'ai', text: replyText });
+                typeWriterEffect(replyText, 'ai-message');
             }
         }
 
@@ -484,7 +614,9 @@
             return div;
         }
 
+        // Yeni sohbet başlatma fonksiyonu
         function createNewChat() {
+            currentSessionId = null;
             chatMessages.innerHTML = '';
             
             const wm = document.createElement('div');
@@ -496,19 +628,44 @@
             userInput.value = '';
         }
 
-        // Ayarlar pencereleri işlevleri
-        function openSettings() {
-            document.getElementById('settingsPage').classList.add('show');
+        // Geçmiş panelindeki listeyi yenileyen fonksiyon
+        function updateSidebarUI() {
+            historyList.innerHTML = '';
+            // En yeni sohbeti en üstte göstermek için ters çeviriyoruz
+            [...chatSessions].reverse().forEach(session => {
+                const item = document.createElement('div');
+                item.className = 'history-item';
+                item.textContent = session.title;
+                item.onclick = () => {
+                    loadChatSession(session.id);
+                    toggleSidebar();
+                };
+                historyList.appendChild(item);
+            });
         }
 
-        function closeSettings() {
-            document.getElementById('settingsPage').classList.remove('show');
+        // Geçmişten seçilen bir sohbeti ekrana yükleme fonksiyonu
+        function loadChatSession(id) {
+            currentSessionId = id;
+            chatMessages.innerHTML = '';
+            const session = chatSessions.find(s => s.id === id);
+            
+            if(session && session.messages.length > 0) {
+                session.messages.forEach(msg => {
+                    if(msg.type === 'user') {
+                        appendMessage(msg.text, 'user-message');
+                    } else {
+                        appendMessage(msg.text, 'ai-message');
+                    }
+                });
+            } else {
+                createNewChat();
+            }
         }
 
-        function changeLanguageFromSelect() {
-            currentLang = languageSelect.value;
-            updateUIStrings();
-        }
+        function openSettings() { document.getElementById('settingsPage').classList.add('show'); }
+        function closeSettings() { document.getElementById('settingsPage').classList.remove('show'); }
+        function changeLanguageFromSelect() { currentLang = languageSelect.value; updateUIStrings(); }
 
         function updateUIStrings() {
             mediaTab.textContent = translations[currentLang].mediaTab;
@@ -516,9 +673,7 @@
             chatHeader.textContent = translations[currentLang].chatHeader;
             
             const wm = document.getElementById('welcomeMessage');
-            if(wm) {
-                wm.textContent = translations[currentLang].welcomeMessage;
-            }
+            if(wm) wm.textContent = translations[currentLang].welcomeMessage;
             userInput.placeholder = translations[currentLang].inputPlaceholder;
             document.getElementById('settingsTitle').textContent = translations[currentLang].settingsTitle;
             document.getElementById('languageLabel').textContent = translations[currentLang].languageLabel;
