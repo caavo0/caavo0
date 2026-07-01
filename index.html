@@ -10,11 +10,11 @@
         body {
             margin: 0;
             padding: 0;
+            background-color: #0b132b;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: white;
             min-height: 100vh;
             overflow-x: hidden;
-            transition: background 0.5s;
         }
 
         #particles-js {
@@ -207,7 +207,7 @@
             z-index: 30;
         }
 
-        /* Ayarlar Sayfası */
+        /* Ayarlar Sayfası (Tam Ekran) */
         .settings-page {
             position: fixed;
             top: 0;
@@ -308,65 +308,147 @@
                     <option value="de">Deutsch</option>
                 </select>
             </div>
-
-            <div class="setting-item">
-                <span id="themeLabel">Tema</span>
-                <select id="themeSelect" onchange="changeTheme()" style="background:#1d2d44; color:white; border:none; padding:8px 12px; border-radius:8px;">
-                    <option value="blue">Mavi (Particles)</option>
-                    <option value="purple">Mor Nebula</option>
-                    <option value="green">Yeşil Orman</option>
-                    <option value="red">Kırmızı Ateş</option>
-                </select>
-            </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     
     <script>
+        particlesJS("particles-js", {
+            particles: {
+                number: { value: 80 },
+                color: { value: "#90e0ef" },
+                shape: { type: "circle" },
+                opacity: { value: 0.6 },
+                size: { value: 3 },
+                line_linked: { enable: true, distance: 150, color: "#00b4d8", opacity: 0.4, width: 1.5 },
+                move: { enable: true, speed: 2 }
+            },
+            interactivity: {
+                events: { onhover: { enable: true, mode: "repulse" }, onclick: { enable: true, mode: "push" }}
+            }
+        });
+
         let currentLang = "tr";
-        let currentTheme = "blue";
 
         const translations = {
-            tr: { /* ... aynı */ },
-            en: { /* ... aynı */ },
-            de: { /* ... aynı */ }
-        };
-
-        function applyTheme(theme) {
-            currentTheme = theme;
-            const body = document.body;
-            const particles = document.getElementById('particles-js');
-
-            if (theme === "blue") {
-                body.style.backgroundColor = "#0b132b";
-                particlesJS("particles-js", {
-                    particles: { number: { value: 80 }, color: { value: "#90e0ef" }, line_linked: { color: "#00b4d8" } }
-                });
-            } else if (theme === "purple") {
-                body.style.backgroundColor = "#1a0b2e";
-                particlesJS("particles-js", {
-                    particles: { number: { value: 60 }, color: { value: "#c084fc" }, line_linked: { color: "#a855f7" } }
-                });
-            } else if (theme === "green") {
-                body.style.backgroundColor = "#0b2e1a";
-                particlesJS("particles-js", {
-                    particles: { number: { value: 70 }, color: { value: "#4ade80" }, line_linked: { color: "#22c55e" } }
-                });
-            } else if (theme === "red") {
-                body.style.backgroundColor = "#2e0b0b";
-                particlesJS("particles-js", {
-                    particles: { number: { value: 65 }, color: { value: "#f87171" }, line_linked: { color: "#ef4444" } }
-                });
+            tr: {
+                mediaTab: "Medya",
+                aiTab: "Caavo0 AI",
+                chatHeader: "Caavo0 AI Assistant",
+                welcomeMessage: "Merhaba kardeşim! Ben Caavo0. Sor bakalım 😊",
+                inputPlaceholder: "Mesaj yaz...",
+                sendBtn: "Gönder",
+                settingsTitle: "Ayarlar",
+                languageLabel: "Dil Seçimi",
+                errorMessage: "Bağlantı hatası, tekrar dene."
+            },
+            en: {
+                mediaTab: "Media",
+                aiTab: "Caavo0 AI",
+                chatHeader: "Caavo0 AI Assistant",
+                welcomeMessage: "Hello brother! I'm Caavo0. Ask me anything 😊",
+                inputPlaceholder: "Type a message...",
+                sendBtn: "Send",
+                settingsTitle: "Settings",
+                languageLabel: "Language",
+                errorMessage: "Connection error, please try again."
+            },
+            de: {
+                mediaTab: "Medien",
+                aiTab: "Caavo0 AI",
+                chatHeader: "Caavo0 AI Assistant",
+                welcomeMessage: "Hallo Bruder! Ich bin Caavo0. Frag mich etwas 😊",
+                inputPlaceholder: "Nachricht schreiben...",
+                sendBtn: "Senden",
+                settingsTitle: "Einstellungen",
+                languageLabel: "Sprache",
+                errorMessage: "Verbindungsfehler, bitte erneut versuchen."
             }
-        }
+        };
 
         function switchTab(n) {
             document.querySelectorAll('.tab-content').forEach((el, i) => el.classList.toggle('active', i === n));
             document.querySelectorAll('.tab-btn').forEach((el, i) => el.classList.toggle('active', i === n));
         }
 
-        // ... diğer fonksiyonlar (sendMessage, typeWriterEffect vb.) aynı kalıyor
+        const chatMessages = document.getElementById('chatMessages');
+        const userInput = document.getElementById('userInput');
+        const chatHeader = document.getElementById('chatHeader');
+        const welcomeMessage = document.getElementById('welcomeMessage');
+        const sendBtn = document.getElementById('sendBtn');
+        const mediaTab = document.getElementById('mediaTab');
+        const aiTab = document.getElementById('aiTab');
+
+        function handleKeyPress(e) {
+            if (e.key === 'Enter') sendMessage();
+        }
+
+        async function sendMessage() {
+            const text = userInput.value.trim();
+            if (!text) return;
+
+            appendMessage(text, 'user-message');
+            userInput.value = '';
+
+            const typing = showTypingIndicator();
+
+            try {
+                const res = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: text })
+                });
+                const data = await res.json();
+                typing.remove();
+                typeWriterEffect(data.reply || translations[currentLang].errorMessage, 'ai-message');
+            } catch (err) {
+                typing.remove();
+                typeWriterEffect(translations[currentLang].errorMessage, 'ai-message');
+            }
+        }
+
+        function appendMessage(text, className) {
+            const div = document.createElement('div');
+            div.className = `message ${className}`;
+            div.innerHTML = text.replace(/\n/g, '<br>');
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function typeWriterEffect(fullText, className) {
+            const div = document.createElement('div');
+            div.className = `message ${className}`;
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            let processedText = fullText.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+
+            let i = 0;
+            function type() {
+                if (i < processedText.length) {
+                    let char = processedText.charAt(i);
+                    if (char === '\n') {
+                        div.innerHTML += '<br>';
+                    } else {
+                        div.innerHTML += char;
+                    }
+                    i++;
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                    setTimeout(type, 18);
+                }
+            }
+            type();
+        }
+
+        function showTypingIndicator() {
+            const div = document.createElement('div');
+            div.className = 'typing-indicator';
+            div.innerHTML = '<span></span><span></span><span></span>';
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            return div;
+        }
 
         function openSettings() {
             document.getElementById('settingsPage').classList.add('show');
@@ -378,16 +460,16 @@
 
         function changeLanguage() {
             currentLang = document.getElementById('languageSelect').value;
-            // ... dil değişim kodları aynı
+            
+            mediaTab.textContent = translations[currentLang].mediaTab;
+            aiTab.textContent = translations[currentLang].aiTab;
+            chatHeader.textContent = translations[currentLang].chatHeader;
+            welcomeMessage.textContent = translations[currentLang].welcomeMessage;
+            userInput.placeholder = translations[currentLang].inputPlaceholder;
+            sendBtn.textContent = translations[currentLang].sendBtn;
+            document.getElementById('settingsTitle').textContent = translations[currentLang].settingsTitle;
+            document.getElementById('languageLabel').textContent = translations[currentLang].languageLabel;
         }
-
-        function changeTheme() {
-            const theme = document.getElementById('themeSelect').value;
-            applyTheme(theme);
-        }
-
-        // İlk tema yükle
-        applyTheme("blue");
     </script>
 </body>
 </html>
