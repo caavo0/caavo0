@@ -25,27 +25,18 @@
             height: -webkit-fill-available;
         }
 
-        /* Üst Bar Kapsayıcısı: Sekmeleri ve Ayarlar Çarkını Hizalar */
-        .header-bar {
+        .tabs {
             display: flex;
-            align-items: center;
             justify-content: center;
-            position: relative;
+            gap: 15px;
             padding: 12px 20px;
             background: #080c14;
             flex-shrink: 0;
         }
 
-        .tabs {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            width: 100%;
-            max-width: 320px;
-        }
-
         .tab-btn {
             flex: 1;
+            max-width: 140px;
             padding: 10px 20px;
             font-size: 1rem;
             font-weight: 600;
@@ -60,21 +51,6 @@
         .tab-btn.active {
             background: #0077b6;
             color: white;
-        }
-
-        /* Ayarlar Butonu Artık Sekmelerin Üstüne Binmez, En Sağda Durur */
-        .settings-btn {
-            position: absolute;
-            right: 20px;
-            font-size: 1.5rem;
-            cursor: pointer;
-            opacity: 0.8;
-            user-select: none;
-            transition: opacity 0.2s;
-        }
-
-        .settings-btn:hover {
-            opacity: 1;
         }
 
         .tab-content {
@@ -123,14 +99,36 @@
             position: relative;
         }
 
-        .chat-header {
+        /* Chat Başlık Alanı: Ayarlar çarkı artık buraya hizalandı */
+        .chat-header-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
             padding: 8px 20px;
-            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .chat-header {
             font-size: 1.1rem;
             color: #90e0ef;
             font-weight: 500;
             opacity: 0.9;
-            flex-shrink: 0;
+        }
+
+        /* Ayarlar Butonu Yeni Yeri */
+        .settings-btn {
+            position: absolute;
+            right: 20px;
+            font-size: 1.3rem;
+            cursor: pointer;
+            opacity: 0.7;
+            user-select: none;
+            transition: opacity 0.2s;
+        }
+
+        .settings-btn:hover {
+            opacity: 1;
         }
 
         .chat-messages {
@@ -270,13 +268,10 @@
 </head>
 <body>
 
-    <!-- Üst Kısım: Hem sekmeleri hem ayarları düzgünce hizalayan yeni alan -->
-    <div class="header-bar">
-        <div class="tabs">
-            <button class="tab-btn active" id="mediaTab" onclick="switchTab(0)">Medya</button>
-            <button class="tab-btn" id="aiTab" onclick="switchTab(1)">Caavo0 AI</button>
-        </div>
-        <div class="settings-btn" onclick="openSettings()">⚙️</div>
+    <!-- Üst Kısım: Sadece temiz sekmeler var -->
+    <div class="tabs">
+        <button class="tab-btn active" id="mediaTab" onclick="switchTab(0)">Medya</button>
+        <button class="tab-btn" id="aiTab" onclick="switchTab(1)">Caavo0 AI</button>
     </div>
 
     <!-- Medya Sekmesi -->
@@ -292,7 +287,12 @@
     <!-- AI Sohbet Sekmesi -->
     <div id="tab1" class="tab-content">
         <div class="chat-container">
-            <div class="chat-header" id="chatHeader">Caavo0 AI</div>
+            <!-- Ayarlar Butonu artık "Caavo0 AI" başlığının sağ hizasında ve butonlardan tamamen bağımsız -->
+            <div class="chat-header-wrapper">
+                <div class="chat-header" id="chatHeader">Caavo0 AI</div>
+                <div class="settings-btn" onclick="openSettings()">⚙️</div>
+            </div>
+            
             <div class="chat-messages" id="chatMessages">
                 <div class="welcome-text" id="welcomeMessage">Merhaba! Nasıl yardımcı olabilirim?</div>
             </div>
@@ -359,6 +359,7 @@
             }
         };
 
+        // Medya sekmesindeyken ayarlar çarkını gizlemek istersen diye switchTab'ı da optimize ettik
         function switchTab(n) {
             document.querySelectorAll('.tab-content').forEach((el, i) => el.classList.toggle('active', i === n));
             document.querySelectorAll('.tab-btn').forEach((el, i) => el.classList.toggle('active', i === n));
