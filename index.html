@@ -23,6 +23,9 @@
             --text-main: #e3e3e3;
             --text-title: #ffffff;
             --icon-color: #90e0ef;
+            
+            --danger-color: #ef4444;
+            --overlay-color: rgba(0,0,0,0.6);
         }
 
         /* TEMA 2: Gece Siyahı (Dark/Gray) */
@@ -73,13 +76,12 @@
             --icon-color: #e0aaff;
         }
 
-        /* YENİ: TEMA 5: İnci Beyazı (Pearl White - Light Theme) */
+        /* TEMA 5: İnci Beyazı (Pearl White - Light Theme) */
         [data-theme="pearl-white"] {
             --bg-color: #f4f6f9;
             --surface-color: #ffffff;
             --surface-hover: #eaedf2;
             --border-color: #dbe0e8;
-            --sidebar-color: #edf1Console5;
             --sidebar-color: #f8fafc;
             --accent-primary: #2563eb;
             --accent-light: #1e40af;
@@ -88,6 +90,7 @@
             --text-main: #334155;
             --text-title: #0f172a;
             --icon-color: #2563eb;
+            --overlay-color: rgba(15, 23, 42, 0.3);
         }
         
         body {
@@ -105,10 +108,7 @@
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        html {
-            height: 100vh;
-            height: -webkit-fill-available;
-        }
+        html { height: 100vh; height: -webkit-fill-available; }
 
         /* Üst Menü / Sekmeler */
         .tabs {
@@ -150,21 +150,10 @@
             overflow: hidden;
         }
 
-        .tab-content.active { 
-            display: flex; 
-            flex-direction: column;
-        }
+        .tab-content.active { display: flex; flex-direction: column; }
 
         /* Medya Sekmesi Kart Düzeni */
-        .links-container {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            padding: 20px;
-            width: 100%;
-            overflow-y: auto;
-        }
-
+        .links-container { display: flex; flex-direction: column; gap: 16px; padding: 20px; width: 100%; overflow-y: auto; }
         .media-card {
             display: flex;
             align-items: center;
@@ -191,8 +180,6 @@
         .card-youtube:hover::before { background: #ff0000; }
         .card-tiktok:hover::before  { background: #00f2fe; }
         .card-discord:hover::before { background: #5865f2; }
-
-        /* Beyaz temada github görünürlüğü için küçük ayar */
         [data-theme="pearl-white"] .card-github:hover::before { background: #24292f; }
 
         .media-card:hover {
@@ -213,146 +200,43 @@
             flex-shrink: 0;
         }
 
-        .media-icon svg {
-            width: 24px;
-            height: 24px;
-            fill: var(--icon-color);
-            transition: fill 0.2s;
-        }
-
+        .media-icon svg { width: 24px; height: 24px; fill: var(--icon-color); transition: fill 0.2s; }
         .card-github:hover .media-icon svg { fill: #ffffff; }
         [data-theme="pearl-white"] .card-github:hover .media-icon svg { fill: #24292f; }
         .card-youtube:hover .media-icon svg { fill: #ff0000; }
         .card-tiktok:hover .media-icon svg { fill: #00f2fe; }
         .card-discord:hover .media-icon svg { fill: #5865f2; }
 
-        .media-info {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .media-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--text-title);
-            margin-bottom: 4px;
-        }
-
-        .media-desc {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            line-height: 1.3;
-        }
-
-        .media-arrow {
-            font-size: 1.2rem;
-            color: var(--text-muted);
-            transition: transform 0.2s, color 0.2s;
-            margin-left: 10px;
-        }
-
-        .media-card:hover .media-arrow {
-            transform: translateX(3px);
-            color: var(--accent-light);
-        }
+        .media-info { flex: 1; display: flex; flex-direction: column; }
+        .media-title { font-size: 1.1rem; font-weight: 600; color: var(--text-title); margin-bottom: 4px; }
+        .media-desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.3; }
+        .media-arrow { font-size: 1.2rem; color: var(--text-muted); transition: transform 0.2s, color 0.2s; margin-left: 10px; }
+        .media-card:hover .media-arrow { transform: translateX(3px); color: var(--accent-light); }
 
         /* Chat Düzeni */
-        .chat-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .chat-header-wrapper {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            padding: 8px 20px;
-            flex-shrink: 0;
-        }
-
+        .chat-container { flex: 1; display: flex; flex-direction: column; height: 100%; overflow: hidden; position: relative; }
+        .chat-header-wrapper { display: flex; align-items: center; justify-content: center; position: relative; padding: 8px 20px; flex-shrink: 0; }
+        
         .menu-toggle-btn {
-            position: absolute;
-            left: 20px;
-            width: 24px;
-            height: 24px;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            gap: 6px;
-            opacity: 0.7;
-            transition: opacity 0.2s;
+            position: absolute; left: 20px; width: 24px; height: 24px; cursor: pointer;
+            display: flex; flex-direction: column; justify-content: center; gap: 6px; opacity: 0.7; transition: opacity 0.2s;
         }
-
-        .menu-toggle-btn span {
-            width: 100%;
-            height: 2px;
-            background-color: var(--accent-light);
-            border-radius: 2px;
-        }
-
+        .menu-toggle-btn span { width: 100%; height: 2px; background-color: var(--accent-light); border-radius: 2px; }
         .menu-toggle-btn:hover { opacity: 1; }
         .chat-header { font-size: 1.1rem; color: var(--accent-light); font-weight: 500; opacity: 0.9; }
 
-        .actions-wrapper {
-            position: absolute;
-            right: 20px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .new-chat-btn {
-            width: 24px;
-            height: 24px;
-            cursor: pointer;
-            opacity: 0.7;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.2s, transform 0.1s;
-        }
-
-        .new-chat-btn svg {
-            width: 100%;
-            height: 100%;
-            fill: none;
-            stroke: var(--accent-light);
-            stroke-width: 2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-
-        .settings-btn {
-            font-size: 1.3rem;
-            cursor: pointer;
-            opacity: 0.7;
-            user-select: none;
-            transition: opacity 0.2s;
-        }
-
+        .actions-wrapper { position: absolute; right: 20px; display: flex; align-items: center; gap: 16px; }
+        .new-chat-btn { width: 24px; height: 24px; cursor: pointer; opacity: 0.7; display: flex; align-items: center; justify-content: center; transition: opacity 0.2s; }
+        .new-chat-btn svg { width: 100%; height: 100%; fill: none; stroke: var(--accent-light); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .settings-btn { font-size: 1.3rem; cursor: pointer; opacity: 0.7; user-select: none; transition: opacity 0.2s; }
         .settings-btn:hover, .new-chat-btn:hover { opacity: 1; }
 
         /* Sidebar */
         .sidebar {
-            position: fixed;
-            top: 0; left: -280px;
-            width: 280px; height: 100%;
-            background-color: var(--sidebar-color);
-            border-right: 1px solid var(--border-color);
-            z-index: 50;
-            transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
+            position: fixed; top: 0; left: -280px; width: 280px; height: 100%;
+            background-color: var(--sidebar-color); border-right: 1px solid var(--border-color);
+            z-index: 50; transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; padding: 20px;
         }
-
         .sidebar.open { left: 0; }
         .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; color: var(--accent-light); font-weight: bold; font-size: 1.2rem; }
         .sidebar-sub-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color); }
@@ -388,163 +272,98 @@
         .chat-input-wrapper button { background: var(--accent-primary); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px var(--accent-glow); }
 
         /* Ayarlar Sayfası */
-        .settings-page {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: var(--bg-color);
-            display: none;
-            flex-direction: column;
-            z-index: 60;
-        }
-
+        .settings-page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); display: none; flex-direction: column; z-index: 60; }
         .settings-page.show { display: flex; }
         .settings-header { padding: 20px; display: flex; align-items: center; background: var(--surface-color); border-bottom: 1px solid var(--border-color); }
         .back-btn { font-size: 1.8rem; margin-right: 15px; cursor: pointer; color: var(--accent-light); }
         .settings-title { font-size: 1.3rem; font-weight: 600; color: var(--text-title); }
         .settings-body { padding: 20px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
         
-        .setting-item {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
+        .setting-item { display: flex; flex-direction: column; gap: 10px; }
 
         /* Akordeon Başlık Kutusu */
         .setting-dropdown-header {
-            background: var(--surface-color);
-            border: 1px solid var(--border-color);
-            padding: 16px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
-            user-select: none;
-            transition: background 0.2s, border-color 0.2s;
+            background: var(--surface-color); border: 1px solid var(--border-color); padding: 16px;
+            border-radius: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none;
         }
-
-        .setting-dropdown-header:hover {
-            background: var(--surface-hover);
-        }
-
-        .setting-label {
-            font-size: 1rem;
-            color: var(--accent-light);
-            font-weight: 500;
-        }
-
-        .dropdown-arrow {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+        .setting-dropdown-header:hover { background: var(--surface-hover); }
+        .setting-label { font-size: 1rem; color: var(--accent-light); font-weight: 500; }
+        .dropdown-arrow { font-size: 0.85rem; color: var(--text-muted); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
 
         /* Seçenek Konteyneri */
         .custom-dropdown-selector {
-            background: var(--sidebar-color);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            overflow: hidden;
-            display: grid;
-            grid-template-rows: 0fr;
-            transition: grid-template-rows 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            margin-top: -4px;
-            border-top: none;
-            border-top-left-radius: 0;
-            border-top-right-radius: 0;
+            background: var(--sidebar-color); border: 1px solid var(--border-color); border-radius: 12px;
+            overflow: hidden; display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-top: -4px; border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;
         }
 
-        .setting-item.open .setting-dropdown-header {
-            border-bottom-left-radius: 0;
-            border-bottom-right-radius: 0;
-        }
+        .setting-item.open .setting-dropdown-header { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+        .setting-item.open .dropdown-arrow { transform: rotate(180deg); color: var(--accent-light); }
+        .setting-item.open .custom-dropdown-selector { grid-template-rows: 1fr; }
+        .dropdown-options-inner { overflow: hidden; }
 
-        .setting-item.open .dropdown-arrow {
-            transform: rotate(180deg);
-            color: var(--accent-light);
-        }
-
-        .setting-item.open .custom-dropdown-selector {
-            grid-template-rows: 1fr;
-        }
-
-        .dropdown-options-inner {
-            overflow: hidden;
-        }
-
-        .dropdown-option {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 14px 16px;
-            cursor: pointer;
-            border-bottom: 1px solid var(--border-color);
-            transition: background 0.2s;
-        }
-
-        .dropdown-option:last-child {
-            border-bottom: none;
-        }
-
-        .dropdown-option:hover {
-            background: var(--surface-hover);
-        }
-
-        .option-name {
-            font-size: 0.95rem;
-            color: var(--text-title);
-            font-weight: 500;
-        }
+        .dropdown-option { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; cursor: pointer; border-bottom: 1px solid var(--border-color); transition: background 0.2s; }
+        .dropdown-option:last-child { border-bottom: none; }
+        .dropdown-option:hover { background: var(--surface-hover); }
+        .option-name { font-size: 0.95rem; color: var(--text-title); font-weight: 500; }
 
         /* Renkli Temalar İçin Önizleme Yuvarlağı */
-        .theme-preview-circle {
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            margin-right: 10px;
-            display: inline-block;
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-
-        [data-theme="pearl-white"] .theme-preview-circle {
-            border: 1px solid rgba(0,0,0,0.15);
-        }
-
-        .option-left-content {
-            display: flex;
-            align-items: center;
-        }
+        .theme-preview-circle { width: 14px; height: 14px; border-radius: 50%; margin-right: 10px; display: inline-block; border: 1px solid rgba(255,255,255,0.2); }
+        [data-theme="pearl-white"] .theme-preview-circle { border: 1px solid rgba(0,0,0,0.15); }
+        .option-left-content { display: flex; align-items: center; }
 
         /* Dinamik Radyo Buton */
-        .custom-radio {
-            width: 20px;
-            height: 20px;
-            border: 2px solid var(--text-muted);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-        }
+        .custom-radio { width: 20px; height: 20px; border: 2px solid var(--text-muted); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+        .dropdown-option.selected .custom-radio { border-color: var(--accent-primary); }
+        .custom-radio::after { content: ''; width: 10px; height: 10px; background: var(--accent-primary); border-radius: 50%; transform: scale(0); transition: transform 0.2s; }
+        .dropdown-option.selected .custom-radio::after { transform: scale(1); }
 
-        .dropdown-option.selected .custom-radio {
-            border-color: var(--accent-primary);
+        /* Hata Bildirme Özel Butonu */
+        .bug-report-trigger-btn {
+            background: var(--surface-color); border: 1px solid var(--border-color); padding: 16px;
+            border-radius: 12px; display: flex; align-items: center; justify-content: space-between;
+            cursor: pointer; transition: background 0.2s; font-size: 1rem; color: var(--danger-color); font-weight: 500;
         }
+        .bug-report-trigger-btn:hover { background: var(--surface-hover); }
 
-        .custom-radio::after {
-            content: '';
-            width: 10px;
-            height: 10px;
-            background: var(--accent-primary);
-            border-radius: 50%;
-            transform: scale(0);
-            transition: transform 0.2s;
+        /* Hata Bildirme Modalı */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--overlay-color); z-index: 100; display: none;
+            align-items: center; justify-content: center; padding: 20px;
+            backdrop-filter: blur(4px);
         }
+        .modal-overlay.show { display: flex; }
+        
+        .bug-modal {
+            background: var(--surface-color); border: 1px solid var(--border-color);
+            width: 100%; max-width: 450px; border-radius: 20px; padding: 24px;
+            display: flex; flex-direction: column; gap: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: modalFadeIn 0.2s ease-out;
+        }
+        @keyframes modalFadeIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-        .dropdown-option.selected .custom-radio::after {
-            transform: scale(1);
+        .bug-modal-title { font-size: 1.2rem; font-weight: 600; color: var(--text-title); margin: 0; }
+        .bug-modal-desc { font-size: 0.85rem; color: var(--text-muted); margin: 0 0 4px 0; line-height: 1.4; }
+        
+        .bug-form-group { display: flex; flex-direction: column; gap: 6px; }
+        .bug-form-group label { font-size: 0.9rem; font-weight: 500; color: var(--accent-light); }
+        
+        .bug-form-group select, .bug-form-group textarea {
+            background: var(--bg-color); border: 1px solid var(--border-color);
+            border-radius: 8px; color: var(--text-main); padding: 10px 12px;
+            font-size: 0.95rem; outline: none; font-family: inherit;
         }
+        .bug-form-group select { cursor: pointer; }
+        .bug-form-group textarea { resize: none; height: 100px; }
+        .bug-form-group select:focus, .bug-form-group textarea:focus { border-color: var(--accent-primary); }
+
+        .bug-modal-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 8px; }
+        .bug-btn { padding: 10px 18px; font-size: 0.95rem; font-weight: 600; border-radius: 30px; border: none; cursor: pointer; transition: opacity 0.2s; }
+        .bug-btn-cancel { background: transparent; color: var(--text-muted); }
+        .bug-btn-submit { background: var(--danger-color); color: white; }
+        .bug-btn:hover { opacity: 0.9; }
     </style>
 </head>
 <body>
@@ -745,6 +564,39 @@
                 </div>
             </div>
 
+            <!-- Hata Bildir Tetikleyici -->
+            <div class="bug-report-trigger-btn" onclick="openBugModal()" id="bugReportBtnText">
+                🚨 Hata Bildir
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Hata Bildirme Açılır Penceresi (Modal) -->
+    <div class="modal-overlay" id="bugModalOverlay" onclick="closeBugModal()">
+        <div class="bug-modal" onclick="event.stopPropagation()">
+            <h3 class="bug-modal-title" id="bugModalTitle">Sistem Hatası Bildir</h3>
+            <p class="bug-modal-desc" id="bugModalDesc">Karşılaştığın problemi kısaca bize ilet, hemen düzeltelim.</p>
+            
+            <div class="bug-form-group">
+                <label for="bugCategory" id="bugLabelCat">Hata Türü</label>
+                <select id="bugCategory">
+                    <option value="ui" id="bugOptUi">Arayüz / Tasarım Hatası</option>
+                    <option value="ai" id="bugOptAi">Yapay Zeka Yanıt Hatası</option>
+                    <option value="performance" id="bugOptPerf">Donma / Yavaşlık Problemi</option>
+                    <option value="other" id="bugOptOther">Diğer Sorunlar</option>
+                </select>
+            </div>
+
+            <div class="bug-form-group">
+                <label for="bugDescription" id="bugLabelDesc">Açıklama</label>
+                <textarea id="bugDescription" placeholder="Adım adım hatayı nasıl aldığını yazar mısın?"></textarea>
+            </div>
+
+            <div class="bug-modal-actions">
+                <button class="bug-btn bug-btn-cancel" onclick="closeBugModal()" id="bugBtnCancel">Vazgeç</button>
+                <button class="bug-btn bug-btn-submit" onclick="sendBugReport()" id="bugBtnSubmit">Gönder</button>
+            </div>
         </div>
     </div>
 
@@ -760,49 +612,79 @@
                 welcomeMessage: "Merhaba! Nasıl yardımcı olabilirim?", inputPlaceholder: "Caavo0'a sorun...",
                 settingsTitle: "Ayarlar", languageLabel: "Dil Seçimi", themeLabel: "Tema Seçimi",
                 themeDefault: "Varsayılan (Mavi)", themeWhite: "İnci Beyazı", themeDark: "Gece Siyahı", themeEmerald: "Zümrüt Yeşili", themePurple: "Neon Mor",
-                errorMessage: "Bağlantı hatası, tekrar dene."
+                errorMessage: "Bağlantı hatası, tekrar dene.",
+                bugTrigger: "🚨 Hata Bildir", bugTitle: "Sistem Hatası Bildir", bugDesc: "Karşılaştığın problemi kısaca bize ilet, hemen düzeltelim.",
+                bugLabelCat: "Hata Türü", bugLabelDesc: "Açıklama", bugTextareaPlh: "Adım adım hatayı nasıl aldığını yazar mısın?",
+                bugOptUi: "Arayüz / Tasarım Hatası", bugOptAi: "Yapay Zeka Yanıt Hatası", bugOptPerf: "Donma / Yavaşlık Problemi", bugOptOther: "Diğer Sorunlar",
+                bugCancel: "Vazgeç", bugSubmit: "Gönder", bugAlertEmpty: "Lütfen hata açıklamasını boş bırakmayın.", bugAlertSuccess: "Hata bildiriminiz başarıyla iletildi! Teşekkürler."
             },
             en: {
                 mediaTab: "Media", aiTab: "Caavo0 AI", chatHeader: "Caavo0 AI",
                 welcomeMessage: "Hello! How can I help you today?", inputPlaceholder: "Ask Caavo0...",
                 settingsTitle: "Settings", languageLabel: "Language", themeLabel: "Theme Selection",
                 themeDefault: "Default (Blue)", themeWhite: "Pearl White", themeDark: "Midnight Black", themeEmerald: "Emerald Green", themePurple: "Cyber Purple",
-                errorMessage: "Connection error, please try again."
+                errorMessage: "Connection error, please try again.",
+                bugTrigger: "🚨 Report a Bug", bugTitle: "Report a System Bug", bugDesc: "Briefly tell us about the issue you encountered, we'll fix it.",
+                bugLabelCat: "Bug Type", bugLabelDesc: "Description", bugTextareaPlh: "Could you write step by step how you got the error?",
+                bugOptUi: "UI / Design Issue", bugOptAi: "AI Response Issue", bugOptPerf: "Lag / Performance Problem", bugOptOther: "Other Issues",
+                bugCancel: "Cancel", bugSubmit: "Submit", bugAlertEmpty: "Please do not leave the description blank.", bugAlertSuccess: "Your bug report has been successfully sent! Thank you."
             },
             de: {
                 mediaTab: "Medien", aiTab: "Caavo0 AI", chatHeader: "Caavo0 AI",
                 welcomeMessage: "Hallo! Wie kann ich dir heute helfen?", inputPlaceholder: "Frag Caavo0...",
                 settingsTitle: "Einstellungen", languageLabel: "Sprache", themeLabel: "Thema Auswählen",
                 themeDefault: "Standard (Blau)", themeWhite: "Perlweiß", themeDark: "Mitternachtsschwarz", themeEmerald: "Smaragdgrün", themePurple: "Cyber-Violett",
-                errorMessage: "Verbindungsfehler, bitte erneut versuchen."
+                errorMessage: "Verbindungsfehler, bitte erneut versuchen.",
+                bugTrigger: "🚨 Fehler melden", bugTitle: "Systemfehler melden", bugDesc: "Teilen Sie uns das Problem kurz mit, wir beheben es sofort.",
+                bugLabelCat: "Fehlertyp", bugLabelDesc: "Beschreibung", bugTextareaPlh: "Schreiben Sie Schritt für Schritt, wie der Fehler aufgetreten ist.",
+                bugOptUi: "Benutzeroberfläche / Design", bugOptAi: "KI-Antwortfehler", bugOptPerf: "Verzögerung / Leistungsproblem", bugOptOther: "Andere Probleme",
+                bugCancel: "Abbrechen", bugSubmit: "Absenden", bugAlertEmpty: "Bitte lassen Sie das Beschreibungsfeld nicht leer.", bugAlertSuccess: "Ihr Fehlerbericht wurde erfolgreich gesendet! Vielen Dank."
             },
             es: {
                 mediaTab: "Medios", aiTab: "Caavo0 AI", chatHeader: "Caavo0 AI",
                 welcomeMessage: "¿Hola! Cómo puedo ayudarte hoy?", inputPlaceholder: "Pregunta a Caavo0...",
                 settingsTitle: "Ajustes", languageLabel: "Idioma", themeLabel: "Selección de Tema",
                 themeDefault: "Por defecto (Azul)", themeWhite: "Blanco Perla", themeDark: "Negro Medianoche", themeEmerald: "Verde Esmeralda", themePurple: "Púrpura Neón",
-                errorMessage: "Error de conexión, inténtalo de nuevo."
+                errorMessage: "Error de conexión, inténtalo de nuevo.",
+                bugTrigger: "🚨 Reportar un Error", bugTitle: "Reportar un Error del Sistema", bugDesc: "Cuéntanos brevemente el problema y lo solucionaremos de inmediato.",
+                bugLabelCat: "Tipo de Error", bugLabelDesc: "Descripción", bugTextareaPlh: "¿Podrías escribir paso a paso cómo surgió el error?",
+                bugOptUi: "Problema de Interfaz / Diseño", bugOptAi: "Error de Respuesta de IA", bugOptPerf: "Problema de Rendimiento / Lag", bugOptOther: "Otros Problemas",
+                bugCancel: "Cancelar", bugSubmit: "Enviar", bugAlertEmpty: "Por favor, no deje la descripción vacía.", bugAlertSuccess: "¡Su informe de errores ha sido enviado con éxito! Gracias."
             },
             fr: {
                 mediaTab: "Médias", aiTab: "Caavo0 AI", chatHeader: "Caavo0 AI",
                 welcomeMessage: "Bonjour! Comment puis-je vous aider aujourd'hui?", inputPlaceholder: "Demander à Caavo0...",
                 settingsTitle: "Paramètres", languageLabel: "Langue", themeLabel: "Sélection du Thème",
                 themeDefault: "Par défaut (Bleu)", themeWhite: "Blanc Perle", themeDark: "Noir Minuit", themeEmerald: "Vert Émeraude", themePurple: "Pourpre Néon",
-                errorMessage: "Erreur de connexion, veuillez réessayer."
+                errorMessage: "Erreur de connexion, veuillez réessayer.",
+                bugTrigger: "🚨 Signaler un Bug", bugTitle: "Signaler un Bug Système", bugDesc: "Décrivez brièvement le problème rencontré, nous le corrigerons immédiatement.",
+                bugLabelCat: "Type de Bug", bugLabelDesc: "Description", bugTextareaPlh: "Pouvez-vous écrire étape par étape comment le bug s'est produit ?",
+                bugOptUi: "Problème d'Interface / Design", bugOptAi: "Erreur de Réponse de l'IA", bugOptPerf: "Problème de Performance / Lenteur", bugOptOther: "Autres Problèmes",
+                bugCancel: "Annuler", bugSubmit: "Envoyer", bugAlertEmpty: "Veuillez ne pas laisser la description vide.", bugAlertSuccess: "Votre rapport de bug a été envoyé avec succès ! Merci."
             },
             ru: {
                 mediaTab: "Медиа", aiTab: "Caavo0 AI", chatHeader: "Caavo0 AI",
                 welcomeMessage: "Привет! Чем я могу тебе помочь?", inputPlaceholder: "Спроси Caavo0...",
                 settingsTitle: "Настройки", languageLabel: "Язык", themeLabel: "Выбор Темы",
                 themeDefault: "По умолчанию (Синий)", themeWhite: "Жемчужно-белый", themeDark: "Полуночный черный", themeEmerald: "Изумрудно-зеленый", themePurple: "Неоновый фиолетовый",
-                errorMessage: "Ошибка подключения, попробуйте еще раз."
+                errorMessage: "Ошибка подключения, попробуйте еще раз.",
+                bugTrigger: "🚨 Сообщить об ошибке", bugTitle: "Сообщить о системной ошибке", bugDesc: "Кратко расскажите о проблеме, и мы сразу её исправим.",
+                bugLabelCat: "Тип ошибки", bugLabelDesc: "Описание", bugTextareaPlh: "Опишите пошагово, как вы столкнулись с ошибкой.",
+                bugOptUi: "Проблема с интерфейсом / дизайном", bugOptAi: "Ошибка ответа ИИ", bugOptPerf: "Проблема с зависанием / производительностью", bugOptOther: "Другие проблемы",
+                bugCancel: "Отмена", bugSubmit: "Отправить", bugAlertEmpty: "Пожалуйста, заполните описание ошибки.", bugAlertSuccess: "Ваш отчет об ошибке успешно отправлен! Спасибо."
+            },
+            group_ar: { // Not active placeholder object but structured for standard translations keys
             },
             ar: {
                 mediaTab: "وسائل الإعلام", aiTab: "Caavo0 AI", chatHeader: "Caavo0 AI",
                 welcomeMessage: "مرحباً! كيف يمكنني مساعدتك اليوم؟", inputPlaceholder: "اسأل Caavo0...",
                 settingsTitle: "الإعدادات", languageLabel: "اللغة", themeLabel: "اختيار Mظهر",
                 themeDefault: "افتراضي (أزرق)", themeWhite: "أبيض لؤلؤي", themeDark: "أسود منتصف الليل", themeEmerald: "أخضر زمردي", themePurple: "أرجواني سايبر",
-                errorMessage: "خطأ في الاتصال، يرجى المحاولة مرة أخرى."
+                errorMessage: "خطأ في الاتصال، يرجى المحاولة مرة أخرى.",
+                bugTrigger: "🚨 الإبلاغ عن خطأ", bugTitle: "الإبلاغ عن خطأ في النظام", bugDesc: "أخبرنا باختصار عن المشكلة التي واجهتها وسنصلحها فوراً.",
+                bugLabelCat: "نوع الخطأ", bugLabelDesc: "الوصف", bugTextareaPlh: "هل يمكنك كتابة خطوات حدوث الخطأ بالتفصيل؟",
+                bugOptUi: "مشكلة في الواجهة / التصميم", bugOptAi: "خطأ في رد الذكاء الاصطناعي", bugOptPerf: "مشكلة في الأداء / البطء", bugOptOther: "مشاكل أخرى",
+                bugCancel: "إلغاء", bugSubmit: "إرسال", bugAlertEmpty: "يرجى عدم ترك خانة الوصف فارغة.", bugAlertSuccess: "تم إرسال تقرير الخطأ بنجاح! شكراً لك."
             }
         };
 
@@ -1055,6 +937,33 @@
             document.getElementById('themeGroup').classList.remove('open');
         }
 
+        /* Hata Bildirim Modal Fonksiyonları */
+        function openBugModal() {
+            document.getElementById('bugModalOverlay').classList.add('show');
+        }
+        function closeBugModal() {
+            document.getElementById('bugModalOverlay').classList.remove('show');
+            document.getElementById('bugDescription').value = '';
+        }
+        function sendBugReport() {
+            const category = document.getElementById('bugCategory').value;
+            const description = document.getElementById('bugDescription').value.trim();
+
+            if(!description) {
+                alert(translations[currentLang].bugAlertEmpty);
+                return;
+            }
+
+            // Buraya kendi API backend endpoint bağlantını kurabilirsin (/api/bug-report vb.)
+            console.log("--- HATA BİLDİRİMİ GÖNDERİLDİ ---");
+            console.log("Kategori:", category);
+            console.log("Açıklama:", description);
+            console.log("Seçili Dil / Tema:", currentLang, "/", currentTheme);
+
+            alert(translations[currentLang].bugAlertSuccess);
+            closeBugModal();
+        }
+
         function updateUIStrings() {
             mediaTab.textContent = translations[currentLang].mediaTab;
             aiTab.textContent = translations[currentLang].aiTab;
@@ -1072,6 +981,21 @@
             document.getElementById('themeDarkLabel').textContent = translations[currentLang].themeDark;
             document.getElementById('themeEmeraldLabel').textContent = translations[currentLang].themeEmerald;
             document.getElementById('themePurpleLabel').textContent = translations[currentLang].themePurple;
+
+            // Hata Modülü Dil Atamaları
+            document.getElementById('bugReportBtnText').textContent = translations[currentLang].bugTrigger;
+            document.getElementById('bugModalTitle').textContent = translations[currentLang].bugTitle;
+            document.getElementById('bugModalDesc').textContent = translations[currentLang].bugDesc;
+            document.getElementById('bugLabelCat').textContent = translations[currentLang].bugLabelCat;
+            document.getElementById('bugLabelDesc').textContent = translations[currentLang].bugLabelDesc;
+            document.getElementById('bugDescription').placeholder = translations[currentLang].bugTextareaPlh;
+            document.getElementById('bugBtnCancel').textContent = translations[currentLang].bugCancel;
+            document.getElementById('bugBtnSubmit').textContent = translations[currentLang].bugSubmit;
+
+            document.getElementById('bugOptUi').textContent = translations[currentLang].bugOptUi;
+            document.getElementById('bugOptAi').textContent = translations[currentLang].bugOptAi;
+            document.getElementById('bugOptPerf').textContent = translations[currentLang].bugOptPerf;
+            document.getElementById('bugOptOther').textContent = translations[currentLang].bugOptOther;
         }
     </script>
 </body>
