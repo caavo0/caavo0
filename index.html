@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Caavo0 AI</title>
     <style>
         * { box-sizing: border-box; }
@@ -14,18 +14,25 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: #e3e3e3;
             height: 100vh;
+            height: -webkit-fill-available; /* Mobil tarayıcılar için tam boy ayarı */
             display: flex;
             flex-direction: column;
             overflow: hidden;
+        }
+
+        html {
+            height: 100vh;
+            height: -webkit-fill-available;
         }
 
         .tabs {
             display: flex;
             justify-content: center;
             gap: 15px;
-            padding: 15px 20px;
+            padding: 12px 20px;
             background: #080c14;
             z-index: 10;
+            flex-shrink: 0; /* Sekmelerin küçülmesini engeller */
         }
 
         .tab-btn {
@@ -53,7 +60,7 @@
             width: 100%;
             max-width: 600px;
             margin: 0 auto;
-            position: relative;
+            overflow: hidden; /* Dışarı taşmayı engeller */
         }
 
         .tab-content.active { 
@@ -66,8 +73,9 @@
             display: flex;
             flex-direction: column;
             gap: 18px;
-            padding: 40px 20px;
+            padding: 20px;
             width: 100%;
+            overflow-y: auto;
         }
 
         a.social-btn {
@@ -80,11 +88,6 @@
             font-weight: bold;
             font-size: 1.1rem;
             border: 1px solid #1f2d44;
-            transition: background 0.2s;
-        }
-
-        a.social-btn:hover {
-            background: #1f2d44;
         }
 
         /* Gemini Stili Chat Düzeni */
@@ -94,25 +97,26 @@
             flex-direction: column;
             height: 100%;
             overflow: hidden;
+            position: relative;
         }
 
         .chat-header {
-            padding: 10px 20px;
+            padding: 8px 20px;
             text-align: center;
             font-size: 1.1rem;
             color: #90e0ef;
             font-weight: 500;
             opacity: 0.9;
+            flex-shrink: 0;
         }
 
         .chat-messages {
             flex: 1;
-            padding: 20px;
+            padding: 10px 20px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
             gap: 20px;
-            padding-bottom: 100px; /* Alttaki inputun üstünü kapatmaması için */
         }
 
         .message {
@@ -135,14 +139,13 @@
             background: transparent; 
             color: #e3e3e3; 
             align-self: flex-start; 
-            padding-left: 5px; /* Gemini stili düz metin görünümü */
+            padding-left: 5px;
         }
 
-        /* Karşılama Yazısı Ortalama */
         .welcome-text {
             text-align: center;
             color: #90e0ef;
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             margin-top: auto;
             margin-bottom: auto;
             padding: 0 20px;
@@ -175,18 +178,21 @@
             40% { transform: scale(1); }
         }
 
-        /* Gemini Tarzı Oval Alttaki Input Kutusu */
+        /* Ekrana Tam Sığan ve Taşmayan Input Alanı */
+        .chat-input-container {
+            padding: 12px 16px;
+            background: #080c14;
+            flex-shrink: 0;
+        }
+
         .chat-input-wrapper {
-            position: absolute;
-            bottom: 16px;
-            left: 16px;
-            right: 16px;
             background: #151e2e;
             border-radius: 32px;
             display: flex;
             align-items: center;
             padding: 6px 10px 6px 18px;
             border: 1px solid #1f2d44;
+            width: 100%;
         }
 
         .chat-input-wrapper input {
@@ -207,16 +213,11 @@
             height: 40px;
             border-radius: 50%;
             cursor: pointer;
-            font-weight: bold;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.1rem;
-            transition: background 0.2s;
-        }
-
-        .chat-input-wrapper button:hover {
-            background: #00b4d8;
+            flex-shrink: 0;
         }
 
         /* Ayarlar Butonu */
@@ -242,14 +243,7 @@
         }
 
         .settings-page.show { display: flex; }
-
-        .settings-header {
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            background: #151e2e;
-        }
-
+        .settings-header { padding: 20px; display: flex; align-items: center; background: #151e2e; }
         .back-btn { font-size: 1.8rem; margin-right: 15px; cursor: pointer; }
         .settings-title { font-size: 1.5rem; color: #48cae4; }
         .settings-body { padding: 25px; flex: 1; }
@@ -265,7 +259,6 @@
 </head>
 <body>
 
-    <!-- Ayarlar Butonu (Sağ Üstte Daha Şık) -->
     <div class="settings-btn" onclick="openSettings()">⚙️</div>
 
     <div class="tabs">
@@ -286,14 +279,15 @@
     <!-- AI Sohbet Sekmesi -->
     <div id="tab1" class="tab-content">
         <div class="chat-container">
-            <div class="chat-header" id="chatHeader">Caavo0 Aİh</div>
+            <div class="chat-header" id="chatHeader">Caavo0 Flash</div>
             <div class="chat-messages" id="chatMessages">
-                <!-- Gemini stilinde açılış metni ortada başlar -->
                 <div class="welcome-text" id="welcomeMessage">Merhaba! Nasıl yardımcı olabilirim?</div>
             </div>
-            <div class="chat-input-wrapper">
-                <input type="text" id="userInput" placeholder="Caavo0'a sorun..." onkeypress="handleKeyPress(event)">
-                <button onclick="sendMessage()" id="sendBtn">➔</button>
+            <div class="chat-input-container">
+                <div class="chat-input-wrapper">
+                    <input type="text" id="userInput" placeholder="Caavo0'a sorun..." onkeypress="handleKeyPress(event)">
+                    <button onclick="sendMessage()" id="sendBtn">➔</button>
+                </div>
             </div>
         </div>
     </div>
@@ -373,7 +367,6 @@
             const text = userInput.value.trim();
             if (!text) return;
 
-            // İlk mesaj gönderildiğinde ortadaki hoş geldiniz yazısını kaldırır
             if(welcomeMessage) {
                 welcomeMessage.remove();
             }
@@ -445,7 +438,6 @@
         }
 
         function closeSettings() {
-            document.getElementById('settingsPage').classList.remove('remove');
             document.getElementById('settingsPage').classList.remove('show');
         }
 
