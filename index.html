@@ -133,16 +133,8 @@
             border-radius: 2px;
         }
 
-        .menu-toggle-btn:hover {
-            opacity: 1;
-        }
-
-        .chat-header {
-            font-size: 1.1rem;
-            color: #90e0ef;
-            font-weight: 500;
-            opacity: 0.9;
-        }
+        .menu-toggle-btn:hover { opacity: 1; }
+        .chat-header { font-size: 1.1rem; color: #90e0ef; font-weight: 500; opacity: 0.9; }
 
         /* Sağ Üst İşlemler Kapsayıcısı */
         .actions-wrapper {
@@ -201,19 +193,35 @@
             padding: 20px;
         }
 
-        .sidebar.open {
-            left: 0;
-        }
+        .sidebar.open { left: 0; }
 
         .sidebar-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             color: #48cae4;
             font-weight: bold;
             font-size: 1.2rem;
         }
+
+        .sidebar-sub-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #1f2d44;
+        }
+
+        .clear-all-btn {
+            font-size: 0.85rem;
+            color: #ff4d4d;
+            cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+        .clear-all-btn:hover { opacity: 1; }
 
         .close-sidebar-btn {
             cursor: pointer;
@@ -229,22 +237,45 @@
             gap: 10px;
         }
 
-        .history-item {
-            padding: 12px 15px;
+        /* Liste elemanları ve Silme butonu entegrasyonu */
+        .history-item-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             background: #151e2e;
             border-radius: 10px;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+            padding-right: 10px;
+        }
+
+        .history-item-wrapper:hover {
+            background: #1f2d44;
+            border-color: #0077b6;
+        }
+
+        .history-item {
+            flex: 1;
+            padding: 12px 15px;
             cursor: pointer;
             font-size: 0.95rem;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            border: 1px solid transparent;
-            transition: all 0.2s;
         }
 
-        .history-item:hover {
-            background: #1f2d44;
-            border-color: #0077b6;
+        .delete-item-btn {
+            cursor: pointer;
+            font-size: 0.95rem;
+            opacity: 0.5;
+            padding: 5px;
+            transition: opacity 0.2s, transform 0.1s;
+        }
+
+        .delete-item-btn:hover {
+            opacity: 1;
+            color: #ff4d4d;
+            transform: scale(1.1);
         }
 
         /* Karartma Katmanı */
@@ -256,10 +287,7 @@
             z-index: 45;
             display: none;
         }
-
-        .sidebar-overlay.show {
-            display: block;
-        }
+        .sidebar-overlay.show { display: block; }
 
         /* Mesaj Alanları */
         .chat-messages {
@@ -419,7 +447,6 @@
     <div id="tab1" class="tab-content">
         <div class="chat-container">
             <div class="chat-header-wrapper">
-                <!-- Sol Üstteki İki Çizgili Buton -->
                 <div class="menu-toggle-btn" onclick="toggleSidebar()">
                     <span></span>
                     <span></span>
@@ -456,6 +483,9 @@
         <div class="sidebar-header">
             <span>Sohbet Geçmişi</span>
             <span class="close-sidebar-btn" onclick="toggleSidebar()">×</span>
+        </div>
+        <div class="sidebar-sub-actions">
+            <span class="clear-all-btn" onclick="clearAllHistory()">Tümünü Temizle</span>
         </div>
         <div class="history-list" id="historyList">
             <!-- Geçmiş sohbetler buraya dinamik eklenecek -->
@@ -503,7 +533,6 @@
             }
         };
 
-        // SAYFA YÜKLENDİĞİNDE: Hafızadaki eski sohbetleri çek
         window.addEventListener('DOMContentLoaded', () => {
             const savedSessions = localStorage.getItem('caavo0_chats');
             if (savedSessions) {
@@ -512,7 +541,6 @@
             }
         });
 
-        // Veriyi hafızaya (Local Storage) kaydeden fonksiyon
         function saveToLocalStorage() {
             localStorage.setItem('caavo0_chats', JSON.stringify(chatSessions));
         }
@@ -561,7 +589,7 @@
             appendMessage(text, 'user-message');
             userInput.value = '';
             
-            saveToLocalStorage(); // Kullanıcı mesajından sonra kaydet
+            saveToLocalStorage();
 
             const typing = showTypingIndicator();
 
@@ -584,7 +612,7 @@
                 typeWriterEffect(replyText, 'ai-message');
             }
 
-            saveToLocalStorage(); // Yapay zeka cevabından sonra kaydet
+            saveToLocalStorage();
         }
 
         function appendMessage(text, className) {
@@ -642,9 +670,13 @@
             userInput.value = '';
         }
 
+        // Güncellenmiş Sidebar UI: Silme butonlarıyla birlikte
         function updateSidebarUI() {
             historyList.innerHTML = '';
             [...chatSessions].reverse().forEach(session => {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'history-item-wrapper';
+
                 const item = document.createElement('div');
                 item.className = 'history-item';
                 item.textContent = session.title;
@@ -652,8 +684,45 @@
                     loadChatSession(session.id);
                     toggleSidebar();
                 };
-                historyList.appendChild(item);
+
+                const deleteBtn = document.createElement('div');
+                deleteBtn.className = 'delete-item-btn';
+                deleteBtn.innerHTML = '🗑️';
+                deleteBtn.title = 'Sohbeti Sil';
+                deleteBtn.onclick = (e) => {
+                    e.stopPropagation(); // Tıklamanın odayı açmasını engellemek için
+                    deleteChatSession(session.id);
+                };
+
+                wrapper.appendChild(item);
+                wrapper.appendChild(deleteBtn);
+                historyList.appendChild(wrapper);
             });
+        }
+
+        // Tekli Sohbet Silme İşlemi
+        function deleteChatSession(id) {
+            if (confirm("Bu sohbet geçmişini silmek istediğinize emin misiniz?")) {
+                chatSessions = chatSessions.filter(s => s.id !== id);
+                saveToLocalStorage();
+                updateSidebarUI();
+                
+                // Eğer silinen sohbet şu an ekranda açıksa ekranı da temizle
+                if (currentSessionId === id) {
+                    createNewChat();
+                }
+            }
+        }
+
+        // Tüm Geçmişi Toplu Temizleme İşlemi
+        function clearAllHistory() {
+            if (confirm("Tüm sohbet geçmişiniz kalıcı olarak silinecektir. Emin misiniz?")) {
+                chatSessions = [];
+                saveToLocalStorage();
+                updateSidebarUI();
+                createNewChat();
+                toggleSidebar();
+            }
         }
 
         function loadChatSession(id) {
@@ -675,7 +744,7 @@
         }
 
         function openSettings() { document.getElementById('settingsPage').classList.add('show'); }
-        function closeSettings() { document.getElementById('settingsPage').classList.remove('show'); }
+        function closeSettings() { document.getElementById('settingsPage').classList.remove('remove'); document.getElementById('settingsPage').classList.remove('show'); }
         function changeLanguageFromSelect() { currentLang = languageSelect.value; updateUIStrings(); }
 
         function updateUIStrings() {
