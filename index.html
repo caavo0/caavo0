@@ -124,6 +124,8 @@
             padding: 12px 16px;
             border-radius: 18px;
             font-size: 1rem;
+            line-height: 1.5;
+            white-space: pre-wrap;
         }
 
         .user-message { background: #48cae4; color: #0b132b; align-self: flex-end; }
@@ -185,7 +187,6 @@
             cursor: pointer;
             font-weight: bold;
             white-space: nowrap;
-            flex-shrink: 0;
         }
     </style>
 </head>
@@ -213,7 +214,7 @@
         <div class="chat-container">
             <div class="chat-header">Caavo0 AI Assistant</div>
             <div class="chat-messages" id="chatMessages">
-                <div class="message ai-message">Merhaba kardeşim! Ben Caavo0 AI. Sor bakalım 😊</div>
+                <div class="message ai-message">Merhaba kardeşim! Ben Caavo0. Sor bakalım 😊</div>
             </div>
             <div class="chat-input-area">
                 <input type="text" id="userInput" placeholder="Mesaj yaz..." onkeypress="handleKeyPress(event)">
@@ -279,12 +280,12 @@
         function appendMessage(text, className) {
             const div = document.createElement('div');
             div.className = `message ${className}`;
-            div.textContent = text;
+            div.innerHTML = text.replace(/\n/g, '<br>');
             chatMessages.appendChild(div);
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
-        function typeWriterEffect(text, className) {
+        function typeWriterEffect(fullText, className) {
             const div = document.createElement('div');
             div.className = `message ${className}`;
             chatMessages.appendChild(div);
@@ -292,11 +293,16 @@
 
             let i = 0;
             function type() {
-                if (i < text.length) {
-                    div.textContent += text.charAt(i);
+                if (i < fullText.length) {
+                    let char = fullText.charAt(i);
+                    if (char === '\n') {
+                        div.innerHTML += '<br>';
+                    } else {
+                        div.innerHTML += char;
+                    }
                     i++;
                     chatMessages.scrollTop = chatMessages.scrollHeight;
-                    setTimeout(type, 20);
+                    setTimeout(type, 18);
                 }
             }
             type();
