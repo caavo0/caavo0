@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Caavo0 AI</title>
     <style>
-        * { box-shrink: 0; box-sizing: border-box; }
+        * { box-sizing: border-box; }
         
         /* Dinamik Tema Değişkenleri */
         :root {
@@ -20,6 +20,8 @@
             --accent-light: #90e0ef;
             --accent-glow: rgba(0, 119, 182, 0.4);
             --text-muted: #7a8aa4;
+            --text-main: #e3e3e3;
+            --text-title: #ffffff;
             --icon-color: #90e0ef;
         }
 
@@ -34,6 +36,8 @@
             --accent-light: #e0e0e0;
             --accent-glow: rgba(255, 255, 255, 0.1);
             --text-muted: #888888;
+            --text-main: #e3e3e3;
+            --text-title: #ffffff;
             --icon-color: #cccccc;
         }
 
@@ -48,6 +52,8 @@
             --accent-light: #84e1bc;
             --accent-glow: rgba(15, 159, 104, 0.4);
             --text-muted: #6f8f87;
+            --text-main: #e3e3e3;
+            --text-title: #ffffff;
             --icon-color: #84e1bc;
         }
 
@@ -62,7 +68,26 @@
             --accent-light: #e0aaff;
             --accent-glow: rgba(123, 44, 191, 0.4);
             --text-muted: #8a7a9e;
+            --text-main: #e3e3e3;
+            --text-title: #ffffff;
             --icon-color: #e0aaff;
+        }
+
+        /* YENİ: TEMA 5: İnci Beyazı (Pearl White - Light Theme) */
+        [data-theme="pearl-white"] {
+            --bg-color: #f4f6f9;
+            --surface-color: #ffffff;
+            --surface-hover: #eaedf2;
+            --border-color: #dbe0e8;
+            --sidebar-color: #edf1Console5;
+            --sidebar-color: #f8fafc;
+            --accent-primary: #2563eb;
+            --accent-light: #1e40af;
+            --accent-glow: rgba(37, 99, 235, 0.2);
+            --text-muted: #64748b;
+            --text-main: #334155;
+            --text-title: #0f172a;
+            --icon-color: #2563eb;
         }
         
         body {
@@ -70,14 +95,14 @@
             padding: 0;
             background-color: var(--bg-color);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #e3e3e3;
+            color: var(--text-main);
             height: 100vh;
             height: -webkit-fill-available;
             display: flex;
             flex-direction: column;
             overflow: hidden;
             position: relative;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         html {
@@ -167,10 +192,13 @@
         .card-tiktok:hover::before  { background: #00f2fe; }
         .card-discord:hover::before { background: #5865f2; }
 
+        /* Beyaz temada github görünürlüğü için küçük ayar */
+        [data-theme="pearl-white"] .card-github:hover::before { background: #24292f; }
+
         .media-card:hover {
             background: var(--surface-hover);
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
         }
 
         .media-icon {
@@ -193,6 +221,7 @@
         }
 
         .card-github:hover .media-icon svg { fill: #ffffff; }
+        [data-theme="pearl-white"] .card-github:hover .media-icon svg { fill: #24292f; }
         .card-youtube:hover .media-icon svg { fill: #ff0000; }
         .card-tiktok:hover .media-icon svg { fill: #00f2fe; }
         .card-discord:hover .media-icon svg { fill: #5865f2; }
@@ -206,7 +235,7 @@
         .media-title {
             font-size: 1.1rem;
             font-weight: 600;
-            color: #ffffff;
+            color: var(--text-title);
             margin-bottom: 4px;
         }
 
@@ -331,23 +360,23 @@
         .close-sidebar-btn { cursor: pointer; font-size: 1.5rem; color: var(--accent-light); }
 
         .history-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        .history-item-wrapper { display: flex; align-items: center; justify-content: space-between; background: var(--surface-color); border-radius: 10px; transition: all 0.2s; padding-right: 10px; }
+        .history-item-wrapper { display: flex; align-items: center; justify-content: space-between; background: var(--surface-color); border-radius: 10px; transition: all 0.2s; padding-right: 10px; border: 1px solid var(--border-color); }
         .history-item-wrapper:hover { background: var(--surface-hover); }
-        .history-item { flex: 1; padding: 12px 15px; cursor: pointer; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .history-item { flex: 1; padding: 12px 15px; cursor: pointer; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-main); }
         .delete-item-btn { cursor: pointer; opacity: 0.5; padding: 5px; }
         .delete-item-btn:hover { opacity: 1; color: #ff4d4d; }
 
-        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 45; display: none; }
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 45; display: none; }
         .sidebar-overlay.show { display: block; }
 
         /* Mesaj Alanları */
         .chat-messages { flex: 1; padding: 10px 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
         .message { max-width: 85%; padding: 14px 18px; border-radius: 20px; font-size: 1rem; line-height: 1.5; white-space: pre-wrap; }
         .user-message { background: var(--accent-primary); color: white; align-self: flex-end; border-bottom-right-radius: 4px; box-shadow: 0 2px 8px var(--accent-glow); }
-        .ai-message { background: transparent; color: #e3e3e3; align-self: flex-start; padding-left: 5px; }
+        .ai-message { background: transparent; color: var(--text-main); align-self: flex-start; padding-left: 5px; }
         .welcome-text { text-align: center; color: var(--accent-light); font-size: 1.3rem; margin-top: auto; margin-bottom: auto; padding: 0 20px; }
 
-        .typing-indicator { display: inline-flex; align-items: center; gap: 5px; padding: 14px 18px; background: var(--surface-color); border-radius: 20px; align-self: flex-start; }
+        .typing-indicator { display: inline-flex; align-items: center; gap: 5px; padding: 14px 18px; background: var(--surface-color); border-radius: 20px; align-self: flex-start; border: 1px solid var(--border-color); }
         .typing-indicator span { width: 8px; height: 8px; background: var(--accent-light); border-radius: 50%; display: inline-block; animation: bounce 1.3s infinite ease-in-out; }
         .typing-indicator span:nth-child(2) { animation-delay: 0.15s; }
         .typing-indicator span:nth-child(3) { animation-delay: 0.3s; }
@@ -355,7 +384,7 @@
 
         .chat-input-container { padding: 12px 16px; background: var(--bg-color); flex-shrink: 0; }
         .chat-input-wrapper { background: var(--surface-color); border-radius: 32px; display: flex; align-items: center; padding: 6px 10px 6px 18px; border: 1px solid var(--border-color); width: 100%; }
-        .chat-input-wrapper input { flex: 1; background: transparent; border: none; color: white; padding: 12px 0; font-size: 1rem; outline: none; }
+        .chat-input-wrapper input { flex: 1; background: transparent; border: none; color: var(--text-main); padding: 12px 0; font-size: 1rem; outline: none; }
         .chat-input-wrapper button { background: var(--accent-primary); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px var(--accent-glow); }
 
         /* Ayarlar Sayfası */
@@ -372,7 +401,7 @@
         .settings-page.show { display: flex; }
         .settings-header { padding: 20px; display: flex; align-items: center; background: var(--surface-color); border-bottom: 1px solid var(--border-color); }
         .back-btn { font-size: 1.8rem; margin-right: 15px; cursor: pointer; color: var(--accent-light); }
-        .settings-title { font-size: 1.3rem; font-weight: 600; color: #ffffff; }
+        .settings-title { font-size: 1.3rem; font-weight: 600; color: var(--text-title); }
         .settings-body { padding: 20px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
         
         .setting-item {
@@ -411,7 +440,7 @@
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Akıcı Animasyonlu Seçenek Konteyneri */
+        /* Seçenek Konteyneri */
         .custom-dropdown-selector {
             background: var(--sidebar-color);
             border: 1px solid var(--border-color);
@@ -426,7 +455,6 @@
             border-top-right-radius: 0;
         }
 
-        /* Açık durum sınıfları */
         .setting-item.open .setting-dropdown-header {
             border-bottom-left-radius: 0;
             border-bottom-right-radius: 0;
@@ -465,7 +493,7 @@
 
         .option-name {
             font-size: 0.95rem;
-            color: #ffffff;
+            color: var(--text-title);
             font-weight: 500;
         }
 
@@ -476,6 +504,11 @@
             border-radius: 50%;
             margin-right: 10px;
             display: inline-block;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        [data-theme="pearl-white"] .theme-preview-circle {
+            border: 1px solid rgba(0,0,0,0.15);
         }
 
         .option-left-content {
@@ -516,11 +549,13 @@
 </head>
 <body>
 
+    <!-- Üst Kısım Sekmeler -->
     <div class="tabs">
         <button class="tab-btn active" id="mediaTab" onclick="switchTab(0)">Medya</button>
         <button class="tab-btn" id="aiTab" onclick="switchTab(1)">Caavo0 AI</button>
     </div>
 
+    <!-- Medya Sekmesi -->
     <div id="tab0" class="tab-content active">
         <div class="links-container">
             <a href="https://github.com/caavo0" class="media-card card-github" target="_blank">
@@ -569,6 +604,7 @@
         </div>
     </div>
 
+    <!-- AI Sohbet Sekmesi -->
     <div id="tab1" class="tab-content">
         <div class="chat-container">
             <div class="chat-header-wrapper">
@@ -599,6 +635,7 @@
         </div>
     </div>
 
+    <!-- Yan Menü (Geçmiş) -->
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
@@ -611,6 +648,7 @@
         <div class="history-list" id="historyList"></div>
     </div>
 
+    <!-- Ayarlar Sayfası -->
     <div class="settings-page" id="settingsPage">
         <div class="settings-header">
             <span class="back-btn" onclick="closeSettings()">←</span>
@@ -618,6 +656,7 @@
         </div>
         <div class="settings-body">
             
+            <!-- Dil Grubu Kutusu -->
             <div class="setting-item" id="langGroup">
                 <div class="setting-dropdown-header" onclick="toggleDropdown('langGroup')">
                     <div class="setting-label" id="languageLabel">Dil Seçimi</div>
@@ -658,6 +697,7 @@
                 </div>
             </div>
 
+            <!-- Tema Grubu Kutusu -->
             <div class="setting-item" id="themeGroup">
                 <div class="setting-dropdown-header" onclick="toggleDropdown('themeGroup')">
                     <div class="setting-label" id="themeLabel">Tema Seçimi</div>
@@ -670,6 +710,13 @@
                             <div class="option-left-content">
                                 <span class="theme-preview-circle" style="background: #0077b6;"></span>
                                 <span class="option-name" id="themeDefaultLabel">Varsayılan (Mavi)</span>
+                            </div>
+                            <div class="custom-radio"></div>
+                        </div>
+                        <div class="dropdown-option theme-option" data-value="pearl-white" onclick="selectTheme('pearl-white')">
+                            <div class="option-left-content">
+                                <span class="theme-preview-circle" style="background: #ffffff;"></span>
+                                <span class="option-name" id="themeWhiteLabel">İnci Beyazı</span>
                             </div>
                             <div class="custom-radio"></div>
                         </div>
@@ -707,55 +754,54 @@
         let chatSessions = []; 
         let currentSessionId = null;
 
-        // Dil Çeviri Havuzu
         const translations = {
             tr: {
                 mediaTab: "Medya", aiTab: "Caavo0 AI", chatHeader: "Caavo0 AI",
                 welcomeMessage: "Merhaba! Nasıl yardımcı olabilirim?", inputPlaceholder: "Caavo0'a sorun...",
                 settingsTitle: "Ayarlar", languageLabel: "Dil Seçimi", themeLabel: "Tema Seçimi",
-                themeDefault: "Varsayılan (Mavi)", themeDark: "Gece Siyahı", themeEmerald: "Zümrüt Yeşili", themePurple: "Neon Mor",
+                themeDefault: "Varsayılan (Mavi)", themeWhite: "İnci Beyazı", themeDark: "Gece Siyahı", themeEmerald: "Zümrüt Yeşili", themePurple: "Neon Mor",
                 errorMessage: "Bağlantı hatası, tekrar dene."
             },
             en: {
                 mediaTab: "Media", aiTab: "Caavo0 AI", chatHeader: "Caavo0 AI",
                 welcomeMessage: "Hello! How can I help you today?", inputPlaceholder: "Ask Caavo0...",
                 settingsTitle: "Settings", languageLabel: "Language", themeLabel: "Theme Selection",
-                themeDefault: "Default (Blue)", themeDark: "Midnight Black", themeEmerald: "Emerald Green", themePurple: "Cyber Purple",
+                themeDefault: "Default (Blue)", themeWhite: "Pearl White", themeDark: "Midnight Black", themeEmerald: "Emerald Green", themePurple: "Cyber Purple",
                 errorMessage: "Connection error, please try again."
             },
             de: {
                 mediaTab: "Medien", aiTab: "Caavo0 AI", chatHeader: "Caavo0 AI",
                 welcomeMessage: "Hallo! Wie kann ich dir heute helfen?", inputPlaceholder: "Frag Caavo0...",
                 settingsTitle: "Einstellungen", languageLabel: "Sprache", themeLabel: "Thema Auswählen",
-                themeDefault: "Standard (Blau)", themeDark: "Mitternachtsschwarz", themeEmerald: "Smaragdgrün", themePurple: "Cyber-Violett",
+                themeDefault: "Standard (Blau)", themeWhite: "Perlweiß", themeDark: "Mitternachtsschwarz", themeEmerald: "Smaragdgrün", themePurple: "Cyber-Violett",
                 errorMessage: "Verbindungsfehler, bitte erneut versuchen."
             },
             es: {
                 mediaTab: "Medios", aiTab: "Caavo0 AI", chatHeader: "Caavo0 AI",
                 welcomeMessage: "¿Hola! Cómo puedo ayudarte hoy?", inputPlaceholder: "Pregunta a Caavo0...",
                 settingsTitle: "Ajustes", languageLabel: "Idioma", themeLabel: "Selección de Tema",
-                themeDefault: "Por defecto (Azul)", themeDark: "Negro Medianoche", themeEmerald: "Verde Esmeralda", themePurple: "Púrpura Neón",
+                themeDefault: "Por defecto (Azul)", themeWhite: "Blanco Perla", themeDark: "Negro Medianoche", themeEmerald: "Verde Esmeralda", themePurple: "Púrpura Neón",
                 errorMessage: "Error de conexión, inténtalo de nuevo."
             },
             fr: {
                 mediaTab: "Médias", aiTab: "Caavo0 AI", chatHeader: "Caavo0 AI",
                 welcomeMessage: "Bonjour! Comment puis-je vous aider aujourd'hui?", inputPlaceholder: "Demander à Caavo0...",
                 settingsTitle: "Paramètres", languageLabel: "Langue", themeLabel: "Sélection du Thème",
-                themeDefault: "Par défaut (Bleu)", themeDark: "Noir Minuit", themeEmerald: "Vert Émeraude", themePurple: "Pourpre Néon",
+                themeDefault: "Par défaut (Bleu)", themeWhite: "Blanc Perle", themeDark: "Noir Minuit", themeEmerald: "Vert Émeraude", themePurple: "Pourpre Néon",
                 errorMessage: "Erreur de connexion, veuillez réessayer."
             },
             ru: {
                 mediaTab: "Медиа", aiTab: "Caavo0 AI", chatHeader: "Caavo0 AI",
                 welcomeMessage: "Привет! Чем я могу тебе помочь?", inputPlaceholder: "Спроси Caavo0...",
                 settingsTitle: "Настройки", languageLabel: "Язык", themeLabel: "Выбор Темы",
-                themeDefault: "По умолчанию (Синий)", themeDark: "Полуночный черный", themeEmerald: "Изумрудно-зеленый", themePurple: "Неоновый фиолетовый",
+                themeDefault: "По умолчанию (Синий)", themeWhite: "Жемчужно-белый", themeDark: "Полуночный черный", themeEmerald: "Изумрудно-зеленый", themePurple: "Неоновый фиолетовый",
                 errorMessage: "Ошибка подключения, попробуйте еще раз."
             },
             ar: {
                 mediaTab: "وسائل الإعلام", aiTab: "Caavo0 AI", chatHeader: "Caavo0 AI",
                 welcomeMessage: "مرحباً! كيف يمكنني مساعدتك اليوم؟", inputPlaceholder: "اسأل Caavo0...",
-                settingsTitle: "الإعدادات", languageLabel: "اللغة", themeLabel: "اختيار المظهر",
-                themeDefault: "افتراضي (أزرق)", themeDark: "أسود منتصف الليل", themeEmerald: "أخضر زمردي", themePurple: "أرجواني سايبر",
+                settingsTitle: "الإعدادات", languageLabel: "اللغة", themeLabel: "اختيار Mظهر",
+                themeDefault: "افتراضي (أزرق)", themeWhite: "أبيض لؤلؤي", themeDark: "أسود منتصف الليل", themeEmerald: "أخضر زمردي", themePurple: "أرجواني سايبر",
                 errorMessage: "خطأ في الاتصال، يرجى المحاولة مرة أخرى."
             }
         };
@@ -770,7 +816,6 @@
             if (savedLang && translations[savedLang]) {
                 selectLanguage(savedLang);
             }
-            // Kayıtlı Temayı Yükleme
             const savedTheme = localStorage.getItem('caavo0_theme');
             if (savedTheme) {
                 selectTheme(savedTheme);
@@ -803,8 +848,7 @@
         }
 
         function toggleDropdown(id) {
-            const group = document.getElementById(id);
-            group.classList.toggle('open');
+            document.getElementById(id).classList.toggle('open');
         }
 
         function selectLanguage(langCode) {
@@ -812,11 +856,7 @@
             localStorage.setItem('caavo0_lang', langCode);
 
             document.querySelectorAll('.lang-option').forEach(opt => {
-                if(opt.getAttribute('data-value') === langCode) {
-                    opt.classList.add('selected');
-                } else {
-                    opt.classList.remove('selected');
-                }
+                opt.classList.toggle('selected', opt.getAttribute('data-value') === langCode);
             });
 
             updateUIStrings();
@@ -826,7 +866,6 @@
             }, 180);
         }
 
-        // YENİ: Tema Seçme Fonksiyonu
         function selectTheme(themeName) {
             currentTheme = themeName;
             localStorage.setItem('caavo0_theme', themeName);
@@ -838,11 +877,7 @@
             }
 
             document.querySelectorAll('.theme-option').forEach(opt => {
-                if(opt.getAttribute('data-value') === themeName) {
-                    opt.classList.add('selected');
-                } else {
-                    opt.classList.remove('selected');
-                }
+                opt.classList.toggle('selected', opt.getAttribute('data-value') === themeName);
             });
 
             setTimeout(() => {
@@ -1032,8 +1067,8 @@
             document.getElementById('languageLabel').textContent = translations[currentLang].languageLabel;
             document.getElementById('themeLabel').textContent = translations[currentLang].themeLabel;
             
-            // Temaların isimleri dil değişimine göre çevrilir
             document.getElementById('themeDefaultLabel').textContent = translations[currentLang].themeDefault;
+            document.getElementById('themeWhiteLabel').textContent = translations[currentLang].themeWhite;
             document.getElementById('themeDarkLabel').textContent = translations[currentLang].themeDark;
             document.getElementById('themeEmeraldLabel').textContent = translations[currentLang].themeEmerald;
             document.getElementById('themePurpleLabel').textContent = translations[currentLang].themePurple;
