@@ -99,7 +99,6 @@
             position: relative;
         }
 
-        /* Chat Başlık Alanı: Ayarlar çarkı artık buraya hizalandı */
         .chat-header-wrapper {
             display: flex;
             align-items: center;
@@ -116,10 +115,17 @@
             opacity: 0.9;
         }
 
-        /* Ayarlar Butonu Yeni Yeri */
-        .settings-btn {
+        /* Sağ üst köşedeki buton grubu */
+        .actions-wrapper {
             position: absolute;
             right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        /* Yeni Sohbet / Silme Butonu (Fotodaki ikon stiliyle uyumlu emoji) */
+        .new-chat-btn {
             font-size: 1.3rem;
             cursor: pointer;
             opacity: 0.7;
@@ -127,7 +133,15 @@
             transition: opacity 0.2s;
         }
 
-        .settings-btn:hover {
+        .settings-btn {
+            font-size: 1.3rem;
+            cursor: pointer;
+            opacity: 0.7;
+            user-select: none;
+            transition: opacity 0.2s;
+        }
+
+        .settings-btn:hover, .new-chat-btn:hover {
             opacity: 1;
         }
 
@@ -268,7 +282,7 @@
 </head>
 <body>
 
-    <!-- Üst Kısım: Sadece temiz sekmeler var -->
+    <!-- Üst Kısım -->
     <div class="tabs">
         <button class="tab-btn active" id="mediaTab" onclick="switchTab(0)">Medya</button>
         <button class="tab-btn" id="aiTab" onclick="switchTab(1)">Caavo0 AI</button>
@@ -287,10 +301,14 @@
     <!-- AI Sohbet Sekmesi -->
     <div id="tab1" class="tab-content">
         <div class="chat-container">
-            <!-- Ayarlar Butonu artık "Caavo0 AI" başlığının sağ hizasında ve butonlardan tamamen bağımsız -->
             <div class="chat-header-wrapper">
                 <div class="chat-header" id="chatHeader">Caavo0 AI</div>
-                <div class="settings-btn" onclick="openSettings()">⚙️</div>
+                
+                <!-- Sağ Üst Eylemler: Yeni Sohbet (Sil) ve Ayarlar Butonları -->
+                <div class="actions-wrapper">
+                    <div class="new-chat-btn" onclick="createNewChat()" title="Yeni Sohbet Başlat">📝</div>
+                    <div class="settings-btn" onclick="openSettings()">⚙️</div>
+                </div>
             </div>
             
             <div class="chat-messages" id="chatMessages">
@@ -314,7 +332,7 @@
         <div class="settings-body">
             <div class="setting-item">
                 <span id="languageLabel">Dil Seçimi</span>
-                <select id="languageSelect" onchange="changeLanguage()" style="background:#151e2e; color:white; border:1px solid #1f2d44; padding:8px 12px; border-radius:8px;">
+                <select id="languageSelect" onchange="changeLanguageFromSelect()" style="background:#151e2e; color:white; border:1px solid #1f2d44; padding:8px 12px; border-radius:8px;">
                     <option value="tr">Türkçe</option>
                     <option value="en">English</option>
                     <option value="de">Deutsch</option>
@@ -359,7 +377,6 @@
             }
         };
 
-        // Medya sekmesindeyken ayarlar çarkını gizlemek istersen diye switchTab'ı da optimize ettik
         function switchTab(n) {
             document.querySelectorAll('.tab-content').forEach((el, i) => el.classList.toggle('active', i === n));
             document.querySelectorAll('.tab-btn').forEach((el, i) => el.classList.toggle('active', i === n));
@@ -368,10 +385,9 @@
         const chatMessages = document.getElementById('chatMessages');
         const userInput = document.getElementById('userInput');
         const chatHeader = document.getElementById('chatHeader');
-        const welcomeMessage = document.getElementById('welcomeMessage');
-        const sendBtn = document.getElementById('sendBtn');
         const mediaTab = document.getElementById('mediaTab');
         const aiTab = document.getElementById('aiTab');
+        const languageSelect = document.getElementById('languageSelect');
 
         function handleKeyPress(e) {
             if (e.key === 'Enter') sendMessage();
@@ -381,9 +397,9 @@
             const text = userInput.value.trim();
             if (!text) return;
 
-            if(welcomeMessage) {
-                welcomeMessage.remove();
-            }
+            // Eğer varsa hoş geldin yazısını temizle
+            const wm = document.getElementById('welcomeMessage');
+            if(wm) wm.remove();
 
             appendMessage(text, 'user-message');
             userInput.value = '';
@@ -447,6 +463,21 @@
             return div;
         }
 
+        // Yeni Sohbet Temizleme Fonksiyonu
+        function createNewChat() {
+            // Ekrandaki tüm mesajları sil
+            chatMessages.innerHTML = '';
+            
+            // Hoş geldin metnini yeniden yarat ve ekle
+            const wm = document.createElement('div');
+            wm.className = 'welcome-text';
+            wm.id = 'welcomeMessage';
+            wm.textContent = translations[currentLang].welcomeMessage;
+            
+            chatMessages.appendChild(wm);
+            userInput.value = '';
+        }
+
         function openSettings() {
             document.getElementById('settingsPage').classList.add('show');
         }
@@ -455,14 +486,19 @@
             document.getElementById('settingsPage').classList.remove('show');
         }
 
-        function changeLanguage() {
-            currentLang = document.getElementById('languageSelect').value;
-            
+        function changeLanguageFromSelect() {
+            currentLang = languageSelect.value;
+            updateUIStrings();
+        }
+
+        function updateUIStrings() {
             mediaTab.textContent = translations[currentLang].mediaTab;
             aiTab.textContent = translations[currentLang].aiTab;
             chatHeader.textContent = translations[currentLang].chatHeader;
-            if(document.getElementById('welcomeMessage')) {
-                welcomeMessage.textContent = translations[currentLang].welcomeMessage;
+            
+            const wm = document.getElementById('welcomeMessage');
+            if(wm) {
+                wm.textContent = translations[currentLang].welcomeMessage;
             }
             userInput.placeholder = translations[currentLang].inputPlaceholder;
             document.getElementById('settingsTitle').textContent = translations[currentLang].settingsTitle;
