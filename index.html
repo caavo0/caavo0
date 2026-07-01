@@ -314,13 +314,31 @@
         .settings-header { padding: 20px; display: flex; align-items: center; background: #151e2e; border-bottom: 1px solid #1f2d44; }
         .back-btn { font-size: 1.8rem; margin-right: 15px; cursor: pointer; color: #90e0ef; }
         .settings-title { font-size: 1.3rem; font-weight: 600; color: #ffffff; }
-        .settings-body { padding: 20px; flex: 1; overflow-y: auto; }
+        .settings-body { padding: 20px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
         
         .setting-item {
-            padding: 16px 0;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
+        }
+
+        /* DEĞİŞTİ: Açılır-Kapanır Özel Başlık Kutusu */
+        .setting-dropdown-header {
+            background: #151e2e;
+            border: 1px solid #1f2d44;
+            padding: 16px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .setting-dropdown-header:hover {
+            background: #1f2d44;
+            border-color: #2a3c57;
         }
 
         .setting-label {
@@ -329,21 +347,52 @@
             font-weight: 500;
         }
 
-        /* YENİ: Tamamen Özel Kodlanmış Mavi Tema Dil Listesi Tasarımı */
+        .dropdown-arrow {
+            font-size: 0.85rem;
+            color: #44597a;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* DEĞİŞTİ: Akıcı Animasyonlu Dil Listesi Konteyneri */
         .custom-lang-selector {
-            background: #151e2e;
+            background: #111a28;
             border: 1px solid #1f2d44;
-            border-radius: 16px;
+            border-radius: 12px;
             overflow: hidden;
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s;
+            margin-top: -4px;
+            border-top: none;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+        }
+
+        /* Açık durum sınıfları */
+        .setting-item.open .setting-dropdown-header {
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+            border-color: #1f2d44;
+        }
+
+        .setting-item.open .dropdown-arrow {
+            transform: rotate(180deg);
+            color: #90e0ef;
+        }
+
+        .setting-item.open .custom-lang-selector {
+            grid-template-rows: 1fr;
+        }
+
+        .lang-options-inner {
+            overflow: hidden;
         }
 
         .lang-option {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 16px;
+            padding: 14px 16px;
             cursor: pointer;
             border-bottom: 1px solid #1f2d44;
             transition: background 0.2s;
@@ -358,15 +407,15 @@
         }
 
         .lang-name {
-            font-size: 1rem;
+            font-size: 0.95rem;
             color: #ffffff;
             font-weight: 500;
         }
 
-        /* Özel Mavi Radyo Buton */
+        /* Mavi Radyo Buton */
         .custom-radio {
-            width: 22px;
-            height: 22px;
+            width: 20px;
+            height: 20px;
             border: 2px solid #44597a;
             border-radius: 50%;
             display: flex;
@@ -377,7 +426,6 @@
 
         .lang-option.selected .custom-radio {
             border-color: #0077b6;
-            background: transparent;
         }
 
         .custom-radio::after {
@@ -397,13 +445,11 @@
 </head>
 <body>
 
-    <!-- Üst Kısım Sekmeler -->
     <div class="tabs">
         <button class="tab-btn active" id="mediaTab" onclick="switchTab(0)">Medya</button>
         <button class="tab-btn" id="aiTab" onclick="switchTab(1)">Caavo0 AI</button>
     </div>
 
-    <!-- Medya Sekmesi -->
     <div id="tab0" class="tab-content active">
         <div class="links-container">
             <a href="https://github.com/caavo0" class="media-card card-github" target="_blank">
@@ -452,7 +498,6 @@
         </div>
     </div>
 
-    <!-- AI Sohbet Sekmesi -->
     <div id="tab1" class="tab-content">
         <div class="chat-container">
             <div class="chat-header-wrapper">
@@ -483,7 +528,6 @@
         </div>
     </div>
 
-    <!-- Yan Menü (Geçmiş) -->
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
@@ -496,50 +540,54 @@
         <div class="history-list" id="historyList"></div>
     </div>
 
-    <!-- Ayarlar Sayfası -->
     <div class="settings-page" id="settingsPage">
         <div class="settings-header">
             <span class="back-btn" onclick="closeSettings()">←</span>
             <div class="settings-title" id="settingsTitle">Ayarlar</div>
         </div>
         <div class="settings-body">
-            <div class="setting-item">
-                <div class="setting-label" id="languageLabel">Dil Seçimi</div>
+            
+            <div class="setting-item" id="langGroup">
+                <div class="setting-dropdown-header" onclick="toggleDropdown('langGroup')">
+                    <div class="setting-label" id="languageLabel">Dil Seçimi</div>
+                    <div class="dropdown-arrow">▼</div>
+                </div>
                 
-                <!-- YENİ: Kendi Kodladığımız Özel Dil Seçim Listesi -->
-                <div class="custom-lang-selector" id="customLangSelector">
-                    <div class="lang-option selected" data-value="tr" onclick="selectLanguage('tr')">
-                        <span class="lang-name">Türkçe</span>
-                        <div class="custom-radio"></div>
-                    </div>
-                    <div class="lang-option" data-value="en" onclick="selectLanguage('en')">
-                        <span class="lang-name">English</span>
-                        <div class="custom-radio"></div>
-                    </div>
-                    <div class="lang-option" data-value="de" onclick="selectLanguage('de')">
-                        <span class="lang-name">Deutsch</span>
-                        <div class="custom-radio"></div>
-                    </div>
-                    <div class="lang-option" data-value="es" onclick="selectLanguage('es')">
-                        <span class="lang-name">Español</span>
-                        <div class="custom-radio"></div>
-                    </div>
-                    <div class="lang-option" data-value="fr" onclick="selectLanguage('fr')">
-                        <span class="lang-name">Français</span>
-                        <div class="custom-radio"></div>
-                    </div>
-                    <div class="lang-option" data-value="ru" onclick="selectLanguage('ru')">
-                        <span class="lang-name">Русский</span>
-                        <div class="custom-radio"></div>
-                    </div>
-                    <div class="lang-option" data-value="ar" onclick="selectLanguage('ar')">
-                        <span class="lang-name">العربية</span>
-                        <div class="custom-radio"></div>
+                <div class="custom-lang-selector">
+                    <div class="lang-options-inner">
+                        <div class="lang-option selected" data-value="tr" onclick="selectLanguage('tr')">
+                            <span class="lang-name">Türkçe</span>
+                            <div class="custom-radio"></div>
+                        </div>
+                        <div class="lang-option" data-value="en" onclick="selectLanguage('en')">
+                            <span class="lang-name">English</span>
+                            <div class="custom-radio"></div>
+                        </div>
+                        <div class="lang-option" data-value="de" onclick="selectLanguage('de')">
+                            <span class="lang-name">Deutsch</span>
+                            <div class="custom-radio"></div>
+                        </div>
+                        <div class="lang-option" data-value="es" onclick="selectLanguage('es')">
+                            <span class="lang-name">Español</span>
+                            <div class="custom-radio"></div>
+                        </div>
+                        <div class="lang-option" data-value="fr" onclick="selectLanguage('fr')">
+                            <span class="lang-name">Français</span>
+                            <div class="custom-radio"></div>
+                        </div>
+                        <div class="lang-option" data-value="ru" onclick="selectLanguage('ru')">
+                            <span class="lang-name">Русский</span>
+                            <div class="custom-radio"></div>
+                        </div>
+                        <div class="lang-option" data-value="ar" onclick="selectLanguage('ar')">
+                            <span class="lang-name">العربية</span>
+                            <div class="custom-radio"></div>
+                        </div>
                     </div>
                 </div>
+            </div>
 
             </div>
-        </div>
     </div>
 
     <script>
@@ -547,7 +595,7 @@
         let chatSessions = []; 
         let currentSessionId = null;
 
-        // Genişletilmiş Dil Çeviri Havuzu
+        // Dil Çeviri Havuzu
         const translations = {
             tr: {
                 mediaTab: "Medya", aiTab: "Caavo0 AI", chatHeader: "Caavo0 AI",
@@ -592,7 +640,6 @@
                 chatSessions = JSON.parse(savedSessions);
                 updateSidebarUI();
             }
-            // Kayıtlı dil ayarını yükle
             const savedLang = localStorage.getItem('caavo0_lang');
             if (savedLang && translations[savedLang]) {
                 selectLanguage(savedLang);
@@ -624,12 +671,17 @@
             document.getElementById('sidebarOverlay').classList.toggle('show');
         }
 
-        // YENİ: Özel Dil Seçim Fonksiyonu
+        // YENİ: Akıcı Açılır-Kapanır Menü Tetikleyicisi
+        function toggleDropdown(id) {
+            const group = document.getElementById(id);
+            group.classList.toggle('open');
+        }
+
+        // DEĞİŞTİ: Dil Seçilince Kutuyu Kapatma Özelliği Eklendi
         function selectLanguage(langCode) {
             currentLang = langCode;
             localStorage.setItem('caavo0_lang', langCode);
 
-            // UI elemanlarındaki seçili sınıfını güncelle
             document.querySelectorAll('.lang-option').forEach(opt => {
                 if(opt.getAttribute('data-value') === langCode) {
                     opt.classList.add('selected');
@@ -639,6 +691,11 @@
             });
 
             updateUIStrings();
+
+            // Dil seçildikten sonra listenin otomatik kapanmasını sağlıyoruz
+            setTimeout(() => {
+                document.getElementById('langGroup').classList.remove('open');
+            }, 180);
         }
 
         async function sendMessage() {
@@ -805,7 +862,10 @@
         }
 
         function openSettings() { document.getElementById('settingsPage').classList.add('show'); }
-        function closeSettings() { document.getElementById('settingsPage').classList.remove('show'); }
+        function closeSettings() { 
+            document.getElementById('settingsPage').classList.remove('show'); 
+            document.getElementById('langGroup').classList.remove('open'); // Kapatırken açık kaldıysa sıfırla
+        }
 
         function updateUIStrings() {
             mediaTab.textContent = translations[currentLang].mediaTab;
