@@ -176,7 +176,6 @@
             transition: background 0.2s;
         }
 
-        .card-apk:hover::before     { background: #a4c639; }
         .card-github:hover::before  { background: #f0f6fc; }
         .card-youtube:hover::before { background: #ff0000; }
         .card-tiktok:hover::before  { background: #00f2fe; }
@@ -201,9 +200,7 @@
             flex-shrink: 0;
         }
 
-        .media-icon svg { width: 24px; height: 24px; fill: var(--icon-color); stroke: none; transition: all 0.2s; }
-        .card-apk .media-icon svg { fill: none; stroke: var(--icon-color); }
-        .card-apk:hover .media-icon svg { stroke: #a4c639; }
+        .media-icon svg { width: 24px; height: 24px; fill: var(--icon-color); transition: fill 0.2s; }
         .card-github:hover .media-icon svg { fill: #ffffff; }
         [data-theme="pearl-white"] .card-github:hover .media-icon svg { fill: #24292f; }
         .card-youtube:hover .media-icon svg { fill: #ff0000; }
@@ -263,7 +260,7 @@
         .ai-message { background: transparent; color: var(--text-main); align-self: flex-start; padding-left: 5px; width: 100%; }
         .welcome-text { text-align: center; color: var(--accent-light); font-size: 1.3rem; margin-top: auto; margin-bottom: auto; padding: 0 20px; }
 
-        /* MESAJ ALTI ARAÇ ÇUBUĞU (TOOLBAR) STİLLERİ */
+        /* 🚨 REİS BURAYA DİKKAT: MESAJ ALTI ARAÇ ÇUBUĞU (TOOLBAR) STİLLERİ */
         .message-toolbar {
             display: inline-flex;
             gap: 12px;
@@ -281,19 +278,10 @@
             border: none;
             color: var(--text-muted);
             cursor: pointer;
-            transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 4px;
+            font-size: 14px;
+            padding: 4px 6px;
             border-radius: 4px;
-        }
-        .message-toolbar button svg {
-            width: 16px;
-            height: 16px;
-            stroke: currentColor;
-            fill: none;
-            stroke-width: 2;
+            transition: all 0.2s ease;
         }
         .message-toolbar button:hover {
             color: var(--accent-light);
@@ -414,21 +402,8 @@
         <button class="tab-btn" id="aiTab" onclick="switchTab(1)">Caavo0 AI</button>
     </div>
 
-            <a href="https://www.mediafire.com/file/e7qbdu9jvt6xeco/caavo0.apk/file" download="Caavo0_AI.apk" class="media-card card-apk">
-                <dclassclass="media-icon">
-                    <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                        <polyline points="7 10 12 15 17 10"/>
-                        <line x1="12" x2="12" y1="15" y2="3"/>
-                    </svg>
-                </div>
-                <div class="media-info">
-                    <span class="media-title" id="apkCardTitle">Android Uygulaması (APK)</span>
-                    <span class="media-desc" id="apkCardDesc">Caavo0 AI uygulamasını doğrudan telefonunuza indirip kullanın.</span>
-                </div>
-                <div class="media-arrow">➔</div>
-            </a>
-
+    <div id="tab0" class="tab-content active">
+        <div class="links-container">
             <a href="https://github.com/caavo0" class="media-card card-github" target="_blank">
                 <div class="media-icon">
                     <svg viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
@@ -661,8 +636,7 @@
                 bugTrigger: "🚨 Hata Bildir", bugTitle: "Sistem Hatası Bildir", bugDesc: "Karşılaştığın problemi kısaca bize ilet, hemen düzeltelim.",
                 bugLabelCat: "Hata Türü", bugLabelDesc: "Açıklama", bugTextareaPlh: "Adım adım hatayı nasıl aldığını yazar mısın?",
                 bugOptUi: "Arayüz / Tasarım Hatası", bugOptAi: "Yapay Zeka Yanıt Hatası", bugOptPerf: "Donma / Yavaşlık Problemi", bugOptOther: "Diğer Sorunlar",
-                bugCancel: "Vazgeç", bugSubmit: "Gönder", bugAlertEmpty: "Lütfen hata açıklamasını boş bırakmayın.", bugAlertSuccess: "Hata bildiriminiz başarıyla iletildi! Teşekkürler.",
-                apkTitle: "Android Uygulaması (APK)", apkDesc: "Caavo0 AI uygulamasını doğrudan telefonunuza indirip kullanın."
+                bugCancel: "Vazgeç", bugSubmit: "Gönder", bugAlertEmpty: "Lütfen hata açıklamasını boş bırakmayın.", bugAlertSuccess: "Hata bildiriminiz başarıyla iletildi! Teşekkürler."
             },
             en: {
                 mediaTab: "Media", aiTab: "Caavo0 AI", chatHeader: "Caavo0 AI",
@@ -673,8 +647,7 @@
                 bugTrigger: "🚨 Report a Bug", bugTitle: "Report a System Bug", bugDesc: "Briefly tell us about the issue you encountered, we'll fix it.",
                 bugLabelCat: "Bug Type", bugLabelDesc: "Description", bugTextareaPlh: "Could you write step by step how you got the error?",
                 bugOptUi: "UI / Design Issue", bugOptAi: "AI Response Issue", bugOptPerf: "Lag / Performance Problem", bugOptOther: "Other Issues",
-                bugCancel: "Cancel", bugSubmit: "Submit", bugAlertEmpty: "Please do not leave the description blank.", bugAlertSuccess: "Your bug report has been successfully sent! Thank you.",
-                apkTitle: "Android App (APK)", apkDesc: "Download Caavo0 AI directly to your phone and start using it."
+                bugCancel: "Cancel", bugSubmit: "Submit", bugAlertEmpty: "Please do not leave the description blank.", bugAlertSuccess: "Your bug report has been successfully sent! Thank you."
             },
             de: {
                 mediaTab: "Medien", aiTab: "Caavo0 AI", chatHeader: "Caavo0 AI",
@@ -685,8 +658,7 @@
                 bugTrigger: "🚨 Fehler melden", bugTitle: "Systemfehler melden", bugDesc: "Teilen Sie uns das Problem kurz mit, wir beheben es sofort.",
                 bugLabelCat: "Fehlertyp", bugLabelDesc: "Beschreibung", bugTextareaPlh: "Schreiben Sie Schritt für Schritt, wie der Fehler aufgetreten ist.",
                 bugOptUi: "Benutzeroberfläche / Design", bugOptAi: "KI-Antwortfehler", bugOptPerf: "Verzögerung / Leistungsproblem", bugOptOther: "Andere Probleme",
-                bugCancel: "Abbrechen", bugSubmit: "Absenden", bugAlertEmpty: "Bitte lassen Sie das Beschreibungsfeld nicht leer.", bugAlertSuccess: "Ihr Fehlerbericht wurde erfolgreich gesendet! Vielen Dank.",
-                apkTitle: "Android-App (APK)", apkDesc: "Laden Sie Caavo0 AI direkt auf Ihr Handy herunter."
+                bugCancel: "Abbrechen", bugSubmit: "Absenden", bugAlertEmpty: "Bitte lassen Sie das Beschreibungsfeld nicht leer.", bugAlertSuccess: "Ihr Fehlerbericht wurde erfolgreich gesendet! Vielen Dank."
             },
             es: {
                 mediaTab: "Medios", aiTab: "Caavo0 AI", chatHeader: "Caavo0 AI",
@@ -697,8 +669,7 @@
                 bugTrigger: "🚨 Reportar un Error", bugTitle: "Reportar un Error del Sistema", bugDesc: "Cuéntanos brevemente el problema y lo solucionaremos de inmediato.",
                 bugLabelCat: "Tipo de Error", bugLabelDesc: "Descripción", bugTextareaPlh: "¿Podrías escribir paso a paso cómo surgió el error?",
                 bugOptUi: "Problema de Interfaz / Diseño", bugOptAi: "Error de Respuesta de IA", bugOptPerf: "Problema de Rendimiento / Lag", bugOptOther: "Otros Problemas",
-                bugCancel: "Cancelar", bugSubmit: "Enviar", bugAlertEmpty: "Por favor, no deje la descripción vacía.", bugAlertSuccess: "¡Su informe de errores ha sido enviado con éxito! Gracias.",
-                apkTitle: "Aplicación Android (APK)", apkDesc: "Descarga Caavo0 AI directamente en tu teléfono."
+                bugCancel: "Cancelar", bugSubmit: "Enviar", bugAlertEmpty: "Por favor, no deje la descripción vacía.", bugAlertSuccess: "¡Su informe de errores ha sido enviado con éxito! Gracias."
             },
             fr: {
                 mediaTab: "Médias", aiTab: "Caavo0 AI", chatHeader: "Caavo0 AI",
@@ -709,8 +680,7 @@
                 bugTrigger: "🚨 Signaler un Bug", bugTitle: "Signaler un Bug Système", bugDesc: "Décrivez brièvement le problème rencontré, nous le corrigerons immédiatement.",
                 bugLabelCat: "Type de Bug", bugLabelDesc: "Description", bugTextareaPlh: "Pouvez-vous écrire étape par étape comment le bug s'est produit ?",
                 bugOptUi: "Problème d'Interface / Design", bugOptAi: "Erreur de Réponse de l'IA", bugOptPerf: "Problème de Performance / Lenteur", bugOptOther: "Autres Problèmes",
-                bugCancel: "Annuler", bugSubmit: "Envoyer", bugAlertEmpty: "Veuillez ne pas laisser la description vide.", bugAlertSuccess: "Votre rapport de bug a été envoyé avec succès ! Merci.",
-                apkTitle: "Application Android (APK)", apkDesc: "Téléchargez Caavo0 AI directement sur votre téléphone."
+                bugCancel: "Annuler", bugSubmit: "Envoyer", bugAlertEmpty: "Veuillez ne pas laisser la description vide.", bugAlertSuccess: "Votre rapport de bug a été envoyé avec succès ! Merci."
             },
             ru: {
                 mediaTab: "Медиа", aiTab: "Caavo0 AI", chatHeader: "Caavo0 AI",
@@ -721,10 +691,9 @@
                 bugTrigger: "🚨 Сообщить об ошибке", bugTitle: "Сообщить о системной ошибке", bugDesc: "Кратко расскажите о проблеме, и мы сразу её исправим.",
                 bugLabelCat: "Тип ошибки", bugLabelDesc: "Описание", bugTextareaPlh: "Опишите пошагово, как вы столкнулись с ошибкой.",
                 bugOptUi: "Проблема с интерфейсом / дизайном", bugOptAi: "Ошибка ответа ИИ", bugOptPerf: "Проблема с зависанием / производительностью", bugOptOther: "Другие проблемы",
-                bugCancel: "Отмена", bugSubmit: "Отправить", bugAlertEmpty: "Пожалуйста, заполните описание ошибки.", bugAlertSuccess: "Ваш отчет об ошибке успешно отправлен! Спасибо.",
-                apkTitle: "Android Приложение (APK)", apkDesc: "Скачайте Caavo0 AI прямо на свой телефон."
+                bugCancel: "Отмена", bugSubmit: "Отправить", bugAlertEmpty: "Пожалуйста, заполните описание ошибки.", bugAlertSuccess: "Ваш отчет об ошибке успешно отправлен! Спасибо."
             },
-            group_ar: {
+            group_ar: { // Not active placeholder object but structured for standard translations keys
             },
             ar: {
                 mediaTab: "وسائل الإعلام", aiTab: "Caavo0 AI", chatHeader: "Caavo0 AI",
@@ -735,8 +704,7 @@
                 bugTrigger: "🚨 الإبلاغ عن خطأ", bugTitle: "الإبلاغ عن خطأ في النظام", bugDesc: "أدخل باختصار عن المشكلة التي واجهتها وسنصلحها فوراً.",
                 bugLabelCat: "نوع الخطأ", bugLabelDesc: "الوصف", bugTextareaPlh: "هل يمكنك كتابة خطوات حدوث الخطأ بالتفصيل؟",
                 bugOptUi: "مشكلة في الواجهة / التصميم", bugOptAi: "خطأ في رد الذكاء الاصطناعي", bugOptPerf: "مشكلة في الأداء / البطء", bugOptOther: "مشاكل أخرى",
-                bugCancel: "إلغاء", bugSubmit: "إرسال", bugAlertEmpty: "يرجى عدم ترك خانة الوصف فارغة.", bugAlertSuccess: "تم إرسال تقرير الخطأ بنجاح! شكراً لك.",
-                apkTitle: "تطبيق الأندرويد (APK)", apkDesc: "قم بتنزيل تطبيق Caavo0 AI مباشرة على هاتفك واستخدامه."
+                bugCancel: "إلغاء", bugSubmit: "إرسال", bugAlertEmpty: "يرجى عدم ترك خانة الوصف فارغة.", bugAlertSuccess: "تم إرسال تقرير الخطأ بنجاح! شكراً لك."
             }
         };
 
@@ -866,31 +834,24 @@
             saveToLocalStorage();
         }
 
-        /* MODERNIZE EDİLMİŞ ARAC ÇUBUĞU (Yapay zeka ikon tasarım dilinde, alert() YOK) */
+        /* 🚨 REİS BURAYA DİKKAT: BUTONLARI OLUŞTURAN GİZLİ MOTOR FONKSİYONU */
         function createToolbarElement(text) {
             const toolbar = document.createElement('div');
             toolbar.className = 'message-toolbar';
 
-            // 1. Kopyala Butonu (Mikro-etkileşimli dinamik ikon)
+            // 1. Kopyala Butonu
             const copyBtn = document.createElement('button');
+            copyBtn.innerHTML = '📋';
             copyBtn.title = 'Kopyala';
-            
-            const copyIconSvg = `<svg viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>`;
-            const checkIconSvg = `<svg viewBox="0 0 24 24" style="stroke: #0f9f68;"><path d="M20 6 9 17l-5-5"/></svg>`;
-            
-            copyBtn.innerHTML = copyIconSvg;
             copyBtn.onclick = () => {
                 navigator.clipboard.writeText(text);
-                copyBtn.innerHTML = checkIconSvg; // Onay ikonu tetiklenir
-                setTimeout(() => {
-                    copyBtn.innerHTML = copyIconSvg; // 2 saniye sonra eski haline döner
-                }, 2000);
+                alert('Kopyalandı!');
             };
 
             // 2. Sesli Oku Butonu
             const speakBtn = document.createElement('button');
+            speakBtn.innerHTML = '🔊';
             speakBtn.title = 'Sesli Oku';
-            speakBtn.innerHTML = `<svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>`;
             speakBtn.onclick = () => {
                 if (window.speechSynthesis.speaking) {
                     window.speechSynthesis.cancel();
@@ -903,7 +864,7 @@
 
             // 3. Like Butonu
             const likeBtn = document.createElement('button');
-            likeBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>`;
+            likeBtn.innerHTML = '👍';
             likeBtn.onclick = () => {
                 likeBtn.style.color = '#0f9f68';
                 dislikeBtn.style.color = '';
@@ -911,7 +872,7 @@
 
             // 4. Dislike Butonu
             const dislikeBtn = document.createElement('button');
-            dislikeBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm10-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"/></svg>`;
+            dislikeBtn.innerHTML = '👎';
             dislikeBtn.onclick = () => {
                 dislikeBtn.style.color = '#ef4444';
                 likeBtn.style.color = '';
@@ -928,10 +889,12 @@
             const div = document.createElement('div');
             div.className = `message ${className}`;
             
+            // İçerik alanı
             const contentDiv = document.createElement('div');
             contentDiv.innerHTML = text.replace(/\n/g, '<br>');
             div.appendChild(contentDiv);
             
+            // Eğer bot mesajıysa altına araç çubuğunu yapıştır
             if (className === 'ai-message') {
                 div.appendChild(createToolbarElement(text));
             }
@@ -965,6 +928,7 @@
                     chatMessages.scrollTop = chatMessages.scrollHeight;
                     setTimeout(type, 15);
                 } else {
+                    // Yazma animasyonu bittiği an butonları mesaj kutusunun altına kondurur
                     div.appendChild(createToolbarElement(fullText));
                     chatMessages.scrollTop = chatMessages.scrollHeight;
                 }
@@ -1062,7 +1026,10 @@
             document.getElementById('themeGroup').classList.remove('open');
         }
 
-        function openBugModal() { document.getElementById('bugModalOverlay').classList.add('show'); }
+        /* Hata Bildirim Modal Fonksiyonları */
+        function openBugModal() {
+            document.getElementById('bugModalOverlay').classList.add('show');
+        }
         function closeBugModal() {
             document.getElementById('bugModalOverlay').classList.remove('show');
             document.getElementById('bugDescription').value = '';
@@ -1075,6 +1042,11 @@
                 alert(translations[currentLang].bugAlertEmpty);
                 return;
             }
+
+            console.log("--- HATA BİLDİRİMİ GÖNDERİLDİ ---");
+            console.log("Kategori:", category);
+            console.log("Açıklama:", description);
+            console.log("Seçili Dil / Tema:", currentLang, "/", currentTheme);
 
             alert(translations[currentLang].bugAlertSuccess);
             closeBugModal();
@@ -1098,10 +1070,7 @@
             document.getElementById('themeEmeraldLabel').textContent = translations[currentLang].themeEmerald;
             document.getElementById('themePurpleLabel').textContent = translations[currentLang].themePurple;
 
-            // APK Kartının Çoklu Dil Yönetimi
-            document.getElementById('apkCardTitle').textContent = translations[currentLang].apkTitle;
-            document.getElementById('apkCardDesc').textContent = translations[currentLang].apkDesc;
-
+            // Hata Modülü Dil Atamaları
             document.getElementById('bugReportBtnText').textContent = translations[currentLang].bugTrigger;
             document.getElementById('bugModalTitle').textContent = translations[currentLang].bugTitle;
             document.getElementById('bugModalDesc').textContent = translations[currentLang].bugDesc;
