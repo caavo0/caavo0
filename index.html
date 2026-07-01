@@ -872,4 +872,219 @@
 
             // 4. Dislike Butonu
             const dislikeBtn = document.createElement('button');
-    
+            dislikeBtn.innerHTML = '👎';
+            dislikeBtn.onclick = () => {
+                dislikeBtn.style.color = '#ef4444';
+                likeBtn.style.color = '';
+            };
+
+            toolbar.appendChild(copyBtn);
+            toolbar.appendChild(speakBtn);
+            toolbar.appendChild(likeBtn);
+            toolbar.appendChild(dislikeBtn);
+            return toolbar;
+        }
+
+        function appendMessage(text, className) {
+            const div = document.createElement('div');
+            div.className = `message ${className}`;
+            
+            // İçerik alanı
+            const contentDiv = document.createElement('div');
+            contentDiv.innerHTML = text.replace(/\n/g, '<br>');
+            div.appendChild(contentDiv);
+            
+            // Eğer bot mesajıysa altına araç çubuğunu yapıştır
+            if (className === 'ai-message') {
+                div.appendChild(createToolbarElement(text));
+            }
+
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function typeWriterEffect(fullText, className) {
+            const div = document.createElement('div');
+            div.className = `message ${className}`;
+            
+            const contentDiv = document.createElement('div');
+            div.appendChild(contentDiv);
+            
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            let processedText = fullText.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+
+            let i = 0;
+            function type() {
+                if (i < processedText.length) {
+                    let char = processedText.charAt(i);
+                    if (char === '\n') {
+                        contentDiv.innerHTML += '<br>';
+                    } else {
+                        contentDiv.innerHTML += char;
+                    }
+                    i++;
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                    setTimeout(type, 15);
+                } else {
+                    // Yazma animasyonu bittiği an butonları mesaj kutusunun altına kondurur
+                    div.appendChild(createToolbarElement(fullText));
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }
+            }
+            type();
+        }
+
+        function showTypingIndicator() {
+            const div = document.createElement('div');
+            div.className = 'typing-indicator';
+            div.innerHTML = '<span></span><span></span><span></span>';
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            return div;
+        }
+
+        function createNewChat() {
+            currentSessionId = null;
+            chatMessages.innerHTML = '';
+            
+            const wm = document.createElement('div');
+            wm.className = 'welcome-text';
+            wm.id = 'welcomeMessage';
+            wm.textContent = translations[currentLang].welcomeMessage;
+            
+            chatMessages.appendChild(wm);
+            userInput.value = '';
+        }
+
+        function updateSidebarUI() {
+            historyList.innerHTML = '';
+            [...chatSessions].reverse().forEach(session => {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'history-item-wrapper';
+
+                const item = document.createElement('div');
+                item.className = 'history-item';
+                item.textContent = session.title;
+                item.onclick = () => {
+                    loadChatSession(session.id);
+                    toggleSidebar();
+                };
+
+                const deleteBtn = document.createElement('div');
+                deleteBtn.className = 'delete-item-btn';
+                deleteBtn.innerHTML = '🗑️';
+                deleteBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    deleteChatSession(session.id);
+                };
+
+                wrapper.appendChild(item);
+                wrapper.appendChild(deleteBtn);
+                historyList.appendChild(wrapper);
+            });
+        }
+
+        function deleteChatSession(id) {
+            if (confirm("Sohbeti silmek istediğinize emin misiniz?")) {
+                chatSessions = chatSessions.filter(s => s.id !== id);
+                saveToLocalStorage();
+                updateSidebarUI();
+                if (currentSessionId === id) createNewChat();
+            }
+        }
+
+        function clearAllHistory() {
+            if (confirm("Tüm sohbet geçmişiniz silinecektir. Emin misiniz?")) {
+                chatSessions = [];
+                saveToLocalStorage();
+                updateSidebarUI();
+                createNewChat();
+                toggleSidebar();
+            }
+        }
+
+        function loadChatSession(id) {
+            currentSessionId = id;
+            chatMessages.innerHTML = '';
+            const session = chatSessions.find(s => s.id === id);
+            
+            if(session && session.messages.length > 0) {
+                session.messages.forEach(msg => {
+                    appendMessage(msg.text, msg.type === 'user' ? 'user-message' : 'ai-message');
+                });
+            } else {
+                createNewChat();
+            }
+        }
+
+        function openSettings() { document.getElementById('settingsPage').classList.add('show'); }
+        function closeSettings() { 
+            document.getElementById('settingsPage').classList.remove('show'); 
+            document.getElementById('langGroup').classList.remove('open');
+            document.getElementById('themeGroup').classList.remove('open');
+        }
+
+        /* Hata Bildirim Modal Fonksiyonları */
+        function openBugModal() {
+            document.getElementById('bugModalOverlay').classList.add('show');
+        }
+        function closeBugModal() {
+            document.getElementById('bugModalOverlay').classList.remove('show');
+            document.getElementById('bugDescription').value = '';
+        }
+        function sendBugReport() {
+            const category = document.getElementById('bugCategory').value;
+            const description = document.getElementById('bugDescription').value.trim();
+
+            if(!description) {
+                alert(translations[currentLang].bugAlertEmpty);
+                return;
+            }
+
+            console.log("--- HATA BİLDİRİMİ GÖNDERİLDİ ---");
+            console.log("Kategori:", category);
+            console.log("Açıklama:", description);
+            console.log("Seçili Dil / Tema:", currentLang, "/", currentTheme);
+
+            alert(translations[currentLang].bugAlertSuccess);
+            closeBugModal();
+        }
+
+        function updateUIStrings() {
+            mediaTab.textContent = translations[currentLang].mediaTab;
+            aiTab.textContent = translations[currentLang].aiTab;
+            chatHeader.textContent = translations[currentLang].chatHeader;
+            
+            const wm = document.getElementById('welcomeMessage');
+            if(wm) wm.textContent = translations[currentLang].welcomeMessage;
+            userInput.placeholder = translations[currentLang].inputPlaceholder;
+            document.getElementById('settingsTitle').textContent = translations[currentLang].settingsTitle;
+            document.getElementById('languageLabel').textContent = translations[currentLang].languageLabel;
+            document.getElementById('themeLabel').textContent = translations[currentLang].themeLabel;
+            
+            document.getElementById('themeDefaultLabel').textContent = translations[currentLang].themeDefault;
+            document.getElementById('themeWhiteLabel').textContent = translations[currentLang].themeWhite;
+            document.getElementById('themeDarkLabel').textContent = translations[currentLang].themeDark;
+            document.getElementById('themeEmeraldLabel').textContent = translations[currentLang].themeEmerald;
+            document.getElementById('themePurpleLabel').textContent = translations[currentLang].themePurple;
+
+            // Hata Modülü Dil Atamaları
+            document.getElementById('bugReportBtnText').textContent = translations[currentLang].bugTrigger;
+            document.getElementById('bugModalTitle').textContent = translations[currentLang].bugTitle;
+            document.getElementById('bugModalDesc').textContent = translations[currentLang].bugDesc;
+            document.getElementById('bugLabelCat').textContent = translations[currentLang].bugLabelCat;
+            document.getElementById('bugLabelDesc').textContent = translations[currentLang].bugLabelDesc;
+            document.getElementById('bugDescription').placeholder = translations[currentLang].bugTextareaPlh;
+            document.getElementById('bugBtnCancel').textContent = translations[currentLang].bugCancel;
+            document.getElementById('bugBtnSubmit').textContent = translations[currentLang].bugSubmit;
+
+            document.getElementById('bugOptUi').textContent = translations[currentLang].bugOptUi;
+            document.getElementById('bugOptAi').textContent = translations[currentLang].bugOptAi;
+            document.getElementById('bugOptPerf').textContent = translations[currentLang].bugOptPerf;
+            document.getElementById('bugOptOther').textContent = translations[currentLang].bugOptOther;
+        }
+    </script>
+</body>
+</html>
