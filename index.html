@@ -3,143 +3,159 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>caavo0</title>
+    <title>Caavo0 AI</title>
     <style>
         * { box-sizing: border-box; }
         
         body {
             margin: 0;
             padding: 0;
-            background-color: #0b132b;
+            background-color: #080c14;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: white;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        #particles-js {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: -1;
+            color: #e3e3e3;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
 
         .tabs {
             display: flex;
             justify-content: center;
             gap: 15px;
-            padding: 20px 20px 10px;
-            background: rgba(11, 19, 43, 0.95);
-            position: sticky;
-            top: 0;
+            padding: 15px 20px;
+            background: #080c14;
             z-index: 10;
         }
 
         .tab-btn {
             flex: 1;
-            max-width: 160px;
-            padding: 13px 20px;
-            font-size: 1.1rem;
-            font-weight: bold;
+            max-width: 140px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: 600;
             border: none;
             border-radius: 30px;
             cursor: pointer;
-            background: #1d2d44;
+            background: #151e2e;
             color: #90e0ef;
+            transition: all 0.2s ease;
         }
 
         .tab-btn.active {
-            background: linear-gradient(45deg, #0077b6, #00b4d8);
+            background: #0077b6;
             color: white;
-        }
-
-        h1 {
-            font-size: 3.2rem;
-            color: #48cae4;
-            text-shadow: 0 0 20px #00b4d8;
-            text-align: center;
-            margin: 15px 0 25px 0;
         }
 
         .tab-content {
             display: none;
+            flex: 1;
             width: 100%;
-            max-width: 340px;
+            max-width: 600px;
             margin: 0 auto;
-            padding: 0 20px 30px;
+            position: relative;
         }
 
-        .tab-content.active { display: block; }
+        .tab-content.active { 
+            display: flex; 
+            flex-direction: column;
+        }
 
+        /* Medya Sekmesi Linkleri */
         .links-container {
             display: flex;
             flex-direction: column;
             gap: 18px;
+            padding: 40px 20px;
+            width: 100%;
         }
 
         a.social-btn {
             text-decoration: none;
-            background: linear-gradient(45deg, #0077b6, #00b4d8);
-            color: white;
-            padding: 16px 20px;
-            border-radius: 30px;
+            background: #151e2e;
+            color: #90e0ef;
+            padding: 18px 20px;
+            border-radius: 16px;
             text-align: center;
             font-weight: bold;
             font-size: 1.1rem;
+            border: 1px solid #1f2d44;
+            transition: background 0.2s;
         }
 
+        a.social-btn:hover {
+            background: #1f2d44;
+        }
+
+        /* Gemini Stili Chat Düzeni */
         .chat-container {
-            width: 100%;
-            max-width: 340px;
-            height: 520px;
-            background: rgba(26, 39, 68, 0.9);
-            border-radius: 22px;
-            box-shadow: 0 10px 40px rgba(0, 180, 216, 0.4);
-            border: 2px solid #00b4d8;
+            flex: 1;
             display: flex;
             flex-direction: column;
+            height: 100%;
             overflow: hidden;
-            margin: 0 auto;
         }
 
         .chat-header {
-            background: linear-gradient(45deg, #0077b6, #00b4d8);
-            padding: 16px;
+            padding: 10px 20px;
             text-align: center;
-            font-weight: bold;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
+            color: #90e0ef;
+            font-weight: 500;
+            opacity: 0.9;
         }
 
         .chat-messages {
             flex: 1;
-            padding: 18px;
+            padding: 20px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 20px;
+            padding-bottom: 100px; /* Alttaki inputun üstünü kapatmaması için */
         }
 
         .message {
             max-width: 85%;
-            padding: 12px 16px;
-            border-radius: 18px;
+            padding: 14px 18px;
+            border-radius: 20px;
             font-size: 1rem;
             line-height: 1.5;
             white-space: pre-wrap;
         }
 
-        .user-message { background: #48cae4; color: #0b132b; align-self: flex-end; }
-        .ai-message { background: #1d2d44; color: #90e0ef; align-self: flex-start; border: 1px solid #3a506b; }
+        .user-message { 
+            background: #0077b6; 
+            color: white; 
+            align-self: flex-end; 
+            border-bottom-right-radius: 4px;
+        }
+        
+        .ai-message { 
+            background: transparent; 
+            color: #e3e3e3; 
+            align-self: flex-start; 
+            padding-left: 5px; /* Gemini stili düz metin görünümü */
+        }
+
+        /* Karşılama Yazısı Ortalama */
+        .welcome-text {
+            text-align: center;
+            color: #90e0ef;
+            font-size: 1.4rem;
+            margin-top: auto;
+            margin-bottom: auto;
+            padding: 0 20px;
+        }
 
         .typing-indicator {
             display: inline-flex;
             align-items: center;
             gap: 5px;
-            padding: 12px 16px;
-            background: #1d2d44;
-            border-radius: 18px;
+            padding: 14px 18px;
+            background: #151e2e;
+            border-radius: 20px;
             align-self: flex-start;
-            border: 1px solid #3a506b;
         }
 
         .typing-indicator span {
@@ -159,97 +175,87 @@
             40% { transform: scale(1); }
         }
 
-        .chat-input-area {
+        /* Gemini Tarzı Oval Alttaki Input Kutusu */
+        .chat-input-wrapper {
+            position: absolute;
+            bottom: 16px;
+            left: 16px;
+            right: 16px;
+            background: #151e2e;
+            border-radius: 32px;
             display: flex;
-            padding: 12px 16px;
-            background: #0b132b;
-            gap: 10px;
-            border-top: 1px solid rgba(0, 180, 216, 0.2);
+            align-items: center;
+            padding: 6px 10px 6px 18px;
+            border: 1px solid #1f2d44;
         }
 
-        .chat-input-area input {
+        .chat-input-wrapper input {
             flex: 1;
-            background: #1d2d44;
-            border: 1px solid #3a506b;
-            padding: 14px 18px;
-            border-radius: 30px;
-            color: white;
-            font-size: 1rem;
-            min-width: 0;
-        }
-
-        .chat-input-area button {
-            background: linear-gradient(45deg, #0077b6, #00b4d8);
+            background: transparent;
             border: none;
             color: white;
-            padding: 0 26px;
-            border-radius: 30px;
+            padding: 12px 0;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .chat-input-wrapper button {
+            background: #0077b6;
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
             cursor: pointer;
             font-weight: bold;
-            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            transition: background 0.2s;
+        }
+
+        .chat-input-wrapper button:hover {
+            background: #00b4d8;
         }
 
         /* Ayarlar Butonu */
         .settings-btn {
             position: fixed;
-            bottom: 25px;
-            right: 25px;
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(45deg, #0077b6, #00b4d8);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.8rem;
+            top: 15px;
+            right: 20px;
+            font-size: 1.5rem;
             cursor: pointer;
-            box-shadow: 0 6px 25px rgba(0, 180, 216, 0.6);
             z-index: 30;
+            opacity: 0.8;
         }
 
-        /* Ayarlar Sayfası (Tam Ekran) */
+        /* Ayarlar Sayfası */
         .settings-page {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #0b132b;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: #080c14;
             display: none;
             flex-direction: column;
             z-index: 40;
         }
 
-        .settings-page.show {
-            display: flex;
-        }
+        .settings-page.show { display: flex; }
 
         .settings-header {
             padding: 20px;
             display: flex;
             align-items: center;
-            background: #1d2d44;
+            background: #151e2e;
         }
 
-        .back-btn {
-            font-size: 1.8rem;
-            margin-right: 15px;
-            cursor: pointer;
-        }
-
-        .settings-title {
-            font-size: 1.5rem;
-            color: #48cae4;
-        }
-
-        .settings-body {
-            padding: 25px;
-            flex: 1;
-        }
-
+        .back-btn { font-size: 1.8rem; margin-right: 15px; cursor: pointer; }
+        .settings-title { font-size: 1.5rem; color: #48cae4; }
+        .settings-body { padding: 25px; flex: 1; }
         .setting-item {
             padding: 18px 0;
-            border-bottom: 1px solid #3a506b;
+            border-bottom: 1px solid #1f2d44;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -259,15 +265,15 @@
 </head>
 <body>
 
-    <div id="particles-js"></div>
+    <!-- Ayarlar Butonu (Sağ Üstte Daha Şık) -->
+    <div class="settings-btn" onclick="openSettings()">⚙️</div>
 
     <div class="tabs">
         <button class="tab-btn active" id="mediaTab" onclick="switchTab(0)">Medya</button>
         <button class="tab-btn" id="aiTab" onclick="switchTab(1)">Caavo0 AI</button>
     </div>
 
-    <h1>caavo0</h1>
-
+    <!-- Medya Sekmesi -->
     <div id="tab0" class="tab-content active">
         <div class="links-container">
             <a href="https://github.com/caavo0" class="social-btn" target="_blank">GitHub</a>
@@ -277,21 +283,20 @@
         </div>
     </div>
 
+    <!-- AI Sohbet Sekmesi -->
     <div id="tab1" class="tab-content">
         <div class="chat-container">
-            <div class="chat-header" id="chatHeader">Caavo0 AI Assistant</div>
+            <div class="chat-header" id="chatHeader">Caavo0 Aİh</div>
             <div class="chat-messages" id="chatMessages">
-                <div class="message ai-message" id="welcomeMessage">Merhaba kardeşim! Ben Caavo0. Sor bakalım 😊</div>
+                <!-- Gemini stilinde açılış metni ortada başlar -->
+                <div class="welcome-text" id="welcomeMessage">Merhaba! Nasıl yardımcı olabilirim?</div>
             </div>
-            <div class="chat-input-area">
-                <input type="text" id="userInput" placeholder="Mesaj yaz..." onkeypress="handleKeyPress(event)">
-                <button onclick="sendMessage()" id="sendBtn">Gönder</button>
+            <div class="chat-input-wrapper">
+                <input type="text" id="userInput" placeholder="Caavo0'a sorun..." onkeypress="handleKeyPress(event)">
+                <button onclick="sendMessage()" id="sendBtn">➔</button>
             </div>
         </div>
     </div>
-
-    <!-- Ayarlar Butonu -->
-    <div class="settings-btn" onclick="openSettings()">⚙️</div>
 
     <!-- Ayarlar Sayfası -->
     <div class="settings-page" id="settingsPage">
@@ -302,7 +307,7 @@
         <div class="settings-body">
             <div class="setting-item">
                 <span id="languageLabel">Dil Seçimi</span>
-                <select id="languageSelect" onchange="changeLanguage()" style="background:#1d2d44; color:white; border:none; padding:8px 12px; border-radius:8px;">
+                <select id="languageSelect" onchange="changeLanguage()" style="background:#151e2e; color:white; border:1px solid #1f2d44; padding:8px 12px; border-radius:8px;">
                     <option value="tr">Türkçe</option>
                     <option value="en">English</option>
                     <option value="de">Deutsch</option>
@@ -311,34 +316,16 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    
     <script>
-        particlesJS("particles-js", {
-            particles: {
-                number: { value: 80 },
-                color: { value: "#90e0ef" },
-                shape: { type: "circle" },
-                opacity: { value: 0.6 },
-                size: { value: 3 },
-                line_linked: { enable: true, distance: 150, color: "#00b4d8", opacity: 0.4, width: 1.5 },
-                move: { enable: true, speed: 2 }
-            },
-            interactivity: {
-                events: { onhover: { enable: true, mode: "repulse" }, onclick: { enable: true, mode: "push" }}
-            }
-        });
-
         let currentLang = "tr";
 
         const translations = {
             tr: {
                 mediaTab: "Medya",
                 aiTab: "Caavo0 AI",
-                chatHeader: "Caavo0 AI Assistant",
-                welcomeMessage: "Merhaba kardeşim! Ben Caavo0. Sor bakalım 😊",
-                inputPlaceholder: "Mesaj yaz...",
-                sendBtn: "Gönder",
+                chatHeader: "Caavo0 Flash",
+                welcomeMessage: "Merhaba! Nasıl yardımcı olabilirim?",
+                inputPlaceholder: "Caavo0'a sorun...",
                 settingsTitle: "Ayarlar",
                 languageLabel: "Dil Seçimi",
                 errorMessage: "Bağlantı hatası, tekrar dene."
@@ -346,10 +333,9 @@
             en: {
                 mediaTab: "Media",
                 aiTab: "Caavo0 AI",
-                chatHeader: "Caavo0 AI Assistant",
-                welcomeMessage: "Hello brother! I'm Caavo0. Ask me anything 😊",
-                inputPlaceholder: "Type a message...",
-                sendBtn: "Send",
+                chatHeader: "Caavo0 Flash",
+                welcomeMessage: "Hello! How can I help you today?",
+                inputPlaceholder: "Ask Caavo0...",
                 settingsTitle: "Settings",
                 languageLabel: "Language",
                 errorMessage: "Connection error, please try again."
@@ -357,10 +343,9 @@
             de: {
                 mediaTab: "Medien",
                 aiTab: "Caavo0 AI",
-                chatHeader: "Caavo0 AI Assistant",
-                welcomeMessage: "Hallo Bruder! Ich bin Caavo0. Frag mich etwas 😊",
-                inputPlaceholder: "Nachricht schreiben...",
-                sendBtn: "Senden",
+                chatHeader: "Caavo0 Flash",
+                welcomeMessage: "Hallo! Wie kann ich dir heute helfen?",
+                inputPlaceholder: "Frag Caavo0...",
                 settingsTitle: "Einstellungen",
                 languageLabel: "Sprache",
                 errorMessage: "Verbindungsfehler, bitte erneut versuchen."
@@ -387,6 +372,11 @@
         async function sendMessage() {
             const text = userInput.value.trim();
             if (!text) return;
+
+            // İlk mesaj gönderildiğinde ortadaki hoş geldiniz yazısını kaldırır
+            if(welcomeMessage) {
+                welcomeMessage.remove();
+            }
 
             appendMessage(text, 'user-message');
             userInput.value = '';
@@ -435,7 +425,7 @@
                     }
                     i++;
                     chatMessages.scrollTop = chatMessages.scrollHeight;
-                    setTimeout(type, 18);
+                    setTimeout(type, 15);
                 }
             }
             type();
@@ -455,6 +445,7 @@
         }
 
         function closeSettings() {
+            document.getElementById('settingsPage').classList.remove('remove');
             document.getElementById('settingsPage').classList.remove('show');
         }
 
@@ -464,9 +455,10 @@
             mediaTab.textContent = translations[currentLang].mediaTab;
             aiTab.textContent = translations[currentLang].aiTab;
             chatHeader.textContent = translations[currentLang].chatHeader;
-            welcomeMessage.textContent = translations[currentLang].welcomeMessage;
+            if(document.getElementById('welcomeMessage')) {
+                welcomeMessage.textContent = translations[currentLang].welcomeMessage;
+            }
             userInput.placeholder = translations[currentLang].inputPlaceholder;
-            sendBtn.textContent = translations[currentLang].sendBtn;
             document.getElementById('settingsTitle').textContent = translations[currentLang].settingsTitle;
             document.getElementById('languageLabel').textContent = translations[currentLang].languageLabel;
         }
