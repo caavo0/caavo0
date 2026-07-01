@@ -14,7 +14,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: #e3e3e3;
             height: 100vh;
-            height: -webkit-fill-available; /* Mobil tarayıcılar için tam boy ayarı */
+            height: -webkit-fill-available;
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -25,19 +25,27 @@
             height: -webkit-fill-available;
         }
 
+        /* Üst Bar Kapsayıcısı: Sekmeleri ve Ayarlar Çarkını Hizalar */
+        .header-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 12px 20px;
+            background: #080c14;
+            flex-shrink: 0;
+        }
+
         .tabs {
             display: flex;
             justify-content: center;
             gap: 15px;
-            padding: 12px 20px;
-            background: #080c14;
-            z-index: 10;
-            flex-shrink: 0; /* Sekmelerin küçülmesini engeller */
+            width: 100%;
+            max-width: 320px;
         }
 
         .tab-btn {
             flex: 1;
-            max-width: 140px;
             padding: 10px 20px;
             font-size: 1rem;
             font-weight: 600;
@@ -54,13 +62,28 @@
             color: white;
         }
 
+        /* Ayarlar Butonu Artık Sekmelerin Üstüne Binmez, En Sağda Durur */
+        .settings-btn {
+            position: absolute;
+            right: 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            opacity: 0.8;
+            user-select: none;
+            transition: opacity 0.2s;
+        }
+
+        .settings-btn:hover {
+            opacity: 1;
+        }
+
         .tab-content {
             display: none;
             flex: 1;
             width: 100%;
             max-width: 600px;
             margin: 0 auto;
-            overflow: hidden; /* Dışarı taşmayı engeller */
+            overflow: hidden;
         }
 
         .tab-content.active { 
@@ -178,7 +201,6 @@
             40% { transform: scale(1); }
         }
 
-        /* Ekrana Tam Sığan ve Taşmayan Input Alanı */
         .chat-input-container {
             padding: 12px 16px;
             background: #080c14;
@@ -220,17 +242,6 @@
             flex-shrink: 0;
         }
 
-        /* Ayarlar Butonu */
-        .settings-btn {
-            position: fixed;
-            top: 15px;
-            right: 20px;
-            font-size: 1.5rem;
-            cursor: pointer;
-            z-index: 30;
-            opacity: 0.8;
-        }
-
         /* Ayarlar Sayfası */
         .settings-page {
             position: fixed;
@@ -259,11 +270,13 @@
 </head>
 <body>
 
-    <div class="settings-btn" onclick="openSettings()">⚙️</div>
-
-    <div class="tabs">
-        <button class="tab-btn active" id="mediaTab" onclick="switchTab(0)">Medya</button>
-        <button class="tab-btn" id="aiTab" onclick="switchTab(1)">Caavo0 AI</button>
+    <!-- Üst Kısım: Hem sekmeleri hem ayarları düzgünce hizalayan yeni alan -->
+    <div class="header-bar">
+        <div class="tabs">
+            <button class="tab-btn active" id="mediaTab" onclick="switchTab(0)">Medya</button>
+            <button class="tab-btn" id="aiTab" onclick="switchTab(1)">Caavo0 AI</button>
+        </div>
+        <div class="settings-btn" onclick="openSettings()">⚙️</div>
     </div>
 
     <!-- Medya Sekmesi -->
@@ -279,7 +292,7 @@
     <!-- AI Sohbet Sekmesi -->
     <div id="tab1" class="tab-content">
         <div class="chat-container">
-            <div class="chat-header" id="chatHeader">Caavo0 Flash</div>
+            <div class="chat-header" id="chatHeader">Caavo0 AI</div>
             <div class="chat-messages" id="chatMessages">
                 <div class="welcome-text" id="welcomeMessage">Merhaba! Nasıl yardımcı olabilirim?</div>
             </div>
@@ -317,7 +330,7 @@
             tr: {
                 mediaTab: "Medya",
                 aiTab: "Caavo0 AI",
-                chatHeader: "Caavo0 Flash",
+                chatHeader: "Caavo0 AI",
                 welcomeMessage: "Merhaba! Nasıl yardımcı olabilirim?",
                 inputPlaceholder: "Caavo0'a sorun...",
                 settingsTitle: "Ayarlar",
@@ -327,7 +340,7 @@
             en: {
                 mediaTab: "Media",
                 aiTab: "Caavo0 AI",
-                chatHeader: "Caavo0 Flash",
+                chatHeader: "Caavo0 AI",
                 welcomeMessage: "Hello! How can I help you today?",
                 inputPlaceholder: "Ask Caavo0...",
                 settingsTitle: "Settings",
@@ -337,7 +350,7 @@
             de: {
                 mediaTab: "Medien",
                 aiTab: "Caavo0 AI",
-                chatHeader: "Caavo0 Flash",
+                chatHeader: "Caavo0 AI",
                 welcomeMessage: "Hallo! Wie kann ich dir heute helfen?",
                 inputPlaceholder: "Frag Caavo0...",
                 settingsTitle: "Einstellungen",
