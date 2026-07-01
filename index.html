@@ -291,10 +291,13 @@
             chatMessages.appendChild(div);
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
+            // Markdown kalın desteği (**text** → <strong>text</strong>)
+            let processedText = fullText.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+
             let i = 0;
             function type() {
-                if (i < fullText.length) {
-                    let char = fullText.charAt(i);
+                if (i < processedText.length) {
+                    let char = processedText.charAt(i);
                     if (char === '\n') {
                         div.innerHTML += '<br>';
                     } else {
