@@ -247,7 +247,7 @@
             border-color: #0077b6;
         }
 
-        /* Karartma Katmanı (Panel açılınca arkası kararsın diye) */
+        /* Karartma Katmanı */
         .sidebar-overlay {
             position: fixed;
             top: 0; left: 0;
@@ -482,7 +482,7 @@
 
     <script>
         let currentLang = "tr";
-        let chatSessions = []; // Tüm geçmiş sohbet odalarını tutacak dizi
+        let chatSessions = []; 
         let currentSessionId = null;
 
         const translations = {
@@ -503,6 +503,20 @@
             }
         };
 
+        // SAYFA YÜKLENDİĞİNDE: Hafızadaki eski sohbetleri çek
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedSessions = localStorage.getItem('caavo0_chats');
+            if (savedSessions) {
+                chatSessions = JSON.parse(savedSessions);
+                updateSidebarUI();
+            }
+        });
+
+        // Veriyi hafızaya (Local Storage) kaydeden fonksiyon
+        function saveToLocalStorage() {
+            localStorage.setItem('caavo0_chats', JSON.stringify(chatSessions));
+        }
+
         function switchTab(n) {
             document.querySelectorAll('.tab-content').forEach((el, i) => el.classList.toggle('active', i === n));
             document.querySelectorAll('.tab-btn').forEach((el, i) => el.classList.toggle('active', i === n));
@@ -520,7 +534,6 @@
             if (e.key === 'Enter') sendMessage();
         }
 
-        // Yan menüyü açıp kapatma fonksiyonu
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('open');
             document.getElementById('sidebarOverlay').classList.toggle('show');
@@ -530,7 +543,6 @@
             const text = userInput.value.trim();
             if (!text) return;
 
-            // Eğer şu an aktif bir sohbet kimliği yoksa yeni session oluştur
             if (!currentSessionId) {
                 currentSessionId = Date.now();
                 chatSessions.push({
@@ -544,11 +556,12 @@
             const wm = document.getElementById('welcomeMessage');
             if(wm) wm.remove();
 
-            // Kullanıcı mesajını kaydet ve ekrana bas
             const activeSession = chatSessions.find(s => s.id === currentSessionId);
             activeSession.messages.push({ type: 'user', text: text });
             appendMessage(text, 'user-message');
             userInput.value = '';
+            
+            saveToLocalStorage(); // Kullanıcı mesajından sonra kaydet
 
             const typing = showTypingIndicator();
 
@@ -570,6 +583,8 @@
                 activeSession.messages.push({ type: 'ai', text: replyText });
                 typeWriterEffect(replyText, 'ai-message');
             }
+
+            saveToLocalStorage(); // Yapay zeka cevabından sonra kaydet
         }
 
         function appendMessage(text, className) {
@@ -614,7 +629,6 @@
             return div;
         }
 
-        // Yeni sohbet başlatma fonksiyonu
         function createNewChat() {
             currentSessionId = null;
             chatMessages.innerHTML = '';
@@ -628,10 +642,8 @@
             userInput.value = '';
         }
 
-        // Geçmiş panelindeki listeyi yenileyen fonksiyon
         function updateSidebarUI() {
             historyList.innerHTML = '';
-            // En yeni sohbeti en üstte göstermek için ters çeviriyoruz
             [...chatSessions].reverse().forEach(session => {
                 const item = document.createElement('div');
                 item.className = 'history-item';
@@ -644,7 +656,6 @@
             });
         }
 
-        // Geçmişten seçilen bir sohbeti ekrana yükleme fonksiyonu
         function loadChatSession(id) {
             currentSessionId = id;
             chatMessages.innerHTML = '';
