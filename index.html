@@ -70,7 +70,7 @@
             flex-direction: column;
         }
 
-        /* Yenilenen Medya Sekmesi Kart Düzeni */
+        /* Medya Sekmesi Kart Düzeni */
         .links-container {
             display: flex;
             flex-direction: column;
@@ -102,7 +102,6 @@
             transition: background 0.2s;
         }
 
-        /* Platform Renk Detayları */
         .card-github:hover::before  { background: #f0f6fc; }
         .card-youtube:hover::before { background: #ff0000; }
         .card-tiktok:hover::before  { background: #00f2fe; }
@@ -134,7 +133,6 @@
             transition: fill 0.2s;
         }
 
-        /* Hover durumunda ikonların kendi orijinal renklerine bürünmesi */
         .card-github:hover .media-icon svg { fill: #ffffff; }
         .card-youtube:hover .media-icon svg { fill: #ff0000; }
         .card-tiktok:hover .media-icon svg { fill: #00f2fe; }
@@ -171,7 +169,7 @@
             color: #90e0ef;
         }
 
-        /* Gemini Stili Chat Düzeni */
+        /* Chat Düzeni */
         .chat-container {
             flex: 1;
             display: flex;
@@ -252,15 +250,12 @@
         }
 
         .settings-btn:hover, .new-chat-btn:hover { opacity: 1; }
-        .new-chat-btn:active { transform: scale(0.95); }
 
-        /* Kayarak Açılan Geçmiş Paneli (Sidebar) */
+        /* Sidebar */
         .sidebar {
             position: fixed;
-            top: 0;
-            left: -280px;
-            width: 280px;
-            height: 100%;
+            top: 0; left: -280px;
+            width: 280px; height: 100%;
             background-color: #0c1322;
             border-right: 1px solid #1f2d44;
             z-index: 50;
@@ -271,209 +266,38 @@
         }
 
         .sidebar.open { left: 0; }
+        .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; color: #48cae4; font-weight: bold; font-size: 1.2rem; }
+        .sidebar-sub-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #1f2d44; }
+        .clear-all-btn { font-size: 0.85rem; color: #ff4d4d; cursor: pointer; opacity: 0.8; }
+        .close-sidebar-btn { cursor: pointer; font-size: 1.5rem; color: #90e0ef; }
 
-        .sidebar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-            color: #48cae4;
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
+        .history-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .history-item-wrapper { display: flex; align-items: center; justify-content: space-between; background: #151e2e; border-radius: 10px; transition: all 0.2s; padding-right: 10px; }
+        .history-item-wrapper:hover { background: #1f2d44; }
+        .history-item { flex: 1; padding: 12px 15px; cursor: pointer; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .delete-item-btn { cursor: pointer; opacity: 0.5; padding: 5px; }
+        .delete-item-btn:hover { opacity: 1; color: #ff4d4d; }
 
-        .sidebar-sub-actions {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #1f2d44;
-        }
-
-        .clear-all-btn {
-            font-size: 0.85rem;
-            color: #ff4d4d;
-            cursor: pointer;
-            opacity: 0.8;
-            transition: opacity 0.2s;
-        }
-        .clear-all-btn:hover { opacity: 1; }
-
-        .close-sidebar-btn {
-            cursor: pointer;
-            font-size: 1.5rem;
-            color: #90e0ef;
-        }
-
-        .history-list {
-            flex: 1;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .history-item-wrapper {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: #151e2e;
-            border-radius: 10px;
-            border: 1px solid transparent;
-            transition: all 0.2s;
-            padding-right: 10px;
-        }
-
-        .history-item-wrapper:hover {
-            background: #1f2d44;
-            border-color: #0077b6;
-        }
-
-        .history-item {
-            flex: 1;
-            padding: 12px 15px;
-            cursor: pointer;
-            font-size: 0.95rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .delete-item-btn {
-            cursor: pointer;
-            font-size: 0.95rem;
-            opacity: 0.5;
-            padding: 5px;
-            transition: opacity 0.2s, transform 0.1s;
-        }
-
-        .delete-item-btn:hover {
-            opacity: 1;
-            color: #ff4d4d;
-            transform: scale(1.1);
-        }
-
-        /* Karartma Katmanı */
-        .sidebar-overlay {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 45;
-            display: none;
-        }
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 45; display: none; }
         .sidebar-overlay.show { display: block; }
 
         /* Mesaj Alanları */
-        .chat-messages {
-            flex: 1;
-            padding: 10px 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
+        .chat-messages { flex: 1; padding: 10px 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
+        .message { max-width: 85%; padding: 14px 18px; border-radius: 20px; font-size: 1rem; line-height: 1.5; white-space: pre-wrap; }
+        .user-message { background: #0077b6; color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+        .ai-message { background: transparent; color: #e3e3e3; align-self: flex-start; padding-left: 5px; }
+        .welcome-text { text-align: center; color: #90e0ef; font-size: 1.3rem; margin-top: auto; margin-bottom: auto; padding: 0 20px; }
 
-        .message {
-            max-width: 85%;
-            padding: 14px 18px;
-            border-radius: 20px;
-            font-size: 1rem;
-            line-height: 1.5;
-            white-space: pre-wrap;
-        }
-
-        .user-message { 
-            background: #0077b6; 
-            color: white; 
-            align-self: flex-end; 
-            border-bottom-right-radius: 4px;
-        }
-        
-        .ai-message { 
-            background: transparent; 
-            color: #e3e3e3; 
-            align-self: flex-start; 
-            padding-left: 5px;
-        }
-
-        .welcome-text {
-            text-align: center;
-            color: #90e0ef;
-            font-size: 1.3rem;
-            margin-top: auto;
-            margin-bottom: auto;
-            padding: 0 20px;
-        }
-
-        .typing-indicator {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            padding: 14px 18px;
-            background: #151e2e;
-            border-radius: 20px;
-            align-self: flex-start;
-        }
-
-        .typing-indicator span {
-            width: 8px;
-            height: 8px;
-            background: #90e0ef;
-            border-radius: 50%;
-            display: inline-block;
-            animation: bounce 1.3s infinite ease-in-out;
-        }
-
+        .typing-indicator { display: inline-flex; align-items: center; gap: 5px; padding: 14px 18px; background: #151e2e; border-radius: 20px; align-self: flex-start; }
+        .typing-indicator span { width: 8px; height: 8px; background: #90e0ef; border-radius: 50%; display: inline-block; animation: bounce 1.3s infinite ease-in-out; }
         .typing-indicator span:nth-child(2) { animation-delay: 0.15s; }
         .typing-indicator span:nth-child(3) { animation-delay: 0.3s; }
+        @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
 
-        @keyframes bounce {
-            0%, 80%, 100% { transform: scale(0); }
-            40% { transform: scale(1); }
-        }
-
-        .chat-input-container {
-            padding: 12px 16px;
-            background: #080c14;
-            flex-shrink: 0;
-        }
-
-        .chat-input-wrapper {
-            background: #151e2e;
-            border-radius: 32px;
-            display: flex;
-            align-items: center;
-            padding: 6px 10px 6px 18px;
-            border: 1px solid #1f2d44;
-            width: 100%;
-        }
-
-        .chat-input-wrapper input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: white;
-            padding: 12px 0;
-            font-size: 1rem;
-            outline: none;
-        }
-
-        .chat-input-wrapper button {
-            background: #0077b6;
-            border: none;
-            color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.1rem;
-            flex-shrink: 0;
-        }
+        .chat-input-container { padding: 12px 16px; background: #080c14; flex-shrink: 0; }
+        .chat-input-wrapper { background: #151e2e; border-radius: 32px; display: flex; align-items: center; padding: 6px 10px 6px 18px; border: 1px solid #1f2d44; width: 100%; }
+        .chat-input-wrapper input { flex: 1; background: transparent; border: none; color: white; padding: 12px 0; font-size: 1rem; outline: none; }
+        .chat-input-wrapper button { background: #0077b6; border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
         /* Ayarlar Sayfası */
         .settings-page {
@@ -487,37 +311,104 @@
         }
 
         .settings-page.show { display: flex; }
-        .settings-header { padding: 20px; display: flex; align-items: center; background: #151e2e; }
-        .back-btn { font-size: 1.8rem; margin-right: 15px; cursor: pointer; }
-        .settings-title { font-size: 1.5rem; color: #48cae4; }
-        .settings-body { padding: 25px; flex: 1; }
+        .settings-header { padding: 20px; display: flex; align-items: center; background: #151e2e; border-bottom: 1px solid #1f2d44; }
+        .back-btn { font-size: 1.8rem; margin-right: 15px; cursor: pointer; color: #90e0ef; }
+        .settings-title { font-size: 1.3rem; font-weight: 600; color: #ffffff; }
+        .settings-body { padding: 20px; flex: 1; overflow-y: auto; }
+        
         .setting-item {
-            padding: 18px 0;
-            border-bottom: 1px solid #1f2d44;
+            padding: 16px 0;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .setting-label {
+            font-size: 1rem;
+            color: #90e0ef;
+            font-weight: 500;
+        }
+
+        /* YENİ: Tamamen Özel Kodlanmış Mavi Tema Dil Listesi Tasarımı */
+        .custom-lang-selector {
+            background: #151e2e;
+            border: 1px solid #1f2d44;
+            border-radius: 16px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .lang-option {
+            display: flex;
             align-items: center;
-            font-size: 1.1rem;
+            justify-content: space-between;
+            padding: 16px;
+            cursor: pointer;
+            border-bottom: 1px solid #1f2d44;
+            transition: background 0.2s;
+        }
+
+        .lang-option:last-child {
+            border-bottom: none;
+        }
+
+        .lang-option:hover {
+            background: #1f2d44;
+        }
+
+        .lang-name {
+            font-size: 1rem;
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+        /* Özel Mavi Radyo Buton */
+        .custom-radio {
+            width: 22px;
+            height: 22px;
+            border: 2px solid #44597a;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .lang-option.selected .custom-radio {
+            border-color: #0077b6;
+            background: transparent;
+        }
+
+        .custom-radio::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background: #0077b6;
+            border-radius: 50%;
+            transform: scale(0);
+            transition: transform 0.2s;
+        }
+
+        .lang-option.selected .custom-radio::after {
+            transform: scale(1);
         }
     </style>
 </head>
 <body>
 
-    <!-- Üst Kısım -->
+    <!-- Üst Kısım Sekmeler -->
     <div class="tabs">
         <button class="tab-btn active" id="mediaTab" onclick="switchTab(0)">Medya</button>
         <button class="tab-btn" id="aiTab" onclick="switchTab(1)">Caavo0 AI</button>
     </div>
 
-    <!-- Medya Sekmesi (YENİLENDİ) -->
+    <!-- Medya Sekmesi -->
     <div id="tab0" class="tab-content active">
         <div class="links-container">
-            <!-- GitHub -->
             <a href="https://github.com/caavo0" class="media-card card-github" target="_blank">
                 <div class="media-icon">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                    </svg>
+                    <svg viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
                 </div>
                 <div class="media-info">
                     <span class="media-title">GitHub</span>
@@ -526,12 +417,9 @@
                 <div class="media-arrow">➔</div>
             </a>
 
-            <!-- YouTube -->
             <a href="https://www.youtube.com/@caavo0-r6u" class="media-card card-youtube" target="_blank">
                 <div class="media-icon">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-                    </svg>
+                    <svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
                 </div>
                 <div class="media-info">
                     <span class="media-title">YouTube</span>
@@ -540,12 +428,9 @@
                 <div class="media-arrow">➔</div>
             </a>
 
-            <!-- TikTok -->
             <a href="https://www.tiktok.com/@caavo0" class="media-card card-tiktok" target="_blank">
                 <div class="media-icon">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M12.525.01c1.306-.022 2.615-.011 3.921-.012.152 1.12.744 2.166 1.56 2.927a6.974 6.974 0 0 0 3.978 1.45v3.916a11.22 11.22 0 0 1-4.22-.924l-.004 7.621c-.017 1.83-.564 3.633-1.573 5.143-1.42 2.146-3.791 3.616-6.362 3.904-2.585.3-5.228-.482-7.234-2.14A9.123 9.123 0 0 1 .65 11.381c.204-2.61 1.706-4.996 4.02-6.223a9.094 9.094 0 0 1 6.51-.433V8.75a5.115 5.115 0 0 0-3.344 1.488 5.176 5.176 0 0 0-1.287 3.731c.21 2.052 1.859 3.714 3.91 3.86a5.184 5.184 0 0 0 5.428-4.04c.094-.48.132-.97.127-1.458l.008-12.322z"/>
-                    </svg>
+                    <svg viewBox="0 0 24 24"><path d="M12.525.01c1.306-.022 2.615-.011 3.921-.012.152 1.12.744 2.166 1.56 2.927a6.974 6.974 0 0 0 3.978 1.45v3.916a11.22 11.22 0 0 1-4.22-.924l-.004 7.621c-.017 1.83-.564 3.633-1.573 5.143-1.42 2.146-3.791 3.616-6.362 3.904-2.585.3-5.228-.482-7.234-2.14A9.123 9.123 0 0 1 .65 11.381c.204-2.61 1.706-4.996 4.02-6.223a9.094 9.094 0 0 1 6.51-.433V8.75a5.115 5.115 0 0 0-3.344 1.488 5.176 5.176 0 0 0-1.287 3.731c.21 2.052 1.859 3.714 3.91 3.86a5.184 5.184 0 0 0 5.428-4.04c.094-.48.132-.97.127-1.458l.008-12.322z"/></svg>
                 </div>
                 <div class="media-info">
                     <span class="media-title">TikTok</span>
@@ -554,12 +439,9 @@
                 <div class="media-arrow">➔</div>
             </a>
 
-            <!-- Discord -->
             <a href="https://discord.com/users/caavo0_" class="media-card card-discord" target="_blank">
                 <div class="media-icon">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.094 13.094 0 0 1-1.873-.894.077.077 0 0 1-.008-.128c.126-.093.252-.19.372-.287a.075.075 0 0 1 .077-.011c3.92 1.793 8.18 1.793 12.061 0a.073.073 0 0 1 .078.009c.12.099.246.195.373.289a.077.077 0 0 1-.006.127 12.298 12.298 0 0 1-1.873.894.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.156-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.156 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.156-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.156 2.418z"/>
-                    </svg>
+                    <svg viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.094 13.094 0 0 1-1.873-.894.077.077 0 0 1-.008-.128c.126-.093.252-.19.372-.287a.075.075 0 0 1 .077-.011c3.92 1.793 8.18 1.793 12.061 0a.073.073 0 0 1 .078.009c.12.099.246.195.373.289a.077.077 0 0 1-.006.127 12.298 12.298 0 0 1-1.873.894.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.156-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.156 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.156-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.156 2.418z"/></svg>
                 </div>
                 <div class="media-info">
                     <span class="media-title">Discord</span>
@@ -575,14 +457,11 @@
         <div class="chat-container">
             <div class="chat-header-wrapper">
                 <div class="menu-toggle-btn" onclick="toggleSidebar()">
-                    <span></span>
-                    <span></span>
+                    <span></span><span></span>
                 </div>
-
                 <div class="chat-header" id="chatHeader">Caavo0 AI</div>
-                
                 <div class="actions-wrapper">
-                    <div class="new-chat-btn" onclick="createNewChat()" title="Yeni Sohbet Başlat">
+                    <div class="new-chat-btn" onclick="createNewChat()">
                         <svg viewBox="0 0 24 24">
                             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                             <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
@@ -598,13 +477,13 @@
             <div class="chat-input-container">
                 <div class="chat-input-wrapper">
                     <input type="text" id="userInput" placeholder="Caavo0'a sorun..." onkeypress="handleKeyPress(event)">
-                    <button onclick="sendMessage()" id="sendBtn">➔</button>
+                    <button onclick="sendMessage()">➔</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Yan Menü (Sohbet Geçmişi) Kapsayıcıları -->
+    <!-- Yan Menü (Geçmiş) -->
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
@@ -625,12 +504,40 @@
         </div>
         <div class="settings-body">
             <div class="setting-item">
-                <span id="languageLabel">Dil Seçimi</span>
-                <select id="languageSelect" onchange="changeLanguageFromSelect()" style="background:#151e2e; color:white; border:1px solid #1f2d44; padding:8px 12px; border-radius:8px;">
-                    <option value="tr">Türkçe</option>
-                    <option value="en">English</option>
-                    <option value="de">Deutsch</option>
-                </select>
+                <div class="setting-label" id="languageLabel">Dil Seçimi</div>
+                
+                <!-- YENİ: Kendi Kodladığımız Özel Dil Seçim Listesi -->
+                <div class="custom-lang-selector" id="customLangSelector">
+                    <div class="lang-option selected" data-value="tr" onclick="selectLanguage('tr')">
+                        <span class="lang-name">Türkçe</span>
+                        <div class="custom-radio"></div>
+                    </div>
+                    <div class="lang-option" data-value="en" onclick="selectLanguage('en')">
+                        <span class="lang-name">English</span>
+                        <div class="custom-radio"></div>
+                    </div>
+                    <div class="lang-option" data-value="de" onclick="selectLanguage('de')">
+                        <span class="lang-name">Deutsch</span>
+                        <div class="custom-radio"></div>
+                    </div>
+                    <div class="lang-option" data-value="es" onclick="selectLanguage('es')">
+                        <span class="lang-name">Español</span>
+                        <div class="custom-radio"></div>
+                    </div>
+                    <div class="lang-option" data-value="fr" onclick="selectLanguage('fr')">
+                        <span class="lang-name">Français</span>
+                        <div class="custom-radio"></div>
+                    </div>
+                    <div class="lang-option" data-value="ru" onclick="selectLanguage('ru')">
+                        <span class="lang-name">Русский</span>
+                        <div class="custom-radio"></div>
+                    </div>
+                    <div class="lang-option" data-value="ar" onclick="selectLanguage('ar')">
+                        <span class="lang-name">العربية</span>
+                        <div class="custom-radio"></div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -640,6 +547,7 @@
         let chatSessions = []; 
         let currentSessionId = null;
 
+        // Genişletilmiş Dil Çeviri Havuzu
         const translations = {
             tr: {
                 mediaTab: "Medya", aiTab: "Caavo0 AI", chatHeader: "Caavo0 AI",
@@ -655,6 +563,26 @@
                 mediaTab: "Medien", aiTab: "Caavo0 AI", chatHeader: "Caavo0 AI",
                 welcomeMessage: "Hallo! Wie kann ich dir heute helfen?", inputPlaceholder: "Frag Caavo0...",
                 settingsTitle: "Einstellungen", languageLabel: "Sprache", errorMessage: "Verbindungsfehler, bitte erneut versuchen."
+            },
+            es: {
+                mediaTab: "Medios", aiTab: "Caavo0 AI", chatHeader: "Caavo0 AI",
+                welcomeMessage: "¿Hola! Cómo puedo ayudarte hoy?", inputPlaceholder: "Pregunta a Caavo0...",
+                settingsTitle: "Ajustes", languageLabel: "Idioma", errorMessage: "Error de conexión, inténtalo de nuevo."
+            },
+            fr: {
+                mediaTab: "Médias", aiTab: "Caavo0 AI", chatHeader: "Caavo0 AI",
+                welcomeMessage: "Bonjour! Comment puis-je vous aider aujourd'hui?", inputPlaceholder: "Demander à Caavo0...",
+                settingsTitle: "Paramètres", languageLabel: "Langue", errorMessage: "Erreur de connexion, veuillez réessayer."
+            },
+            ru: {
+                mediaTab: "Медиа", aiTab: "Caavo0 AI", chatHeader: "Caavo0 AI",
+                welcomeMessage: "Привет! Чем я могу тебе помочь?", inputPlaceholder: "Спроси Caavo0...",
+                settingsTitle: "Настройки", languageLabel: "Язык", errorMessage: "Ошибка подключения, попробуйте еще раз."
+            },
+            ar: {
+                mediaTab: "وسائل الإعلام", aiTab: "Caavo0 AI", chatHeader: "Caavo0 AI",
+                welcomeMessage: "مرحباً! كيف يمكنني مساعدتك اليوم؟", inputPlaceholder: "اسأل Caavo0...",
+                settingsTitle: "الإعدادات", languageLabel: "اللغة", errorMessage: "خطأ في الاتصال، يرجى المحاولة مرة أخرى."
             }
         };
 
@@ -663,6 +591,11 @@
             if (savedSessions) {
                 chatSessions = JSON.parse(savedSessions);
                 updateSidebarUI();
+            }
+            // Kayıtlı dil ayarını yükle
+            const savedLang = localStorage.getItem('caavo0_lang');
+            if (savedLang && translations[savedLang]) {
+                selectLanguage(savedLang);
             }
         });
 
@@ -680,7 +613,6 @@
         const chatHeader = document.getElementById('chatHeader');
         const mediaTab = document.getElementById('mediaTab');
         const aiTab = document.getElementById('aiTab');
-        const languageSelect = document.getElementById('languageSelect');
         const historyList = document.getElementById('historyList');
 
         function handleKeyPress(e) {
@@ -690,6 +622,23 @@
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('open');
             document.getElementById('sidebarOverlay').classList.toggle('show');
+        }
+
+        // YENİ: Özel Dil Seçim Fonksiyonu
+        function selectLanguage(langCode) {
+            currentLang = langCode;
+            localStorage.setItem('caavo0_lang', langCode);
+
+            // UI elemanlarındaki seçili sınıfını güncelle
+            document.querySelectorAll('.lang-option').forEach(opt => {
+                if(opt.getAttribute('data-value') === langCode) {
+                    opt.classList.add('selected');
+                } else {
+                    opt.classList.remove('selected');
+                }
+            });
+
+            updateUIStrings();
         }
 
         async function sendMessage() {
@@ -715,7 +664,6 @@
             userInput.value = '';
             
             saveToLocalStorage();
-
             const typing = showTypingIndicator();
 
             try {
@@ -812,7 +760,6 @@
                 const deleteBtn = document.createElement('div');
                 deleteBtn.className = 'delete-item-btn';
                 deleteBtn.innerHTML = '🗑️';
-                deleteBtn.title = 'Sohbeti Sil';
                 deleteBtn.onclick = (e) => {
                     e.stopPropagation();
                     deleteChatSession(session.id);
@@ -825,7 +772,7 @@
         }
 
         function deleteChatSession(id) {
-            if (confirm("Bu sohbet geçmişini silmek istediğinize emin misiniz?")) {
+            if (confirm("Sohbeti silmek istediğinize emin misiniz?")) {
                 chatSessions = chatSessions.filter(s => s.id !== id);
                 saveToLocalStorage();
                 updateSidebarUI();
@@ -834,7 +781,7 @@
         }
 
         function clearAllHistory() {
-            if (confirm("Tüm sohbet geçmişiniz kalıcı olarak silinecektir. Emin misiniz?")) {
+            if (confirm("Tüm sohbet geçmişiniz silinecektir. Emin misiniz?")) {
                 chatSessions = [];
                 saveToLocalStorage();
                 updateSidebarUI();
@@ -850,11 +797,7 @@
             
             if(session && session.messages.length > 0) {
                 session.messages.forEach(msg => {
-                    if(msg.type === 'user') {
-                        appendMessage(msg.text, 'user-message');
-                    } else {
-                        appendMessage(msg.text, 'ai-message');
-                    }
+                    appendMessage(msg.text, msg.type === 'user' ? 'user-message' : 'ai-message');
                 });
             } else {
                 createNewChat();
@@ -863,7 +806,6 @@
 
         function openSettings() { document.getElementById('settingsPage').classList.add('show'); }
         function closeSettings() { document.getElementById('settingsPage').classList.remove('show'); }
-        function changeLanguageFromSelect() { currentLang = languageSelect.value; updateUIStrings(); }
 
         function updateUIStrings() {
             mediaTab.textContent = translations[currentLang].mediaTab;
