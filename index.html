@@ -280,7 +280,7 @@
         function appendMessage(text, className) {
             const div = document.createElement('div');
             div.className = `message ${className}`;
-            div.innerHTML = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+            div.innerHTML = text.replace(/\n/g, '<br>');
             chatMessages.appendChild(div);
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
@@ -291,13 +291,10 @@
             chatMessages.appendChild(div);
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
-            // Markdown kalın desteği
-            let processedText = fullText.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-
             let i = 0;
             function type() {
-                if (i < processedText.length) {
-                    let char = processedText.charAt(i);
+                if (i < fullText.length) {
+                    let char = fullText.charAt(i);
                     if (char === '\n') {
                         div.innerHTML += '<br>';
                     } else {
