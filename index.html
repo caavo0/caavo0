@@ -115,7 +115,7 @@
             opacity: 0.9;
         }
 
-        /* Sağ üst köşedeki buton grubu */
+        /* Sağ Üst İşlemler Kapsayıcısı */
         .actions-wrapper {
             position: absolute;
             right: 20px;
@@ -124,13 +124,26 @@
             gap: 16px;
         }
 
-        /* Yeni Sohbet / Silme Butonu (Fotodaki ikon stiliyle uyumlu emoji) */
+        /* SVG Yeni Sohbet İkon Butonu */
         .new-chat-btn {
-            font-size: 1.3rem;
+            width: 24px;
+            height: 24px;
             cursor: pointer;
             opacity: 0.7;
-            user-select: none;
-            transition: opacity 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.2s, transform 0.1s;
+        }
+
+        .new-chat-btn svg {
+            width: 100%;
+            height: 100%;
+            fill: none;
+            stroke: #90e0ef;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
         }
 
         .settings-btn {
@@ -143,6 +156,10 @@
 
         .settings-btn:hover, .new-chat-btn:hover {
             opacity: 1;
+        }
+        
+        .new-chat-btn:active {
+            transform: scale(0.95);
         }
 
         .chat-messages {
@@ -304,9 +321,14 @@
             <div class="chat-header-wrapper">
                 <div class="chat-header" id="chatHeader">Caavo0 AI</div>
                 
-                <!-- Sağ Üst Eylemler: Yeni Sohbet (Sil) ve Ayarlar Butonları -->
                 <div class="actions-wrapper">
-                    <div class="new-chat-btn" onclick="createNewChat()" title="Yeni Sohbet Başlat">📝</div>
+                    <!-- Gerçek Çizgisel SVG Yeni Sohbet İkonu -->
+                    <div class="new-chat-btn" onclick="createNewChat()" title="Yeni Sohbet Başlat">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                    </div>
                     <div class="settings-btn" onclick="openSettings()">⚙️</div>
                 </div>
             </div>
@@ -397,7 +419,6 @@
             const text = userInput.value.trim();
             if (!text) return;
 
-            // Eğer varsa hoş geldin yazısını temizle
             const wm = document.getElementById('welcomeMessage');
             if(wm) wm.remove();
 
@@ -463,12 +484,9 @@
             return div;
         }
 
-        // Yeni Sohbet Temizleme Fonksiyonu
         function createNewChat() {
-            // Ekrandaki tüm mesajları sil
             chatMessages.innerHTML = '';
             
-            // Hoş geldin metnini yeniden yarat ve ekle
             const wm = document.createElement('div');
             wm.className = 'welcome-text';
             wm.id = 'welcomeMessage';
@@ -478,6 +496,7 @@
             userInput.value = '';
         }
 
+        // Ayarlar pencereleri işlevleri
         function openSettings() {
             document.getElementById('settingsPage').classList.add('show');
         }
