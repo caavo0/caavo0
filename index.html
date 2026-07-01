@@ -5,12 +5,70 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Caavo0 AI</title>
     <style>
-        * { box-sizing: border-box; }
+        * { box-shrink: 0; box-sizing: border-box; }
+        
+        /* Dinamik Tema Değişkenleri */
+        :root {
+            --bg-color: #080c14;
+            --surface-color: #151e2e;
+            --surface-hover: #1f2d44;
+            --border-color: #1f2d44;
+            --sidebar-color: #0c1322;
+            
+            /* Değişen Vurgu Renkleri (Varsayılan Mavi) */
+            --accent-primary: #0077b6;
+            --accent-light: #90e0ef;
+            --accent-glow: rgba(0, 119, 182, 0.4);
+            --text-muted: #7a8aa4;
+            --icon-color: #90e0ef;
+        }
+
+        /* TEMA 2: Gece Siyahı (Dark/Gray) */
+        [data-theme="dark-gray"] {
+            --bg-color: #0d0d0d;
+            --surface-color: #1a1a1a;
+            --surface-hover: #262626;
+            --border-color: #2d2d2d;
+            --sidebar-color: #121212;
+            --accent-primary: #4f4f4f;
+            --accent-light: #e0e0e0;
+            --accent-glow: rgba(255, 255, 255, 0.1);
+            --text-muted: #888888;
+            --icon-color: #cccccc;
+        }
+
+        /* TEMA 3: Zümrüt Yeşili (Emerald) */
+        [data-theme="emerald"] {
+            --bg-color: #06100e;
+            --surface-color: #0f221e;
+            --surface-hover: #17352f;
+            --border-color: #17352f;
+            --sidebar-color: #0a1714;
+            --accent-primary: #0f9f68;
+            --accent-light: #84e1bc;
+            --accent-glow: rgba(15, 159, 104, 0.4);
+            --text-muted: #6f8f87;
+            --icon-color: #84e1bc;
+        }
+
+        /* TEMA 4: Neon Mor (Cyber Purple) */
+        [data-theme="cyber-purple"] {
+            --bg-color: #0f0a1c;
+            --surface-color: #1a1230;
+            --surface-hover: #271c47;
+            --border-color: #271c47;
+            --sidebar-color: #140e24;
+            --accent-primary: #7b2cbf;
+            --accent-light: #e0aaff;
+            --accent-glow: rgba(123, 44, 191, 0.4);
+            --text-muted: #8a7a9e;
+            --icon-color: #e0aaff;
+        }
         
         body {
             margin: 0;
             padding: 0;
-            background-color: #080c14;
+            background-color: var(--bg-color);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: #e3e3e3;
             height: 100vh;
@@ -19,6 +77,7 @@
             flex-direction: column;
             overflow: hidden;
             position: relative;
+            transition: background-color 0.3s ease;
         }
 
         html {
@@ -32,7 +91,7 @@
             justify-content: center;
             gap: 15px;
             padding: 12px 20px;
-            background: #080c14;
+            background: var(--bg-color);
             flex-shrink: 0;
             z-index: 10;
         }
@@ -46,14 +105,15 @@
             border: none;
             border-radius: 30px;
             cursor: pointer;
-            background: #151e2e;
-            color: #90e0ef;
+            background: var(--surface-color);
+            color: var(--accent-light);
             transition: all 0.2s ease;
         }
 
         .tab-btn.active {
-            background: #0077b6;
+            background: var(--accent-primary);
             color: white;
+            box-shadow: 0 0 10px var(--accent-glow);
         }
 
         .tab-content {
@@ -84,8 +144,8 @@
             display: flex;
             align-items: center;
             text-decoration: none;
-            background: #151e2e;
-            border: 1px solid #1f2d44;
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
             padding: 16px;
             border-radius: 16px;
             transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
@@ -108,10 +168,9 @@
         .card-discord:hover::before { background: #5865f2; }
 
         .media-card:hover {
-            background: #1f2d44;
+            background: var(--surface-hover);
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-            border-color: #334766;
         }
 
         .media-icon {
@@ -121,7 +180,7 @@
             align-items: center;
             justify-content: center;
             border-radius: 12px;
-            background: #0c1322;
+            background: var(--bg-color);
             margin-right: 16px;
             flex-shrink: 0;
         }
@@ -129,7 +188,7 @@
         .media-icon svg {
             width: 24px;
             height: 24px;
-            fill: #90e0ef;
+            fill: var(--icon-color);
             transition: fill 0.2s;
         }
 
@@ -153,20 +212,20 @@
 
         .media-desc {
             font-size: 0.85rem;
-            color: #7a8aa4;
+            color: var(--text-muted);
             line-height: 1.3;
         }
 
         .media-arrow {
             font-size: 1.2rem;
-            color: #44597a;
+            color: var(--text-muted);
             transition: transform 0.2s, color 0.2s;
             margin-left: 10px;
         }
 
         .media-card:hover .media-arrow {
             transform: translateX(3px);
-            color: #90e0ef;
+            color: var(--accent-light);
         }
 
         /* Chat Düzeni */
@@ -205,12 +264,12 @@
         .menu-toggle-btn span {
             width: 100%;
             height: 2px;
-            background-color: #90e0ef;
+            background-color: var(--accent-light);
             border-radius: 2px;
         }
 
         .menu-toggle-btn:hover { opacity: 1; }
-        .chat-header { font-size: 1.1rem; color: #90e0ef; font-weight: 500; opacity: 0.9; }
+        .chat-header { font-size: 1.1rem; color: var(--accent-light); font-weight: 500; opacity: 0.9; }
 
         .actions-wrapper {
             position: absolute;
@@ -235,7 +294,7 @@
             width: 100%;
             height: 100%;
             fill: none;
-            stroke: #90e0ef;
+            stroke: var(--accent-light);
             stroke-width: 2;
             stroke-linecap: round;
             stroke-linejoin: round;
@@ -256,8 +315,8 @@
             position: fixed;
             top: 0; left: -280px;
             width: 280px; height: 100%;
-            background-color: #0c1322;
-            border-right: 1px solid #1f2d44;
+            background-color: var(--sidebar-color);
+            border-right: 1px solid var(--border-color);
             z-index: 50;
             transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
@@ -266,14 +325,14 @@
         }
 
         .sidebar.open { left: 0; }
-        .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; color: #48cae4; font-weight: bold; font-size: 1.2rem; }
-        .sidebar-sub-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #1f2d44; }
+        .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; color: var(--accent-light); font-weight: bold; font-size: 1.2rem; }
+        .sidebar-sub-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color); }
         .clear-all-btn { font-size: 0.85rem; color: #ff4d4d; cursor: pointer; opacity: 0.8; }
-        .close-sidebar-btn { cursor: pointer; font-size: 1.5rem; color: #90e0ef; }
+        .close-sidebar-btn { cursor: pointer; font-size: 1.5rem; color: var(--accent-light); }
 
         .history-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        .history-item-wrapper { display: flex; align-items: center; justify-content: space-between; background: #151e2e; border-radius: 10px; transition: all 0.2s; padding-right: 10px; }
-        .history-item-wrapper:hover { background: #1f2d44; }
+        .history-item-wrapper { display: flex; align-items: center; justify-content: space-between; background: var(--surface-color); border-radius: 10px; transition: all 0.2s; padding-right: 10px; }
+        .history-item-wrapper:hover { background: var(--surface-hover); }
         .history-item { flex: 1; padding: 12px 15px; cursor: pointer; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .delete-item-btn { cursor: pointer; opacity: 0.5; padding: 5px; }
         .delete-item-btn:hover { opacity: 1; color: #ff4d4d; }
@@ -284,35 +343,35 @@
         /* Mesaj Alanları */
         .chat-messages { flex: 1; padding: 10px 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
         .message { max-width: 85%; padding: 14px 18px; border-radius: 20px; font-size: 1rem; line-height: 1.5; white-space: pre-wrap; }
-        .user-message { background: #0077b6; color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+        .user-message { background: var(--accent-primary); color: white; align-self: flex-end; border-bottom-right-radius: 4px; box-shadow: 0 2px 8px var(--accent-glow); }
         .ai-message { background: transparent; color: #e3e3e3; align-self: flex-start; padding-left: 5px; }
-        .welcome-text { text-align: center; color: #90e0ef; font-size: 1.3rem; margin-top: auto; margin-bottom: auto; padding: 0 20px; }
+        .welcome-text { text-align: center; color: var(--accent-light); font-size: 1.3rem; margin-top: auto; margin-bottom: auto; padding: 0 20px; }
 
-        .typing-indicator { display: inline-flex; align-items: center; gap: 5px; padding: 14px 18px; background: #151e2e; border-radius: 20px; align-self: flex-start; }
-        .typing-indicator span { width: 8px; height: 8px; background: #90e0ef; border-radius: 50%; display: inline-block; animation: bounce 1.3s infinite ease-in-out; }
+        .typing-indicator { display: inline-flex; align-items: center; gap: 5px; padding: 14px 18px; background: var(--surface-color); border-radius: 20px; align-self: flex-start; }
+        .typing-indicator span { width: 8px; height: 8px; background: var(--accent-light); border-radius: 50%; display: inline-block; animation: bounce 1.3s infinite ease-in-out; }
         .typing-indicator span:nth-child(2) { animation-delay: 0.15s; }
         .typing-indicator span:nth-child(3) { animation-delay: 0.3s; }
         @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
 
-        .chat-input-container { padding: 12px 16px; background: #080c14; flex-shrink: 0; }
-        .chat-input-wrapper { background: #151e2e; border-radius: 32px; display: flex; align-items: center; padding: 6px 10px 6px 18px; border: 1px solid #1f2d44; width: 100%; }
+        .chat-input-container { padding: 12px 16px; background: var(--bg-color); flex-shrink: 0; }
+        .chat-input-wrapper { background: var(--surface-color); border-radius: 32px; display: flex; align-items: center; padding: 6px 10px 6px 18px; border: 1px solid var(--border-color); width: 100%; }
         .chat-input-wrapper input { flex: 1; background: transparent; border: none; color: white; padding: 12px 0; font-size: 1rem; outline: none; }
-        .chat-input-wrapper button { background: #0077b6; border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .chat-input-wrapper button { background: var(--accent-primary); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px var(--accent-glow); }
 
         /* Ayarlar Sayfası */
         .settings-page {
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: #080c14;
+            background: var(--bg-color);
             display: none;
             flex-direction: column;
             z-index: 60;
         }
 
         .settings-page.show { display: flex; }
-        .settings-header { padding: 20px; display: flex; align-items: center; background: #151e2e; border-bottom: 1px solid #1f2d44; }
-        .back-btn { font-size: 1.8rem; margin-right: 15px; cursor: pointer; color: #90e0ef; }
+        .settings-header { padding: 20px; display: flex; align-items: center; background: var(--surface-color); border-bottom: 1px solid var(--border-color); }
+        .back-btn { font-size: 1.8rem; margin-right: 15px; cursor: pointer; color: var(--accent-light); }
         .settings-title { font-size: 1.3rem; font-weight: 600; color: #ffffff; }
         .settings-body { padding: 20px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
         
@@ -322,10 +381,10 @@
             gap: 10px;
         }
 
-        /* DEĞİŞTİ: Açılır-Kapanır Özel Başlık Kutusu */
+        /* Akordeon Başlık Kutusu */
         .setting-dropdown-header {
-            background: #151e2e;
-            border: 1px solid #1f2d44;
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
             padding: 16px;
             border-radius: 12px;
             display: flex;
@@ -337,31 +396,30 @@
         }
 
         .setting-dropdown-header:hover {
-            background: #1f2d44;
-            border-color: #2a3c57;
+            background: var(--surface-hover);
         }
 
         .setting-label {
             font-size: 1rem;
-            color: #90e0ef;
+            color: var(--accent-light);
             font-weight: 500;
         }
 
         .dropdown-arrow {
             font-size: 0.85rem;
-            color: #44597a;
+            color: var(--text-muted);
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* DEĞİŞTİ: Akıcı Animasyonlu Dil Listesi Konteyneri */
-        .custom-lang-selector {
-            background: #111a28;
-            border: 1px solid #1f2d44;
+        /* Akıcı Animasyonlu Seçenek Konteyneri */
+        .custom-dropdown-selector {
+            background: var(--sidebar-color);
+            border: 1px solid var(--border-color);
             border-radius: 12px;
             overflow: hidden;
             display: grid;
             grid-template-rows: 0fr;
-            transition: grid-template-rows 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s;
+            transition: grid-template-rows 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             margin-top: -4px;
             border-top: none;
             border-top-left-radius: 0;
@@ -372,51 +430,64 @@
         .setting-item.open .setting-dropdown-header {
             border-bottom-left-radius: 0;
             border-bottom-right-radius: 0;
-            border-color: #1f2d44;
         }
 
         .setting-item.open .dropdown-arrow {
             transform: rotate(180deg);
-            color: #90e0ef;
+            color: var(--accent-light);
         }
 
-        .setting-item.open .custom-lang-selector {
+        .setting-item.open .custom-dropdown-selector {
             grid-template-rows: 1fr;
         }
 
-        .lang-options-inner {
+        .dropdown-options-inner {
             overflow: hidden;
         }
 
-        .lang-option {
+        .dropdown-option {
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 14px 16px;
             cursor: pointer;
-            border-bottom: 1px solid #1f2d44;
+            border-bottom: 1px solid var(--border-color);
             transition: background 0.2s;
         }
 
-        .lang-option:last-child {
+        .dropdown-option:last-child {
             border-bottom: none;
         }
 
-        .lang-option:hover {
-            background: #1f2d44;
+        .dropdown-option:hover {
+            background: var(--surface-hover);
         }
 
-        .lang-name {
+        .option-name {
             font-size: 0.95rem;
             color: #ffffff;
             font-weight: 500;
         }
 
-        /* Mavi Radyo Buton */
+        /* Renkli Temalar İçin Önizleme Yuvarlağı */
+        .theme-preview-circle {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            margin-right: 10px;
+            display: inline-block;
+        }
+
+        .option-left-content {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Dinamik Radyo Buton */
         .custom-radio {
             width: 20px;
             height: 20px;
-            border: 2px solid #44597a;
+            border: 2px solid var(--text-muted);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -424,21 +495,21 @@
             transition: all 0.2s;
         }
 
-        .lang-option.selected .custom-radio {
-            border-color: #0077b6;
+        .dropdown-option.selected .custom-radio {
+            border-color: var(--accent-primary);
         }
 
         .custom-radio::after {
             content: '';
             width: 10px;
             height: 10px;
-            background: #0077b6;
+            background: var(--accent-primary);
             border-radius: 50%;
             transform: scale(0);
             transition: transform 0.2s;
         }
 
-        .lang-option.selected .custom-radio::after {
+        .dropdown-option.selected .custom-radio::after {
             transform: scale(1);
         }
     </style>
@@ -553,45 +624,86 @@
                     <div class="dropdown-arrow">▼</div>
                 </div>
                 
-                <div class="custom-lang-selector">
-                    <div class="lang-options-inner">
-                        <div class="lang-option selected" data-value="tr" onclick="selectLanguage('tr')">
-                            <span class="lang-name">Türkçe</span>
+                <div class="custom-dropdown-selector">
+                    <div class="dropdown-options-inner">
+                        <div class="dropdown-option lang-option selected" data-value="tr" onclick="selectLanguage('tr')">
+                            <span class="option-name">Türkçe</span>
                             <div class="custom-radio"></div>
                         </div>
-                        <div class="lang-option" data-value="en" onclick="selectLanguage('en')">
-                            <span class="lang-name">English</span>
+                        <div class="dropdown-option lang-option" data-value="en" onclick="selectLanguage('en')">
+                            <span class="option-name">English</span>
                             <div class="custom-radio"></div>
                         </div>
-                        <div class="lang-option" data-value="de" onclick="selectLanguage('de')">
-                            <span class="lang-name">Deutsch</span>
+                        <div class="dropdown-option lang-option" data-value="de" onclick="selectLanguage('de')">
+                            <span class="option-name">Deutsch</span>
                             <div class="custom-radio"></div>
                         </div>
-                        <div class="lang-option" data-value="es" onclick="selectLanguage('es')">
-                            <span class="lang-name">Español</span>
+                        <div class="dropdown-option lang-option" data-value="es" onclick="selectLanguage('es')">
+                            <span class="option-name">Español</span>
                             <div class="custom-radio"></div>
                         </div>
-                        <div class="lang-option" data-value="fr" onclick="selectLanguage('fr')">
-                            <span class="lang-name">Français</span>
+                        <div class="dropdown-option lang-option" data-value="fr" onclick="selectLanguage('fr')">
+                            <span class="option-name">Français</span>
                             <div class="custom-radio"></div>
                         </div>
-                        <div class="lang-option" data-value="ru" onclick="selectLanguage('ru')">
-                            <span class="lang-name">Русский</span>
+                        <div class="dropdown-option lang-option" data-value="ru" onclick="selectLanguage('ru')">
+                            <span class="option-name">Русский</span>
                             <div class="custom-radio"></div>
                         </div>
-                        <div class="lang-option" data-value="ar" onclick="selectLanguage('ar')">
-                            <span class="lang-name">العربية</span>
+                        <div class="dropdown-option lang-option" data-value="ar" onclick="selectLanguage('ar')">
+                            <span class="option-name">العربية</span>
                             <div class="custom-radio"></div>
                         </div>
                     </div>
                 </div>
             </div>
 
+            <div class="setting-item" id="themeGroup">
+                <div class="setting-dropdown-header" onclick="toggleDropdown('themeGroup')">
+                    <div class="setting-label" id="themeLabel">Tema Seçimi</div>
+                    <div class="dropdown-arrow">▼</div>
+                </div>
+                
+                <div class="custom-dropdown-selector">
+                    <div class="dropdown-options-inner">
+                        <div class="dropdown-option theme-option selected" data-value="default" onclick="selectTheme('default')">
+                            <div class="option-left-content">
+                                <span class="theme-preview-circle" style="background: #0077b6;"></span>
+                                <span class="option-name" id="themeDefaultLabel">Varsayılan (Mavi)</span>
+                            </div>
+                            <div class="custom-radio"></div>
+                        </div>
+                        <div class="dropdown-option theme-option" data-value="dark-gray" onclick="selectTheme('dark-gray')">
+                            <div class="option-left-content">
+                                <span class="theme-preview-circle" style="background: #4f4f4f;"></span>
+                                <span class="option-name" id="themeDarkLabel">Gece Siyahı</span>
+                            </div>
+                            <div class="custom-radio"></div>
+                        </div>
+                        <div class="dropdown-option theme-option" data-value="emerald" onclick="selectTheme('emerald')">
+                            <div class="option-left-content">
+                                <span class="theme-preview-circle" style="background: #0f9f68;"></span>
+                                <span class="option-name" id="themeEmeraldLabel">Zümrüt Yeşili</span>
+                            </div>
+                            <div class="custom-radio"></div>
+                        </div>
+                        <div class="dropdown-option theme-option" data-value="cyber-purple" onclick="selectTheme('cyber-purple')">
+                            <div class="option-left-content">
+                                <span class="theme-preview-circle" style="background: #7b2cbf;"></span>
+                                <span class="option-name" id="themePurpleLabel">Neon Mor</span>
+                            </div>
+                            <div class="custom-radio"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+        </div>
     </div>
 
     <script>
         let currentLang = "tr";
+        let currentTheme = "default";
         let chatSessions = []; 
         let currentSessionId = null;
 
@@ -600,37 +712,51 @@
             tr: {
                 mediaTab: "Medya", aiTab: "Caavo0 AI", chatHeader: "Caavo0 AI",
                 welcomeMessage: "Merhaba! Nasıl yardımcı olabilirim?", inputPlaceholder: "Caavo0'a sorun...",
-                settingsTitle: "Ayarlar", languageLabel: "Dil Seçimi", errorMessage: "Bağlantı hatası, tekrar dene."
+                settingsTitle: "Ayarlar", languageLabel: "Dil Seçimi", themeLabel: "Tema Seçimi",
+                themeDefault: "Varsayılan (Mavi)", themeDark: "Gece Siyahı", themeEmerald: "Zümrüt Yeşili", themePurple: "Neon Mor",
+                errorMessage: "Bağlantı hatası, tekrar dene."
             },
             en: {
                 mediaTab: "Media", aiTab: "Caavo0 AI", chatHeader: "Caavo0 AI",
                 welcomeMessage: "Hello! How can I help you today?", inputPlaceholder: "Ask Caavo0...",
-                settingsTitle: "Settings", languageLabel: "Language", errorMessage: "Connection error, please try again."
+                settingsTitle: "Settings", languageLabel: "Language", themeLabel: "Theme Selection",
+                themeDefault: "Default (Blue)", themeDark: "Midnight Black", themeEmerald: "Emerald Green", themePurple: "Cyber Purple",
+                errorMessage: "Connection error, please try again."
             },
             de: {
                 mediaTab: "Medien", aiTab: "Caavo0 AI", chatHeader: "Caavo0 AI",
                 welcomeMessage: "Hallo! Wie kann ich dir heute helfen?", inputPlaceholder: "Frag Caavo0...",
-                settingsTitle: "Einstellungen", languageLabel: "Sprache", errorMessage: "Verbindungsfehler, bitte erneut versuchen."
+                settingsTitle: "Einstellungen", languageLabel: "Sprache", themeLabel: "Thema Auswählen",
+                themeDefault: "Standard (Blau)", themeDark: "Mitternachtsschwarz", themeEmerald: "Smaragdgrün", themePurple: "Cyber-Violett",
+                errorMessage: "Verbindungsfehler, bitte erneut versuchen."
             },
             es: {
                 mediaTab: "Medios", aiTab: "Caavo0 AI", chatHeader: "Caavo0 AI",
                 welcomeMessage: "¿Hola! Cómo puedo ayudarte hoy?", inputPlaceholder: "Pregunta a Caavo0...",
-                settingsTitle: "Ajustes", languageLabel: "Idioma", errorMessage: "Error de conexión, inténtalo de nuevo."
+                settingsTitle: "Ajustes", languageLabel: "Idioma", themeLabel: "Selección de Tema",
+                themeDefault: "Por defecto (Azul)", themeDark: "Negro Medianoche", themeEmerald: "Verde Esmeralda", themePurple: "Púrpura Neón",
+                errorMessage: "Error de conexión, inténtalo de nuevo."
             },
             fr: {
                 mediaTab: "Médias", aiTab: "Caavo0 AI", chatHeader: "Caavo0 AI",
                 welcomeMessage: "Bonjour! Comment puis-je vous aider aujourd'hui?", inputPlaceholder: "Demander à Caavo0...",
-                settingsTitle: "Paramètres", languageLabel: "Langue", errorMessage: "Erreur de connexion, veuillez réessayer."
+                settingsTitle: "Paramètres", languageLabel: "Langue", themeLabel: "Sélection du Thème",
+                themeDefault: "Par défaut (Bleu)", themeDark: "Noir Minuit", themeEmerald: "Vert Émeraude", themePurple: "Pourpre Néon",
+                errorMessage: "Erreur de connexion, veuillez réessayer."
             },
             ru: {
                 mediaTab: "Медиа", aiTab: "Caavo0 AI", chatHeader: "Caavo0 AI",
                 welcomeMessage: "Привет! Чем я могу тебе помочь?", inputPlaceholder: "Спроси Caavo0...",
-                settingsTitle: "Настройки", languageLabel: "Язык", errorMessage: "Ошибка подключения, попробуйте еще раз."
+                settingsTitle: "Настройки", languageLabel: "Язык", themeLabel: "Выбор Темы",
+                themeDefault: "По умолчанию (Синий)", themeDark: "Полуночный черный", themeEmerald: "Изумрудно-зеленый", themePurple: "Неоновый фиолетовый",
+                errorMessage: "Ошибка подключения, попробуйте еще раз."
             },
             ar: {
                 mediaTab: "وسائل الإعلام", aiTab: "Caavo0 AI", chatHeader: "Caavo0 AI",
                 welcomeMessage: "مرحباً! كيف يمكنني مساعدتك اليوم؟", inputPlaceholder: "اسأل Caavo0...",
-                settingsTitle: "الإعدادات", languageLabel: "اللغة", errorMessage: "خطأ في الاتصال، يرجى المحاولة مرة أخرى."
+                settingsTitle: "الإعدادات", languageLabel: "اللغة", themeLabel: "اختيار المظهر",
+                themeDefault: "افتراضي (أزرق)", themeDark: "أسود منتصف الليل", themeEmerald: "أخضر زمردي", themePurple: "أرجواني سايبر",
+                errorMessage: "خطأ في الاتصال، يرجى المحاولة مرة أخرى."
             }
         };
 
@@ -643,6 +769,11 @@
             const savedLang = localStorage.getItem('caavo0_lang');
             if (savedLang && translations[savedLang]) {
                 selectLanguage(savedLang);
+            }
+            // Kayıtlı Temayı Yükleme
+            const savedTheme = localStorage.getItem('caavo0_theme');
+            if (savedTheme) {
+                selectTheme(savedTheme);
             }
         });
 
@@ -671,13 +802,11 @@
             document.getElementById('sidebarOverlay').classList.toggle('show');
         }
 
-        // YENİ: Akıcı Açılır-Kapanır Menü Tetikleyicisi
         function toggleDropdown(id) {
             const group = document.getElementById(id);
             group.classList.toggle('open');
         }
 
-        // DEĞİŞTİ: Dil Seçilince Kutuyu Kapatma Özelliği Eklendi
         function selectLanguage(langCode) {
             currentLang = langCode;
             localStorage.setItem('caavo0_lang', langCode);
@@ -692,9 +821,32 @@
 
             updateUIStrings();
 
-            // Dil seçildikten sonra listenin otomatik kapanmasını sağlıyoruz
             setTimeout(() => {
                 document.getElementById('langGroup').classList.remove('open');
+            }, 180);
+        }
+
+        // YENİ: Tema Seçme Fonksiyonu
+        function selectTheme(themeName) {
+            currentTheme = themeName;
+            localStorage.setItem('caavo0_theme', themeName);
+
+            if (themeName === "default") {
+                document.documentElement.removeAttribute('data-theme');
+            } else {
+                document.documentElement.setAttribute('data-theme', themeName);
+            }
+
+            document.querySelectorAll('.theme-option').forEach(opt => {
+                if(opt.getAttribute('data-value') === themeName) {
+                    opt.classList.add('selected');
+                } else {
+                    opt.classList.remove('selected');
+                }
+            });
+
+            setTimeout(() => {
+                document.getElementById('themeGroup').classList.remove('open');
             }, 180);
         }
 
@@ -864,7 +1016,8 @@
         function openSettings() { document.getElementById('settingsPage').classList.add('show'); }
         function closeSettings() { 
             document.getElementById('settingsPage').classList.remove('show'); 
-            document.getElementById('langGroup').classList.remove('open'); // Kapatırken açık kaldıysa sıfırla
+            document.getElementById('langGroup').classList.remove('open');
+            document.getElementById('themeGroup').classList.remove('open');
         }
 
         function updateUIStrings() {
@@ -877,6 +1030,13 @@
             userInput.placeholder = translations[currentLang].inputPlaceholder;
             document.getElementById('settingsTitle').textContent = translations[currentLang].settingsTitle;
             document.getElementById('languageLabel').textContent = translations[currentLang].languageLabel;
+            document.getElementById('themeLabel').textContent = translations[currentLang].themeLabel;
+            
+            // Temaların isimleri dil değişimine göre çevrilir
+            document.getElementById('themeDefaultLabel').textContent = translations[currentLang].themeDefault;
+            document.getElementById('themeDarkLabel').textContent = translations[currentLang].themeDark;
+            document.getElementById('themeEmeraldLabel').textContent = translations[currentLang].themeEmerald;
+            document.getElementById('themePurpleLabel').textContent = translations[currentLang].themePurple;
         }
     </script>
 </body>
