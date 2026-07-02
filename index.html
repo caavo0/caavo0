@@ -110,47 +110,23 @@
 
         html { height: 100vh; height: -webkit-fill-available; }
 
-        /* Üst Menü / Sekmeler */
-        .tabs {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            padding: 12px 20px;
-            background: var(--bg-color);
-            flex-shrink: 0;
-            z-index: 10;
+        /* Medya Sayfası (Ayarlardan açılan tam ekran sayfa) */
+        .media-page {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-color); display: none; flex-direction: column; z-index: 62;
         }
-
-        .tab-btn {
-            flex: 1;
-            max-width: 140px;
-            padding: 10px 20px;
-            font-size: 1rem;
-            font-weight: 600;
-            border: none;
-            border-radius: 30px;
-            cursor: pointer;
-            background: var(--surface-color);
-            color: var(--accent-light);
-            transition: all 0.2s ease;
-        }
-
-        .tab-btn.active {
-            background: var(--accent-primary);
-            color: white;
-            box-shadow: 0 0 10px var(--accent-glow);
-        }
+        .media-page.show { display: flex; }
+        .media-page .links-container { flex: 1; overflow-y: auto; max-width: 600px; margin: 0 auto; width: 100%; }
 
         .tab-content {
-            display: none;
+            display: flex;
             flex: 1;
             width: 100%;
             max-width: 600px;
             margin: 0 auto;
             overflow: hidden;
+            flex-direction: column;
         }
-
-        .tab-content.active { display: flex; flex-direction: column; }
 
         /* Medya Sekmesi Kart Düzeni */
         .links-container { display: flex; flex-direction: column; gap: 16px; padding: 20px; width: 100%; overflow-y: auto; }
@@ -360,6 +336,18 @@
         .bug-report-trigger-btn .bug-trigger-icon { width: 20px; height: 20px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
         .bug-report-trigger-btn .bug-trigger-icon svg { width: 100%; height: 100%; fill: none; stroke: var(--danger-color); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
+        /* Medyaya Ayarlardan Erişim Butonu */
+        .media-menu-trigger-btn {
+            background: var(--surface-color); border: 1px solid var(--border-color); padding: 16px;
+            border-radius: 12px; display: flex; align-items: center; justify-content: space-between;
+            cursor: pointer; transition: background 0.2s; font-size: 1rem; color: var(--accent-light); font-weight: 500;
+        }
+        .media-menu-trigger-btn:hover { background: var(--surface-hover); }
+        .media-menu-trigger-btn .option-left-content { display: flex; align-items: center; gap: 12px; }
+        .media-menu-trigger-btn .media-menu-icon { width: 20px; height: 20px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+        .media-menu-trigger-btn .media-menu-icon svg { width: 100%; height: 100%; fill: none; stroke: var(--accent-light); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .media-menu-trigger-btn .chevron { color: var(--text-muted); font-size: 1.1rem; }
+
         /* Hata Bildirme Modalı */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -427,12 +415,11 @@
 </head>
 <body>
 
-    <div class="tabs">
-        <button class="tab-btn active" id="mediaTab" onclick="switchTab(0)">Medya</button>
-        <button class="tab-btn" id="aiTab" onclick="switchTab(1)">Caavo0 AI</button>
-    </div>
-
-    <div id="tab0" class="tab-content active">
+    <div class="media-page" id="mediaPage">
+        <div class="settings-header">
+            <span class="back-btn" onclick="closeMediaPage()">←</span>
+            <div class="settings-title" id="mediaPageTitle">Medya</div>
+        </div>
         <div class="links-container">
             <a href="https://github.com/caavo0" class="media-card card-github" target="_blank">
                 <div class="media-icon">
@@ -480,7 +467,7 @@
         </div>
     </div>
 
-    <div id="tab1" class="tab-content">
+    <div class="tab-content active">
         <div class="chat-container">
             <div class="chat-header-wrapper">
                 <div class="menu-toggle-btn" onclick="toggleSidebar()">
@@ -614,6 +601,21 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <div class="media-menu-trigger-btn" onclick="openMediaPage()">
+                <div class="option-left-content">
+                    <span class="media-menu-icon">
+                        <svg viewBox="0 0 24 24">
+                            <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
+                            <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+                            <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
+                            <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
+                        </svg>
+                    </span>
+                    <span id="mediaMenuBtnText">Medya</span>
+                </div>
+                <span class="chevron">›</span>
             </div>
 
             <div class="bug-report-trigger-btn" onclick="openBugModal()">
@@ -840,16 +842,16 @@
             localStorage.setItem('caavo0_chats', JSON.stringify(chatSessions));
         }
 
-        function switchTab(n) {
-            document.querySelectorAll('.tab-content').forEach((el, i) => el.classList.toggle('active', i === n));
-            document.querySelectorAll('.tab-btn').forEach((el, i) => el.classList.toggle('active', i === n));
+        function openMediaPage() {
+            document.getElementById('mediaPage').classList.add('show');
+        }
+        function closeMediaPage() {
+            document.getElementById('mediaPage').classList.remove('show');
         }
 
         const chatMessages = document.getElementById('chatMessages');
         const userInput = document.getElementById('userInput');
         const chatHeader = document.getElementById('chatHeader');
-        const mediaTab = document.getElementById('mediaTab');
-        const aiTab = document.getElementById('aiTab');
         const historyList = document.getElementById('historyList');
 
         function handleKeyPress(e) {
@@ -1212,8 +1214,8 @@
         }
 
         function updateUIStrings() {
-            mediaTab.textContent = translations[currentLang].mediaTab;
-            aiTab.textContent = translations[currentLang].aiTab;
+            document.getElementById('mediaMenuBtnText').textContent = translations[currentLang].mediaTab;
+            document.getElementById('mediaPageTitle').textContent = translations[currentLang].mediaTab;
             chatHeader.textContent = translations[currentLang].chatHeader;
             
             const wm = document.getElementById('welcomeMessage');
