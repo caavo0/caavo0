@@ -247,8 +247,10 @@
         .history-item-wrapper { display: flex; align-items: center; justify-content: space-between; background: var(--surface-color); border-radius: 10px; transition: all 0.2s; padding-right: 10px; border: 1px solid var(--border-color); }
         .history-item-wrapper:hover { background: var(--surface-hover); }
         .history-item { flex: 1; padding: 12px 15px; cursor: pointer; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-main); }
-        .delete-item-btn { cursor: pointer; opacity: 0.5; padding: 5px; }
-        .delete-item-btn:hover { opacity: 1; color: #ff4d4d; }
+        .delete-item-btn { cursor: pointer; opacity: 0.5; padding: 5px; display: flex; align-items: center; justify-content: center; transition: opacity 0.2s; }
+        .delete-item-btn:hover { opacity: 1; }
+        .delete-item-btn svg { width: 18px; height: 18px; stroke: var(--text-muted); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: stroke 0.2s; }
+        .delete-item-btn:hover svg { stroke: #ff4d4d; }
 
         .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 45; display: none; }
         .sidebar-overlay.show { display: block; }
@@ -354,6 +356,9 @@
             cursor: pointer; transition: background 0.2s; font-size: 1rem; color: var(--danger-color); font-weight: 500;
         }
         .bug-report-trigger-btn:hover { background: var(--surface-hover); }
+        .bug-report-trigger-btn .option-left-content { display: flex; align-items: center; gap: 12px; }
+        .bug-report-trigger-btn .bug-trigger-icon { width: 20px; height: 20px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+        .bug-report-trigger-btn .bug-trigger-icon svg { width: 100%; height: 100%; fill: none; stroke: var(--danger-color); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
         /* Hata Bildirme Modalı */
         .modal-overlay {
@@ -376,17 +381,42 @@
         .bug-modal-title { font-size: 1.2rem; font-weight: 600; color: var(--text-title); margin: 0; }
         .bug-modal-desc { font-size: 0.85rem; color: var(--text-muted); margin: 0 0 4px 0; line-height: 1.4; }
         
-        .bug-form-group { display: flex; flex-direction: column; gap: 6px; }
+        .bug-form-group { display: flex; flex-direction: column; gap: 6px; position: relative; }
         .bug-form-group label { font-size: 0.9rem; font-weight: 500; color: var(--accent-light); }
         
-        .bug-form-group select, .bug-form-group textarea {
+        .bug-form-group textarea {
             background: var(--bg-color); border: 1px solid var(--border-color);
             border-radius: 8px; color: var(--text-main); padding: 10px 12px;
             font-size: 0.95rem; outline: none; font-family: inherit;
         }
-        .bug-form-group select { cursor: pointer; }
         .bug-form-group textarea { resize: none; height: 100px; }
-        .bug-form-group select:focus, .bug-form-group textarea:focus { border-color: var(--accent-primary); }
+        .bug-form-group textarea:focus { border-color: var(--accent-primary); }
+
+        /* Özel Kategori Seçici (Native select yerine) */
+        .bug-category-selector { position: relative; }
+        .bug-category-header {
+            background: var(--bg-color); border: 1px solid var(--border-color);
+            border-radius: 8px; color: var(--text-main); padding: 10px 12px;
+            font-size: 0.95rem; display: flex; align-items: center; justify-content: space-between;
+            cursor: pointer; user-select: none; transition: border-color 0.2s;
+        }
+        .bug-category-selector.open .bug-category-header { border-color: var(--accent-primary); border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+        .bug-category-header .dropdown-arrow { font-size: 0.75rem; }
+        .bug-category-selector.open .bug-category-header .dropdown-arrow { transform: rotate(180deg); color: var(--accent-light); }
+
+        .bug-category-options {
+            position: absolute; top: 100%; left: 0; right: 0; z-index: 5;
+            background: var(--sidebar-color); border: 1px solid var(--accent-primary); border-top: none;
+            border-radius: 0 0 8px 8px; overflow: hidden; display: none;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+        }
+        .bug-category-selector.open .bug-category-options { display: block; }
+        .bug-category-option { padding: 12px; font-size: 0.9rem; color: var(--text-main); cursor: pointer; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-color); transition: background 0.2s; }
+        .bug-category-option:last-child { border-bottom: none; }
+        .bug-category-option:hover { background: var(--surface-hover); }
+        .bug-category-option.selected { color: var(--accent-light); font-weight: 600; }
+        .bug-category-option .check-mark { opacity: 0; transition: opacity 0.2s; color: var(--accent-primary); font-size: 0.85rem; }
+        .bug-category-option.selected .check-mark { opacity: 1; }
 
         .bug-modal-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 8px; }
         .bug-btn { padding: 10px 18px; font-size: 0.95rem; font-weight: 600; border-radius: 30px; border: none; cursor: pointer; transition: opacity 0.2s; }
@@ -586,8 +616,17 @@
                 </div>
             </div>
 
-            <div class="bug-report-trigger-btn" onclick="openBugModal()" id="bugReportBtnText">
-                🚨 Hata Bildir
+            <div class="bug-report-trigger-btn" onclick="openBugModal()">
+                <div class="option-left-content">
+                    <span class="bug-trigger-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 9v4"></path>
+                            <path d="M12 17h.01"></path>
+                            <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                        </svg>
+                    </span>
+                    <span id="bugReportBtnText">Hata Bildir</span>
+                </div>
             </div>
 
         </div>
@@ -599,13 +638,31 @@
             <p class="bug-modal-desc" id="bugModalDesc">Karşılaştığın problemi kısaca bize ilet, hemen düzeltelim.</p>
             
             <div class="bug-form-group">
-                <label for="bugCategory" id="bugLabelCat">Hata Türü</label>
-                <select id="bugCategory">
-                    <option value="ui" id="bugOptUi">Arayüz / Tasarım Hatası</option>
-                    <option value="ai" id="bugOptAi">Yapay Zeka Yanıt Hatası</option>
-                    <option value="performance" id="bugOptPerf">Donma / Yavaşlık Problemi</option>
-                    <option value="other" id="bugOptOther">Diğer Sorunlar</option>
-                </select>
+                <label id="bugLabelCat">Hata Türü</label>
+                <div class="bug-category-selector" id="bugCategorySelector">
+                    <div class="bug-category-header" onclick="toggleBugCategoryDropdown()">
+                        <span id="bugCategorySelectedLabel">Arayüz / Tasarım Hatası</span>
+                        <span class="dropdown-arrow">▼</span>
+                    </div>
+                    <div class="bug-category-options">
+                        <div class="bug-category-option selected" data-value="ui" onclick="selectBugCategory('ui')">
+                            <span id="bugOptUi">Arayüz / Tasarım Hatası</span>
+                            <span class="check-mark">✓</span>
+                        </div>
+                        <div class="bug-category-option" data-value="ai" onclick="selectBugCategory('ai')">
+                            <span id="bugOptAi">Yapay Zeka Yanıt Hatası</span>
+                            <span class="check-mark">✓</span>
+                        </div>
+                        <div class="bug-category-option" data-value="performance" onclick="selectBugCategory('performance')">
+                            <span id="bugOptPerf">Donma / Yavaşlık Problemi</span>
+                            <span class="check-mark">✓</span>
+                        </div>
+                        <div class="bug-category-option" data-value="other" onclick="selectBugCategory('other')">
+                            <span id="bugOptOther">Diğer Sorunlar</span>
+                            <span class="check-mark">✓</span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="bug-form-group">
@@ -623,6 +680,7 @@
     <script>
         let currentLang = "tr";
         let currentTheme = "default";
+        let currentBugCategory = "ui";
         let chatSessions = []; 
         let currentSessionId = null;
 
@@ -633,7 +691,7 @@
                 settingsTitle: "Ayarlar", languageLabel: "Dil Seçimi", themeLabel: "Tema Seçimi",
                 themeDefault: "Varsayılan (Mavi)", themeWhite: "İnci Beyazı", themeDark: "Gece Siyahı", themeEmerald: "Zümrüt Yeşili", themePurple: "Neon Mor",
                 errorMessage: "Bağlantı hatası, tekrar dene.",
-                bugTrigger: "🚨 Hata Bildir", bugTitle: "Sistem Hatası Bildir", bugDesc: "Karşılaştığın problemi kısaca bize ilet, hemen düzeltelim.",
+                bugTrigger: "Hata Bildir", bugTitle: "Sistem Hatası Bildir", bugDesc: "Karşılaştığın problemi kısaca bize ilet, hemen düzeltelim.",
                 bugLabelCat: "Hata Türü", bugLabelDesc: "Açıklama", bugTextareaPlh: "Adım adım hatayı nasıl aldığını yazar mısın?",
                 bugOptUi: "Arayüz / Tasarım Hatası", bugOptAi: "Yapay Zeka Yanıt Hatası", bugOptPerf: "Donma / Yavaşlık Problemi", bugOptOther: "Diğer Sorunlar",
                 bugCancel: "Vazgeç", bugSubmit: "Gönder", bugAlertEmpty: "Lütfen hata açıklamasını boş bırakmayın.", bugAlertSuccess: "Hata bildiriminiz başarıyla iletildi! Teşekkürler."
@@ -644,7 +702,7 @@
                 settingsTitle: "Settings", languageLabel: "Language", themeLabel: "Theme Selection",
                 themeDefault: "Default (Blue)", themeWhite: "Pearl White", themeDark: "Midnight Black", themeEmerald: "Emerald Green", themePurple: "Cyber Purple",
                 errorMessage: "Connection error, please try again.",
-                bugTrigger: "🚨 Report a Bug", bugTitle: "Report a System Bug", bugDesc: "Briefly tell us about the issue you encountered, we'll fix it.",
+                bugTrigger: "Report a Bug", bugTitle: "Report a System Bug", bugDesc: "Briefly tell us about the issue you encountered, we'll fix it.",
                 bugLabelCat: "Bug Type", bugLabelDesc: "Description", bugTextareaPlh: "Could you write step by step how you got the error?",
                 bugOptUi: "UI / Design Issue", bugOptAi: "AI Response Issue", bugOptPerf: "Lag / Performance Problem", bugOptOther: "Other Issues",
                 bugCancel: "Cancel", bugSubmit: "Submit", bugAlertEmpty: "Please do not leave the description blank.", bugAlertSuccess: "Your bug report has been successfully sent! Thank you."
@@ -655,7 +713,7 @@
                 settingsTitle: "Einstellungen", languageLabel: "Sprache", themeLabel: "Thema Auswählen",
                 themeDefault: "Standard (Blau)", themeWhite: "Perlweiß", themeDark: "Mitternachtsschwarz", themeEmerald: "Smaragdgrün", themePurple: "Cyber-Violett",
                 errorMessage: "Verbindungsfehler, bitte erneut versuchen.",
-                bugTrigger: "🚨 Fehler melden", bugTitle: "Systemfehler melden", bugDesc: "Teilen Sie uns das Problem kurz mit, wir beheben es sofort.",
+                bugTrigger: "Fehler melden", bugTitle: "Systemfehler melden", bugDesc: "Teilen Sie uns das Problem kurz mit, wir beheben es sofort.",
                 bugLabelCat: "Fehlertyp", bugLabelDesc: "Beschreibung", bugTextareaPlh: "Schreiben Sie Schritt für Schritt, wie der Fehler aufgetreten ist.",
                 bugOptUi: "Benutzeroberfläche / Design", bugOptAi: "KI-Antwortfehler", bugOptPerf: "Verzögerung / Leistungsproblem", bugOptOther: "Andere Probleme",
                 bugCancel: "Abbrechen", bugSubmit: "Absenden", bugAlertEmpty: "Bitte lassen Sie das Beschreibungsfeld nicht leer.", bugAlertSuccess: "Ihr Fehlerbericht wurde erfolgreich gesendet! Vielen Dank."
@@ -666,7 +724,7 @@
                 settingsTitle: "Ajustes", languageLabel: "Idioma", themeLabel: "Selección de Tema",
                 themeDefault: "Por defecto (Azul)", themeWhite: "Blanco Perla", themeDark: "Negro Medianoche", themeEmerald: "Verde Esmeralda", themePurple: "Púrpura Neón",
                 errorMessage: "Error de conexión, inténtalo de nuevo.",
-                bugTrigger: "🚨 Reportar un Error", bugTitle: "Reportar un Error del Sistema", bugDesc: "Cuéntanos brevemente el problema y lo solucionaremos de inmediato.",
+                bugTrigger: "Reportar un Error", bugTitle: "Reportar un Error del Sistema", bugDesc: "Cuéntanos brevemente el problema y lo solucionaremos de inmediato.",
                 bugLabelCat: "Tipo de Error", bugLabelDesc: "Descripción", bugTextareaPlh: "¿Podrías escribir paso a paso cómo surgió el error?",
                 bugOptUi: "Problema de Interfaz / Diseño", bugOptAi: "Error de Respuesta de IA", bugOptPerf: "Problema de Rendimiento / Lag", bugOptOther: "Otros Problemas",
                 bugCancel: "Cancelar", bugSubmit: "Enviar", bugAlertEmpty: "Por favor, no deje la descripción vacía.", bugAlertSuccess: "¡Su informe de errores ha sido enviado con éxito! Gracias."
@@ -677,7 +735,7 @@
                 settingsTitle: "Paramètres", languageLabel: "Langue", themeLabel: "Sélection du Thème",
                 themeDefault: "Par défaut (Bleu)", themeWhite: "Blanc Perle", themeDark: "Noir Minuit", themeEmerald: "Vert Émeraude", themePurple: "Pourpre Néon",
                 errorMessage: "Erreur de connexion, veuillez réessayer.",
-                bugTrigger: "🚨 Signaler un Bug", bugTitle: "Signaler un Bug Système", bugDesc: "Décrivez brièvement le problème rencontré, nous le corrigerons immédiatement.",
+                bugTrigger: "Signaler un Bug", bugTitle: "Signaler un Bug Système", bugDesc: "Décrivez brièvement le problème rencontré, nous le corrigerons immédiatement.",
                 bugLabelCat: "Type de Bug", bugLabelDesc: "Description", bugTextareaPlh: "Pouvez-vous écrire étape par étape comment le bug s'est produit ?",
                 bugOptUi: "Problème d'Interface / Design", bugOptAi: "Erreur de Réponse de l'IA", bugOptPerf: "Problème de Performance / Lenteur", bugOptOther: "Autres Problèmes",
                 bugCancel: "Annuler", bugSubmit: "Envoyer", bugAlertEmpty: "Veuillez ne pas laisser la description vide.", bugAlertSuccess: "Votre rapport de bug a été envoyé avec succès ! Merci."
@@ -688,12 +746,10 @@
                 settingsTitle: "Настройки", languageLabel: "Язык", themeLabel: "Выбор Темы",
                 themeDefault: "По умолчанию (Синий)", themeWhite: "Жемчужно-белый", themeDark: "Полуночный черный", themeEmerald: "Изумрудно-зеленый", themePurple: "Неоновый фиолетовый",
                 errorMessage: "Ошибка подключения, попробуйте еще раз.",
-                bugTrigger: "🚨 Сообщить об ошибке", bugTitle: "Сообщить о системной ошибке", bugDesc: "Кратко расскажите о проблеме, и мы сразу её исправим.",
+                bugTrigger: "Сообщить об ошибке", bugTitle: "Сообщить о системной ошибке", bugDesc: "Кратко расскажите о проблеме, и мы сразу её исправим.",
                 bugLabelCat: "Тип ошибки", bugLabelDesc: "Описание", bugTextareaPlh: "Опишите пошагово, как вы столкнулись с ошибкой.",
                 bugOptUi: "Проблема с интерфейсом / дизайном", bugOptAi: "Ошибка ответа ИИ", bugOptPerf: "Проблема с зависанием / производительностью", bugOptOther: "Другие проблемы",
                 bugCancel: "Отмена", bugSubmit: "Отправить", bugAlertEmpty: "Пожалуйста, заполните описание ошибки.", bugAlertSuccess: "Ваш отчет об ошибке успешно отправлен! Спасибо."
-            },
-            group_ar: { // Not active placeholder object but structured for standard translations keys
             },
             ar: {
                 mediaTab: "وسائل الإعلام", aiTab: "Caavo0 AI", chatHeader: "Caavo0 AI",
@@ -701,7 +757,7 @@
                 settingsTitle: "الإعدادات", languageLabel: "اللغة", themeLabel: "اختيار Mظهر",
                 themeDefault: "افتراضي (أزرق)", themeWhite: "أبيض لؤلؤي", themeDark: "أسود منتصف الليل", themeEmerald: "أخضر زمردي", themePurple: "أرجواني سايبر",
                 errorMessage: "خطأ في الاتصال، يرجى المحاولة مرة أخرى.",
-                bugTrigger: "🚨 الإبلاغ عن خطأ", bugTitle: "الإبلاغ عن خطأ في النظام", bugDesc: "أدخل باختصار عن المشكلة التي واجهتها وسنصلحها فوراً.",
+                bugTrigger: "الإبلاغ عن خطأ", bugTitle: "الإبلاغ عن خطأ في النظام", bugDesc: "أدخل باختصار عن المشكلة التي واجهتها وسنصلحها فوراً.",
                 bugLabelCat: "نوع الخطأ", bugLabelDesc: "الوصف", bugTextareaPlh: "هل يمكنك كتابة خطوات حدوث الخطأ بالتفصيل؟",
                 bugOptUi: "مشكلة في الواجهة / التصميم", bugOptAi: "خطأ في رد الذكاء الاصطناعي", bugOptPerf: "مشكلة في الأداء / البطء", bugOptOther: "مشاكل أخرى",
                 bugCancel: "إلغاء", bugSubmit: "إرسال", bugAlertEmpty: "يرجى عدم ترك خانة الوصف فارغة.", bugAlertSuccess: "تم إرسال تقرير الخطأ بنجاح! شكراً لك."
@@ -785,6 +841,27 @@
             setTimeout(() => {
                 document.getElementById('themeGroup').classList.remove('open');
             }, 180);
+        }
+
+        /* Hata türü için kendi tasarımımız olan açılır menü */
+        function toggleBugCategoryDropdown() {
+            document.getElementById('bugCategorySelector').classList.toggle('open');
+        }
+
+        function selectBugCategory(value) {
+            currentBugCategory = value;
+
+            document.querySelectorAll('.bug-category-option').forEach(opt => {
+                opt.classList.toggle('selected', opt.getAttribute('data-value') === value);
+            });
+
+            document.getElementById('bugCategorySelectedLabel').textContent = translations[currentLang][
+                value === 'ui' ? 'bugOptUi' : value === 'ai' ? 'bugOptAi' : value === 'performance' ? 'bugOptPerf' : 'bugOptOther'
+            ];
+
+            setTimeout(() => {
+                document.getElementById('bugCategorySelector').classList.remove('open');
+            }, 150);
         }
 
         async function sendMessage() {
@@ -903,6 +980,7 @@
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
+        /* Kelime kelime yazma efekti (önceden karakter karakterdi) */
         function typeWriterEffect(fullText, className) {
             const div = document.createElement('div');
             div.className = `message ${className}`;
@@ -915,18 +993,19 @@
 
             let processedText = fullText.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
 
+            // Metni kelimelere (ve satır sonlarına) ayır, boşlukları koru
+            const tokens = processedText.split(/(\s+)/).filter(t => t.length > 0);
+
             let i = 0;
+            let rendered = '';
             function type() {
-                if (i < processedText.length) {
-                    let char = processedText.charAt(i);
-                    if (char === '\n') {
-                        contentDiv.innerHTML += '<br>';
-                    } else {
-                        contentDiv.innerHTML += char;
-                    }
+                if (i < tokens.length) {
+                    const token = tokens[i];
+                    rendered += token.replace(/\n/g, '<br>');
+                    contentDiv.innerHTML = rendered;
                     i++;
                     chatMessages.scrollTop = chatMessages.scrollHeight;
-                    setTimeout(type, 15);
+                    setTimeout(type, 70);
                 } else {
                     // Yazma animasyonu bittiği an butonları mesaj kutusunun altına kondurur
                     div.appendChild(createToolbarElement(fullText));
@@ -958,6 +1037,29 @@
             userInput.value = '';
         }
 
+        /* Sohbet silme ikonu (özel tasarım çöp kutusu SVG'si) */
+        function createTrashIconSVG() {
+            const ns = "http://www.w3.org/2000/svg";
+            const svg = document.createElementNS(ns, "svg");
+            svg.setAttribute("viewBox", "0 0 24 24");
+
+            const parts = [
+                { tag: "path", d: "M4 7h16" },
+                { tag: "path", d: "M9 7V4.5A1.5 1.5 0 0 1 10.5 3h3A1.5 1.5 0 0 1 15 4.5V7" },
+                { tag: "path", d: "M6 7l1 13.5A1.5 1.5 0 0 0 8.5 22h7a1.5 1.5 0 0 0 1.5-1.5L18 7" },
+                { tag: "path", d: "M10 11v6" },
+                { tag: "path", d: "M14 11v6" }
+            ];
+
+            parts.forEach(p => {
+                const el = document.createElementNS(ns, p.tag);
+                el.setAttribute("d", p.d);
+                svg.appendChild(el);
+            });
+
+            return svg;
+        }
+
         function updateSidebarUI() {
             historyList.innerHTML = '';
             [...chatSessions].reverse().forEach(session => {
@@ -974,7 +1076,7 @@
 
                 const deleteBtn = document.createElement('div');
                 deleteBtn.className = 'delete-item-btn';
-                deleteBtn.innerHTML = '🗑️';
+                deleteBtn.appendChild(createTrashIconSVG());
                 deleteBtn.onclick = (e) => {
                     e.stopPropagation();
                     deleteChatSession(session.id);
@@ -1033,9 +1135,10 @@
         function closeBugModal() {
             document.getElementById('bugModalOverlay').classList.remove('show');
             document.getElementById('bugDescription').value = '';
+            document.getElementById('bugCategorySelector').classList.remove('open');
         }
         function sendBugReport() {
-            const category = document.getElementById('bugCategory').value;
+            const category = currentBugCategory;
             const description = document.getElementById('bugDescription').value.trim();
 
             if(!description) {
@@ -1084,6 +1187,11 @@
             document.getElementById('bugOptAi').textContent = translations[currentLang].bugOptAi;
             document.getElementById('bugOptPerf').textContent = translations[currentLang].bugOptPerf;
             document.getElementById('bugOptOther').textContent = translations[currentLang].bugOptOther;
+
+            // Seçili kategori etiketini güncel dile göre yenile
+            document.getElementById('bugCategorySelectedLabel').textContent = translations[currentLang][
+                currentBugCategory === 'ui' ? 'bugOptUi' : currentBugCategory === 'ai' ? 'bugOptAi' : currentBugCategory === 'performance' ? 'bugOptPerf' : 'bugOptOther'
+            ];
         }
     </script>
 </body>
