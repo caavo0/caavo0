@@ -25,7 +25,7 @@ export default async function handler(req, res) {
         conversationHistory.push({ role: "user", content: message });
 
         const completion = await groq.chat.completions.create({
-            model: "llama-3.3-70b-versatile",
+            model: "meta-llama/llama-4-scout-17b-16e-instruct",
             messages: [
                 { 
                     role: "system", 
