@@ -13,26 +13,51 @@ export default async function handler(req, res) {
     res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
     if (req.method === "OPTIONS") return res.status(200).end();
-    if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
+    if (req.method !== "POST") {
+        return res.status(405).json({ error: "Method not allowed" });
+    }
 
     try {
-        const { message } = req.body;
+        const { message, image } = req.body;
 
-        if (!message) {
-            return res.status(400).json({ error: "Mesaj boş olamaz" });
+        if (!message && !image) {
+            return res.status(400).json({ error: "Mesaj veya resim gerekli." });
         }
 
-        conversationHistory.push({ role: "user", content: message });
+        if (image) {
+            conversationHistory.push({
+                role: "user",
+                content: [
+                    {
+                        type: "text",
+                        text: message || "Bu resmi analiz et."
+                    },
+                    {
+                        type: "image_url",
+                        image_url: {
+                            url: image
+                        }
+                    }
+                ]
+            });
+        } else {
+            conversationHistory.push({
+                role: "user",
+                content: message
+            });
+        }
 
         const completion = await groq.chat.completions.create({
             model: "meta-llama/llama-4-scout-17b-16e-instruct",
             messages: [
-                { 
-                    role: "system", 
+                {
+                    role: "system",
                     content: `Sen saygılı, eğlenceli ve samimi bir yapay zekasın.
-                    Selamlaşmalara dikkat et: "sa, as, slm, slm aleyküm, merhaba, mrb" gibi selamlasma cumlelerini bil.
-                    Kullanıcı "Seni kim yaptı?" veya "Kim geliştirdi?" diye sorarsa "Beni caavo0 geliştirdi kardeşim" diye cevap ver ama sadece sordugunda.Her konu degistirdiginde paragraf basi yap.Adimlari ayiyarak anlat.
-                    Her zaman Türkçe konuş ama kullanici baska bir dilde konusmani isterse konus, dostça ve yardımcı ol.Eger biri sen hangi sitedesin veya ben hangi sitedeyim diye sorarsa caavox.vercel.app sitesinin icinde veya CaavoX uygulamasinin icindesin de.` 
+Selamlaşmalara dikkat et: "sa, as, slm, slm aleyküm, merhaba, mrb" gibi selamlaşmaları bil.
+Kullanıcı "Seni kim yaptı?" veya "Kim geliştirdi?" diye sorarsa "Beni caavo0 geliştirdi kardeşim" diye cevap ver ama sadece sorulduğunda.
+Her konu değiştirdiğinde paragraf başı yap.
+Her zaman Türkçe konuş ama kullanıcı başka bir dil isterse o dilde konuş.
+Eğer biri "Ben hangi sitedeyim?" diye sorarsa "CaavoX uygulamasının içindesin." de.`
                 },
                 ...conversationHistory
             ],
@@ -40,9 +65,14 @@ export default async function handler(req, res) {
             max_tokens: 800
         });
 
-        const reply = completion.choices[0]?.message?.content || "Üzgünüm, anlayamadım kardeşim.";
+        const reply =
+            completion.choices[0]?.message?.content ||
+            "Üzgünüm, anlayamadım kardeşim.";
 
-        conversationHistory.push({ role: "assistant", content: reply });
+        conversationHistory.push({
+            role: "assistant",
+            content: reply
+        });
 
         if (conversationHistory.length > 20) {
             conversationHistory = conversationHistory.slice(-20);
@@ -52,6 +82,8 @@ export default async function handler(req, res) {
 
     } catch (e) {
         console.error("Groq Error:", e);
-        res.status(500).json({ error: "Bir hata oluştu, lütfen tekrar dene." });
+        res.status(500).json({
+            error: e.message || "Bir hata oluştu."
+        });
     }
-                                 }
+}
