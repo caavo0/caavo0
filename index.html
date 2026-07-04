@@ -274,6 +274,22 @@
             padding: 4px 6px;
             border-radius: 4px;
             transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .message-toolbar button svg {
+            width: 17px;
+            height: 17px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .message-toolbar button.liked svg,
+        .message-toolbar button.disliked svg {
+            fill: currentColor;
         }
         .message-toolbar button:hover {
             color: var(--accent-light);
@@ -1593,6 +1609,34 @@
             }, 150);
         }
 
+        const TITLE_STOPWORDS = new Set([
+            "acaba","hakkında","hakkinda","hakkinda?","bana","bize","bir","biraz","bunu","bunun","için","icin","lütfen","lutfen",
+            "merhaba","selam","nasıl","nasil","nedir","ne","neden","niçin","nicin","hangi","hangisi","misin","musun","mısın","mısın?",
+            "mi","mı","mu","mü","yapar","yapabilir","yapabilirmisin","yaparmisin","yardım","yardim","edebilir","edebilirmisin",
+            "istiyorum","istiyoruz","olur","olurmu","olur mu","şu","bu","şey","aslında","aslinda","the","a","an","please","can","you",
+            "could","would","how","what","why","is","are","about","me","us","to","for","of","in","on"
+        ]);
+
+        function generateChatTitle(text) {
+            const cleaned = text.replace(/[?!.,;:¿¡"'()]/g, ' ').trim();
+            const words = cleaned.split(/\s+/).filter(Boolean);
+
+            const meaningful = words.filter(w => !TITLE_STOPWORDS.has(w.toLowerCase()));
+            const source = meaningful.length > 0 ? meaningful : words;
+
+            let topic = source.slice(0, 5).join(' ');
+            if (!topic) topic = text.trim();
+
+            topic = topic.charAt(0).toLocaleUpperCase('tr') + topic.slice(1);
+
+            const maxLen = 32;
+            if (topic.length > maxLen) {
+                topic = topic.substring(0, maxLen).trim() + '…';
+            }
+            return topic;
+        }
+
+
         async function sendMessage() {
             const text = userInput.value.trim();
             if (!text) return;
@@ -1601,7 +1645,7 @@
                 currentSessionId = Date.now();
                 chatSessions.push({
                     id: currentSessionId,
-                    title: text.substring(0, 24) + (text.length > 24 ? "..." : ""),
+                    title: generateChatTitle(text),
                     messages: []
                 });
                 updateSidebarUI();
@@ -1645,7 +1689,7 @@
             toolbar.className = 'message-toolbar';
 
             const copyBtn = document.createElement('button');
-            copyBtn.innerHTML = '📋';
+            copyBtn.innerHTML = '<svg viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></svg>';
             copyBtn.title = translations[currentLang].copyTitle;
             copyBtn.onclick = () => {
                 navigator.clipboard.writeText(text);
@@ -1653,7 +1697,7 @@
             };
 
             const speakBtn = document.createElement('button');
-            speakBtn.innerHTML = '🔊';
+            speakBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 5V4L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19 6a9 9 0 0 1 0 12"/></svg>';
             speakBtn.title = translations[currentLang].speakTitle;
             speakBtn.onclick = () => {
                 if (window.speechSynthesis.speaking) {
@@ -1666,16 +1710,20 @@
             };
 
             const likeBtn = document.createElement('button');
-            likeBtn.innerHTML = '👍';
+            likeBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M7 22V11l6-8a2.5 2.5 0 0 1 2.5 3l-1 5H19a2 2 0 0 1 2 2.4l-1.6 7A2 2 0 0 1 17.4 22H7z"/><path d="M7 11H4a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h3"/></svg>';
             likeBtn.onclick = () => {
-                likeBtn.style.color = '#0f9f68';
+                likeBtn.classList.toggle('liked');
+                dislikeBtn.classList.remove('disliked');
+                likeBtn.style.color = likeBtn.classList.contains('liked') ? '#0f9f68' : '';
                 dislikeBtn.style.color = '';
             };
 
             const dislikeBtn = document.createElement('button');
-            dislikeBtn.innerHTML = '👎';
+            dislikeBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M17 2v11l-6 8a2.5 2.5 0 0 1-2.5-3l1-5H5a2 2 0 0 1-2-2.4l1.6-7A2 2 0 0 1 6.6 2H17z"/><path d="M17 13h3a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1h-3"/></svg>';
             dislikeBtn.onclick = () => {
-                dislikeBtn.style.color = '#ef4444';
+                dislikeBtn.classList.toggle('disliked');
+                likeBtn.classList.remove('liked');
+                dislikeBtn.style.color = dislikeBtn.classList.contains('disliked') ? '#ef4444' : '';
                 likeBtn.style.color = '';
             };
 
