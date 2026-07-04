@@ -226,8 +226,11 @@
         .actions-wrapper { position: absolute; right: 20px; display: flex; align-items: center; gap: 16px; }
         .new-chat-btn { width: 24px; height: 24px; cursor: pointer; opacity: 0.7; display: flex; align-items: center; justify-content: center; transition: opacity 0.2s; }
         .new-chat-btn svg { width: 100%; height: 100%; fill: none; stroke: var(--accent-light); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-        .settings-btn { font-size: 1.3rem; cursor: pointer; opacity: 0.7; user-select: none; transition: opacity 0.2s; }
+        .settings-btn { width: 24px; height: 24px; cursor: pointer; opacity: 0.7; display: flex; align-items: center; justify-content: center; transition: opacity 0.2s, transform 0.3s; }
+        .settings-btn svg { width: 100%; height: 100%; fill: none; stroke: var(--accent-light); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
         .settings-btn:hover, .new-chat-btn:hover { opacity: 1; }
+        .settings-btn:hover svg { transform: rotate(35deg); }
+        .settings-btn svg { transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1); }
 
         /* Sidebar */
         .sidebar {
@@ -376,6 +379,42 @@
         .custom-radio::after { content: ''; width: 10px; height: 10px; background: var(--accent-primary); border-radius: 50%; transform: scale(0); transition: transform 0.2s; }
         .dropdown-option.selected .custom-radio::after { transform: scale(1); }
 
+        /* Tam Sayfa Seçenek Listesi (Dil / Tema sayfaları için) */
+        .options-list-card {
+            background: var(--surface-color); border: 1px solid var(--border-color);
+            border-radius: 12px; overflow: hidden;
+        }
+        .options-list-card .dropdown-option { padding: 16px; }
+
+        /* Profil Sayfası */
+        .profile-page-avatar-preview { display: flex; justify-content: center; padding: 10px 0 4px; }
+        .profile-preview-circle {
+            width: 92px; height: 92px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            overflow: hidden; box-shadow: 0 6px 20px var(--accent-glow); transition: background 0.3s ease, transform 0.25s ease;
+            border: 3px solid var(--surface-color);
+        }
+        .profile-preview-circle img { width: 100%; height: 100%; object-fit: cover; }
+        .profile-preview-circle svg { width: 46%; height: 46%; fill: rgba(255,255,255,0.95); }
+
+        /* Profil Ayarları */
+        .profile-editor { padding: 16px; display: flex; flex-direction: column; gap: 16px; }
+        .profile-field label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px; }
+        .profile-field input {
+            width: 100%; background: var(--bg-color); border: 1px solid var(--border-color);
+            border-radius: 8px; color: var(--text-main); padding: 10px 12px;
+            font-size: 0.95rem; outline: none; font-family: inherit; transition: border-color 0.2s;
+        }
+        .profile-field input:focus { border-color: var(--accent-primary); }
+        .avatar-picker { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; }
+        .avatar-option {
+            width: 38px; height: 38px; border-radius: 50%; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            border: 2px solid transparent; transition: all 0.2s ease; position: relative;
+        }
+        .avatar-option svg { width: 18px; height: 18px; fill: rgba(255,255,255,0.95); }
+        .avatar-option:hover { transform: scale(1.08); }
+        .avatar-option.selected { border-color: var(--accent-light); box-shadow: 0 0 0 2px var(--accent-glow); }
+
         /* Hata Bildirme Özel Butonu */
         .bug-report-trigger-btn {
             background: var(--surface-color); border: 1px solid var(--border-color); padding: 16px;
@@ -433,6 +472,15 @@
 
         .bug-modal-title { font-size: 1.2rem; font-weight: 600; color: var(--text-title); margin: 0; }
         .bug-modal-desc { font-size: 0.85rem; color: var(--text-muted); margin: 0 0 4px 0; line-height: 1.4; }
+
+        /* Onay Modalı (Silme işlemleri için) */
+        .confirm-modal-icon {
+            width: 52px; height: 52px; border-radius: 50%; background: rgba(239, 68, 68, 0.12);
+            display: flex; align-items: center; justify-content: center; margin: 0 auto;
+        }
+        .confirm-modal-icon svg { width: 26px; height: 26px; fill: none; stroke: var(--danger-color); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .confirm-modal-title { text-align: center; }
+        .confirm-modal-desc { text-align: center; }
         
         .bug-form-group { display: flex; flex-direction: column; gap: 6px; position: relative; }
         .bug-form-group label { font-size: 0.9rem; font-weight: 500; color: var(--accent-light); }
@@ -534,6 +582,7 @@
             font-weight: 600; font-size: 1.2rem; overflow: hidden;
         }
         .account-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .account-avatar svg { width: 50%; height: 50%; fill: rgba(255,255,255,0.95); }
         .account-info { flex: 1; overflow: hidden; }
         .account-name { font-weight: 600; color: var(--text-title); font-size: 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .account-email { font-size: 0.8rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -610,6 +659,113 @@
         </div>
     </div>
 
+    <div class="media-page" id="languagePage">
+        <div class="settings-header">
+            <span class="back-btn" onclick="closeLanguagePage()">←</span>
+            <div class="settings-title" id="languagePageTitle">Dil Seçimi</div>
+        </div>
+        <div class="links-container">
+            <div class="options-list-card">
+                <div class="dropdown-option lang-option selected" data-value="tr" onclick="selectLanguage('tr')">
+                    <span class="option-name">Türkçe</span>
+                    <div class="custom-radio"></div>
+                </div>
+                <div class="dropdown-option lang-option" data-value="en" onclick="selectLanguage('en')">
+                    <span class="option-name">English</span>
+                    <div class="custom-radio"></div>
+                </div>
+                <div class="dropdown-option lang-option" data-value="de" onclick="selectLanguage('de')">
+                    <span class="option-name">Deutsch</span>
+                    <div class="custom-radio"></div>
+                </div>
+                <div class="dropdown-option lang-option" data-value="es" onclick="selectLanguage('es')">
+                    <span class="option-name">Español</span>
+                    <div class="custom-radio"></div>
+                </div>
+                <div class="dropdown-option lang-option" data-value="fr" onclick="selectLanguage('fr')">
+                    <span class="option-name">Français</span>
+                    <div class="custom-radio"></div>
+                </div>
+                <div class="dropdown-option lang-option" data-value="ru" onclick="selectLanguage('ru')">
+                    <span class="option-name">Русский</span>
+                    <div class="custom-radio"></div>
+                </div>
+                <div class="dropdown-option lang-option" data-value="ar" onclick="selectLanguage('ar')">
+                    <span class="option-name">العربية</span>
+                    <div class="custom-radio"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="media-page" id="themePage">
+        <div class="settings-header">
+            <span class="back-btn" onclick="closeThemePage()">←</span>
+            <div class="settings-title" id="themePageTitle">Tema Seçimi</div>
+        </div>
+        <div class="links-container">
+            <div class="options-list-card">
+                <div class="dropdown-option theme-option selected" data-value="default" onclick="selectTheme('default')">
+                    <div class="option-left-content">
+                        <span class="theme-preview-circle" style="background: #0077b6;"></span>
+                        <span class="option-name" id="themeDefaultLabel">Varsayılan (Mavi)</span>
+                    </div>
+                    <div class="custom-radio"></div>
+                </div>
+                <div class="dropdown-option theme-option" data-value="pearl-white" onclick="selectTheme('pearl-white')">
+                    <div class="option-left-content">
+                        <span class="theme-preview-circle" style="background: #ffffff;"></span>
+                        <span class="option-name" id="themeWhiteLabel">İnci Beyazı</span>
+                    </div>
+                    <div class="custom-radio"></div>
+                </div>
+                <div class="dropdown-option theme-option" data-value="dark-gray" onclick="selectTheme('dark-gray')">
+                    <div class="option-left-content">
+                        <span class="theme-preview-circle" style="background: #4f4f4f;"></span>
+                        <span class="option-name" id="themeDarkLabel">Gece Siyahı</span>
+                    </div>
+                    <div class="custom-radio"></div>
+                </div>
+                <div class="dropdown-option theme-option" data-value="emerald" onclick="selectTheme('emerald')">
+                    <div class="option-left-content">
+                        <span class="theme-preview-circle" style="background: #0f9f68;"></span>
+                        <span class="option-name" id="themeEmeraldLabel">Zümrüt Yeşili</span>
+                    </div>
+                    <div class="custom-radio"></div>
+                </div>
+                <div class="dropdown-option theme-option" data-value="cyber-purple" onclick="selectTheme('cyber-purple')">
+                    <div class="option-left-content">
+                        <span class="theme-preview-circle" style="background: #7b2cbf;"></span>
+                        <span class="option-name" id="themePurpleLabel">Neon Mor</span>
+                    </div>
+                    <div class="custom-radio"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="media-page" id="profilePage">
+        <div class="settings-header">
+            <span class="back-btn" onclick="closeProfilePage()">←</span>
+            <div class="settings-title" id="profilePageTitle">Profil</div>
+        </div>
+        <div class="links-container">
+            <div class="profile-page-avatar-preview">
+                <div class="profile-preview-circle" id="profilePreviewCircle"></div>
+            </div>
+            <div class="profile-editor">
+                <div class="profile-field">
+                    <label id="profileNameLabel">Görünen Ad</label>
+                    <input type="text" id="profileNameInput" placeholder="Adınızı girin" oninput="updateProfileName(this.value)">
+                </div>
+                <div class="profile-field">
+                    <label id="profileAvatarLabel">Profil Simgesi</label>
+                    <div class="avatar-picker" id="avatarPicker"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="tab-content active">
         <div class="chat-container">
             <div class="chat-header-wrapper">
@@ -624,7 +780,12 @@
                             <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                         </svg>
                     </div>
-                    <div class="settings-btn" onclick="openSettings()">⚙️</div>
+                    <div class="settings-btn" onclick="openSettings()">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82A1.65 1.65 0 0 0 3 14.09H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                        </svg>
+                    </div>
                 </div>
             </div>
             
@@ -667,92 +828,45 @@
                 </div>
                 <button class="account-action-btn" id="accountActionBtn" onclick="handleAccountAction()">Giriş Yap</button>
             </div>
-            
-            <div class="setting-item" id="langGroup">
-                <div class="setting-dropdown-header" onclick="toggleDropdown('langGroup')">
-                    <div class="setting-label" id="languageLabel">Dil Seçimi</div>
-                    <div class="dropdown-arrow">▼</div>
+
+            <div class="media-menu-trigger-btn" onclick="openProfilePage()">
+                <div class="option-left-content">
+                    <span class="media-menu-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10z"></path>
+                            <path d="M4 21c0-4.42 3.58-8 8-8s8 3.58 8 8"></path>
+                        </svg>
+                    </span>
+                    <span id="profileMenuBtnText">Profil</span>
                 </div>
-                
-                <div class="custom-dropdown-selector">
-                    <div class="dropdown-options-inner">
-                        <div class="dropdown-option lang-option selected" data-value="tr" onclick="selectLanguage('tr')">
-                            <span class="option-name">Türkçe</span>
-                            <div class="custom-radio"></div>
-                        </div>
-                        <div class="dropdown-option lang-option" data-value="en" onclick="selectLanguage('en')">
-                            <span class="option-name">English</span>
-                            <div class="custom-radio"></div>
-                        </div>
-                        <div class="dropdown-option lang-option" data-value="de" onclick="selectLanguage('de')">
-                            <span class="option-name">Deutsch</span>
-                            <div class="custom-radio"></div>
-                        </div>
-                        <div class="dropdown-option lang-option" data-value="es" onclick="selectLanguage('es')">
-                            <span class="option-name">Español</span>
-                            <div class="custom-radio"></div>
-                        </div>
-                        <div class="dropdown-option lang-option" data-value="fr" onclick="selectLanguage('fr')">
-                            <span class="option-name">Français</span>
-                            <div class="custom-radio"></div>
-                        </div>
-                        <div class="dropdown-option lang-option" data-value="ru" onclick="selectLanguage('ru')">
-                            <span class="option-name">Русский</span>
-                            <div class="custom-radio"></div>
-                        </div>
-                        <div class="dropdown-option lang-option" data-value="ar" onclick="selectLanguage('ar')">
-                            <span class="option-name">العربية</span>
-                            <div class="custom-radio"></div>
-                        </div>
-                    </div>
-                </div>
+                <span class="chevron">›</span>
             </div>
 
-            <div class="setting-item" id="themeGroup">
-                <div class="setting-dropdown-header" onclick="toggleDropdown('themeGroup')">
-                    <div class="setting-label" id="themeLabel">Tema Seçimi</div>
-                    <div class="dropdown-arrow">▼</div>
+            <div class="media-menu-trigger-btn" onclick="openLanguagePage()">
+                <div class="option-left-content">
+                    <span class="media-menu-icon">
+                        <svg viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M2 12h20"></path>
+                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                        </svg>
+                    </span>
+                    <span id="languageMenuBtnText">Dil Seçimi</span>
                 </div>
-                
-                <div class="custom-dropdown-selector">
-                    <div class="dropdown-options-inner">
-                        <div class="dropdown-option theme-option selected" data-value="default" onclick="selectTheme('default')">
-                            <div class="option-left-content">
-                                <span class="theme-preview-circle" style="background: #0077b6;"></span>
-                                <span class="option-name" id="themeDefaultLabel">Varsayılan (Mavi)</span>
-                            </div>
-                            <div class="custom-radio"></div>
-                        </div>
-                        <div class="dropdown-option theme-option" data-value="pearl-white" onclick="selectTheme('pearl-white')">
-                            <div class="option-left-content">
-                                <span class="theme-preview-circle" style="background: #ffffff;"></span>
-                                <span class="option-name" id="themeWhiteLabel">İnci Beyazı</span>
-                            </div>
-                            <div class="custom-radio"></div>
-                        </div>
-                        <div class="dropdown-option theme-option" data-value="dark-gray" onclick="selectTheme('dark-gray')">
-                            <div class="option-left-content">
-                                <span class="theme-preview-circle" style="background: #4f4f4f;"></span>
-                                <span class="option-name" id="themeDarkLabel">Gece Siyahı</span>
-                            </div>
-                            <div class="custom-radio"></div>
-                        </div>
-                        <div class="dropdown-option theme-option" data-value="emerald" onclick="selectTheme('emerald')">
-                            <div class="option-left-content">
-                                <span class="theme-preview-circle" style="background: #0f9f68;"></span>
-                                <span class="option-name" id="themeEmeraldLabel">Zümrüt Yeşili</span>
-                            </div>
-                            <div class="custom-radio"></div>
-                        </div>
-                        <div class="dropdown-option theme-option" data-value="cyber-purple" onclick="selectTheme('cyber-purple')">
-                            <div class="option-left-content">
-                                <span class="theme-preview-circle" style="background: #7b2cbf;"></span>
-                                <span class="option-name" id="themePurpleLabel">Neon Mor</span>
-                            </div>
-                            <div class="custom-radio"></div>
-                        </div>
-                    </div>
+                <span class="chevron">›</span>
+            </div>
+
+            <div class="media-menu-trigger-btn" onclick="openThemePage()">
+                <div class="option-left-content">
+                    <span class="media-menu-icon">
+                        <svg viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="4"></circle>
+                            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+                        </svg>
+                    </span>
+                    <span id="themeMenuBtnText">Tema Seçimi</span>
                 </div>
+                <span class="chevron">›</span>
             </div>
 
             <div class="media-menu-trigger-btn" onclick="openMediaPage()">
@@ -831,6 +945,26 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="confirmModalOverlay" onclick="closeConfirmModal(false)">
+        <div class="bug-modal" style="max-width: 380px;" onclick="event.stopPropagation()">
+            <div class="confirm-modal-icon">
+                <svg viewBox="0 0 24 24">
+                    <path d="M4 7h16"></path>
+                    <path d="M9 7V4.5A1.5 1.5 0 0 1 10.5 3h3A1.5 1.5 0 0 1 15 4.5V7"></path>
+                    <path d="M6 7l1 13.5A1.5 1.5 0 0 0 8.5 22h7a1.5 1.5 0 0 0 1.5-1.5L18 7"></path>
+                    <path d="M10 11v6"></path>
+                    <path d="M14 11v6"></path>
+                </svg>
+            </div>
+            <h3 class="bug-modal-title confirm-modal-title" id="confirmModalTitle">Emin misiniz?</h3>
+            <p class="bug-modal-desc confirm-modal-desc" id="confirmModalDesc"></p>
+            <div class="bug-modal-actions">
+                <button class="bug-btn bug-btn-cancel" onclick="closeConfirmModal(false)" id="confirmBtnCancel">Vazgeç</button>
+                <button class="bug-btn bug-btn-submit" onclick="closeConfirmModal(true)" id="confirmBtnOk">Sil</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         /* 🚨 REİS BURAYA DİKKAT: Google Cloud Console'dan aldığın OAuth Client ID'yi buraya yapıştır.
            https://console.cloud.google.com/apis/credentials adresinden "OAuth Client ID" (Web application)
@@ -844,6 +978,24 @@
         let currentBugCategory = "ui";
         let chatSessions = []; 
         let currentSessionId = null;
+
+        /* 🚨 REİS BURAYA DİKKAT: Kullanıcının kendi belirlediği profil adı ve avatarı (Google hesabından bağımsız) */
+        let userProfile = { name: "", avatarId: "default" };
+
+        const avatarOptions = [
+            { id: "default", color: "#0077b6", icon: "user" },
+            { id: "red", color: "#e63946", icon: "user" },
+            { id: "orange", color: "#f77f00", icon: "user" },
+            { id: "green", color: "#0f9f68", icon: "user" },
+            { id: "purple", color: "#7b2cbf", icon: "user" },
+            { id: "teal", color: "#00b4d8", icon: "user" },
+            { id: "pink", color: "#d81b8f", icon: "user" },
+            { id: "yellow", color: "#e0a100", icon: "user" },
+            { id: "indigo", color: "#4338ca", icon: "user" },
+            { id: "gray", color: "#4f4f4f", icon: "user" },
+            { id: "brown", color: "#8d5524", icon: "user" },
+            { id: "cyan", color: "#0891b2", icon: "user" }
+        ];
 
         const translations = {
             tr: {
@@ -861,11 +1013,13 @@
                 mediaTiktokTitle: "TikTok", mediaTiktokDesc: "Yazılım dünyasından eğlenceli ve kısa kesitler.",
                 mediaDiscordTitle: "Discord", mediaDiscordDesc: "Benimle doğrudan iletişime geçmek için sunucum.",
                 sidebarHistoryTitle: "Sohbet Geçmişi", clearAllBtnText: "Tümünü Temizle",
-                confirmDeleteChat: "Sohbeti silmek istediğinize emin misiniz?",
-                confirmClearAll: "Tüm sohbet geçmişiniz silinecektir. Emin misiniz?",
+                confirmDeleteChat: "Bu sohbeti silmek istediğinize emin misiniz? Bu işlem geri alınamaz.",
+                confirmClearAll: "Tüm sohbet geçmişiniz kalıcı olarak silinecek. Devam etmek istiyor musunuz?",
+                confirmModalTitle: "Emin misiniz?", confirmBtnCancel: "Vazgeç", confirmBtnOk: "Sil",
                 copiedAlert: "Kopyalandı!", copyTitle: "Kopyala", speakTitle: "Sesli Oku",
                 loginWelcome: "Devam etmek için Google hesabınızla giriş yapın", guestContinue: "Misafir olarak devam et",
-                guestLabel: "Misafir", loginBtn: "Giriş Yap", logoutBtn: "Çıkış Yap"
+                guestLabel: "Misafir", loginBtn: "Giriş Yap", logoutBtn: "Çıkış Yap",
+                profileLabel: "Profil", profileNameLabel: "Görünen Ad", profileNamePlh: "Adınızı girin", profileAvatarLabel: "Profil Simgesi"
             },
             en: {
                 mediaTab: "Media", aiTab: "CaavoX", chatHeader: "CaavoX",
@@ -882,11 +1036,13 @@
                 mediaTiktokTitle: "TikTok", mediaTiktokDesc: "Fun and short clips from the world of software.",
                 mediaDiscordTitle: "Discord", mediaDiscordDesc: "My server for getting in touch with me directly.",
                 sidebarHistoryTitle: "Chat History", clearAllBtnText: "Clear All",
-                confirmDeleteChat: "Are you sure you want to delete this chat?",
-                confirmClearAll: "Your entire chat history will be deleted. Are you sure?",
+                confirmDeleteChat: "Are you sure you want to delete this chat? This action cannot be undone.",
+                confirmClearAll: "Your entire chat history will be permanently deleted. Do you want to continue?",
+                confirmModalTitle: "Are you sure?", confirmBtnCancel: "Cancel", confirmBtnOk: "Delete",
                 copiedAlert: "Copied!", copyTitle: "Copy", speakTitle: "Read Aloud",
                 loginWelcome: "Sign in with your Google account to continue", guestContinue: "Continue as guest",
-                guestLabel: "Guest", loginBtn: "Sign In", logoutBtn: "Log Out"
+                guestLabel: "Guest", loginBtn: "Sign In", logoutBtn: "Log Out",
+                profileLabel: "Profile", profileNameLabel: "Display Name", profileNamePlh: "Enter your name", profileAvatarLabel: "Profile Icon"
             },
             de: {
                 mediaTab: "Medien", aiTab: "CaavoX", chatHeader: "CaavoX",
@@ -903,11 +1059,13 @@
                 mediaTiktokTitle: "TikTok", mediaTiktokDesc: "Unterhaltsame und kurze Clips aus der Softwarewelt.",
                 mediaDiscordTitle: "Discord", mediaDiscordDesc: "Mein Server, um direkt mit mir in Kontakt zu treten.",
                 sidebarHistoryTitle: "Chatverlauf", clearAllBtnText: "Alles löschen",
-                confirmDeleteChat: "Möchten Sie diesen Chat wirklich löschen?",
-                confirmClearAll: "Ihr gesamter Chatverlauf wird gelöscht. Sind Sie sicher?",
+                confirmDeleteChat: "Möchten Sie diesen Chat wirklich löschen? Dies kann nicht rückgängig gemacht werden.",
+                confirmClearAll: "Ihr gesamter Chatverlauf wird dauerhaft gelöscht. Möchten Sie fortfahren?",
+                confirmModalTitle: "Sind Sie sicher?", confirmBtnCancel: "Abbrechen", confirmBtnOk: "Löschen",
                 copiedAlert: "Kopiert!", copyTitle: "Kopieren", speakTitle: "Vorlesen",
                 loginWelcome: "Melden Sie sich mit Ihrem Google-Konto an, um fortzufahren", guestContinue: "Als Gast fortfahren",
-                guestLabel: "Gast", loginBtn: "Anmelden", logoutBtn: "Abmelden"
+                guestLabel: "Gast", loginBtn: "Anmelden", logoutBtn: "Abmelden",
+                profileLabel: "Profil", profileNameLabel: "Anzeigename", profileNamePlh: "Geben Sie Ihren Namen ein", profileAvatarLabel: "Profilsymbol"
             },
             es: {
                 mediaTab: "Medios", aiTab: "CaavoX", chatHeader: "CaavoX",
@@ -924,11 +1082,13 @@
                 mediaTiktokTitle: "TikTok", mediaTiktokDesc: "Clips cortos y divertidos del mundo del software.",
                 mediaDiscordTitle: "Discord", mediaDiscordDesc: "Mi servidor para contactarme directamente.",
                 sidebarHistoryTitle: "Historial de Chats", clearAllBtnText: "Borrar Todo",
-                confirmDeleteChat: "¿Está seguro de que desea eliminar este chat?",
-                confirmClearAll: "Se eliminará todo su historial de chats. ¿Está seguro?",
+                confirmDeleteChat: "¿Está seguro de que desea eliminar este chat? Esta acción no se puede deshacer.",
+                confirmClearAll: "Todo su historial de chats se eliminará de forma permanente. ¿Desea continuar?",
+                confirmModalTitle: "¿Está seguro?", confirmBtnCancel: "Cancelar", confirmBtnOk: "Eliminar",
                 copiedAlert: "¡Copiado!", copyTitle: "Copiar", speakTitle: "Leer en voz alta",
                 loginWelcome: "Inicia sesión con tu cuenta de Google para continuar", guestContinue: "Continuar como invitado",
-                guestLabel: "Invitado", loginBtn: "Iniciar Sesión", logoutBtn: "Cerrar Sesión"
+                guestLabel: "Invitado", loginBtn: "Iniciar Sesión", logoutBtn: "Cerrar Sesión",
+                profileLabel: "Perfil", profileNameLabel: "Nombre visible", profileNamePlh: "Ingresa tu nombre", profileAvatarLabel: "Icono de Perfil"
             },
             fr: {
                 mediaTab: "Médias", aiTab: "CaavoX", chatHeader: "CaavoX",
@@ -945,11 +1105,13 @@
                 mediaTiktokTitle: "TikTok", mediaTiktokDesc: "Extraits courts et amusants du monde du logiciel.",
                 mediaDiscordTitle: "Discord", mediaDiscordDesc: "Mon serveur pour me contacter directement.",
                 sidebarHistoryTitle: "Historique des Discussions", clearAllBtnText: "Tout Effacer",
-                confirmDeleteChat: "Êtes-vous sûr de vouloir supprimer cette discussion ?",
-                confirmClearAll: "Tout votre historique de discussions sera supprimé. Êtes-vous sûr ?",
+                confirmDeleteChat: "Êtes-vous sûr de vouloir supprimer cette discussion ? Cette action est irréversible.",
+                confirmClearAll: "Tout votre historique de discussions sera définitivement supprimé. Voulez-vous continuer ?",
+                confirmModalTitle: "Êtes-vous sûr ?", confirmBtnCancel: "Annuler", confirmBtnOk: "Supprimer",
                 copiedAlert: "Copié !", copyTitle: "Copier", speakTitle: "Lire à voix haute",
                 loginWelcome: "Connectez-vous avec votre compte Google pour continuer", guestContinue: "Continuer en tant qu'invité",
-                guestLabel: "Invité", loginBtn: "Se Connecter", logoutBtn: "Se Déconnecter"
+                guestLabel: "Invité", loginBtn: "Se Connecter", logoutBtn: "Se Déconnecter",
+                profileLabel: "Profil", profileNameLabel: "Nom affiché", profileNamePlh: "Entrez votre nom", profileAvatarLabel: "Icône de Profil"
             },
             ru: {
                 mediaTab: "Медиа", aiTab: "CaavoX", chatHeader: "CaavoX",
@@ -966,11 +1128,13 @@
                 mediaTiktokTitle: "TikTok", mediaTiktokDesc: "Забавные и короткие ролики из мира разработки.",
                 mediaDiscordTitle: "Discord", mediaDiscordDesc: "Мой сервер для связи со мной напрямую.",
                 sidebarHistoryTitle: "История Чатов", clearAllBtnText: "Очистить Всё",
-                confirmDeleteChat: "Вы уверены, что хотите удалить этот чат?",
-                confirmClearAll: "Вся история чатов будет удалена. Вы уверены?",
+                confirmDeleteChat: "Вы уверены, что хотите удалить этот чат? Это действие необратимо.",
+                confirmClearAll: "Вся история чатов будет удалена без возможности восстановления. Продолжить?",
+                confirmModalTitle: "Вы уверены?", confirmBtnCancel: "Отмена", confirmBtnOk: "Удалить",
                 copiedAlert: "Скопировано!", copyTitle: "Копировать", speakTitle: "Озвучить",
                 loginWelcome: "Войдите с помощью аккаунта Google, чтобы продолжить", guestContinue: "Продолжить как гость",
-                guestLabel: "Гость", loginBtn: "Войти", logoutBtn: "Выйти"
+                guestLabel: "Гость", loginBtn: "Войти", logoutBtn: "Выйти",
+                profileLabel: "Профиль", profileNameLabel: "Отображаемое имя", profileNamePlh: "Введите ваше имя", profileAvatarLabel: "Значок профиля"
             },
             ar: {
                 mediaTab: "وسائل الإعلام", aiTab: "CaavoX", chatHeader: "CaavoX",
@@ -987,11 +1151,13 @@
                 mediaTiktokTitle: "TikTok", mediaTiktokDesc: "مقاطع قصيرة وممتعة من عالم البرمجة.",
                 mediaDiscordTitle: "Discord", mediaDiscordDesc: "خادمي للتواصل معي مباشرة.",
                 sidebarHistoryTitle: "سجل المحادثات", clearAllBtnText: "مسح الكل",
-                confirmDeleteChat: "هل أنت متأكد من رغبتك في حذف هذه المحادثة؟",
-                confirmClearAll: "سيتم حذف سجل المحادثات بالكامل. هل أنت متأكد؟",
+                confirmDeleteChat: "هل أنت متأكد من رغبتك في حذف هذه المحادثة؟ لا يمكن التراجع عن هذا الإجراء.",
+                confirmClearAll: "سيتم حذف سجل المحادثات بالكامل نهائياً. هل تريد المتابعة؟",
+                confirmModalTitle: "هل أنت متأكد؟", confirmBtnCancel: "إلغاء", confirmBtnOk: "حذف",
                 copiedAlert: "تم النسخ!", copyTitle: "نسخ", speakTitle: "قراءة بصوت عالٍ",
                 loginWelcome: "سجل الدخول باستخدام حساب جوجل للمتابعة", guestContinue: "المتابعة كضيف",
-                guestLabel: "ضيف", loginBtn: "تسجيل الدخول", logoutBtn: "تسجيل الخروج"
+                guestLabel: "ضيف", loginBtn: "تسجيل الدخول", logoutBtn: "تسجيل الخروج",
+                profileLabel: "الملف الشخصي", profileNameLabel: "الاسم المعروض", profileNamePlh: "أدخل اسمك", profileAvatarLabel: "أيقونة الملف الشخصي"
             }
         };
 
@@ -1010,6 +1176,19 @@
                 selectTheme(savedTheme);
             }
 
+            // Kayıtlı özel profil bilgisini geri yükle
+            const savedProfile = localStorage.getItem('caavo0_profile');
+            if (savedProfile) {
+                try {
+                    const parsed = JSON.parse(savedProfile);
+                    userProfile = { name: parsed.name || "", avatarId: parsed.avatarId || "default" };
+                } catch(e) { userProfile = { name: "", avatarId: "default" }; }
+            }
+            renderAvatarPicker();
+            const nameInput = document.getElementById('profileNameInput');
+            if (nameInput) nameInput.value = userProfile.name;
+            updateProfilePreview();
+
             // Kayıtlı hesabı geri yükle
             const savedUser = localStorage.getItem('caavo0_user');
             if (savedUser) {
@@ -1023,6 +1202,61 @@
                 document.getElementById('loginPage').classList.add('show');
             }
         });
+
+        /* ================= PROFİL SİSTEMİ (Google'dan bağımsız özelleştirme) ================= */
+
+        function avatarIconSVG() {
+            return '<svg viewBox="0 0 24 24"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10z"/><path d="M4 21c0-4.42 3.58-8 8-8s8 3.58 8 8"/></svg>';
+        }
+
+        function renderAvatarPicker() {
+            const picker = document.getElementById('avatarPicker');
+            if (!picker) return;
+            picker.innerHTML = '';
+            avatarOptions.forEach(opt => {
+                const div = document.createElement('div');
+                div.className = 'avatar-option' + (userProfile.avatarId === opt.id ? ' selected' : '');
+                div.style.background = opt.color;
+                div.innerHTML = avatarIconSVG();
+                div.onclick = () => selectProfileAvatar(opt.id);
+                picker.appendChild(div);
+            });
+        }
+
+        function selectProfileAvatar(avatarId) {
+            userProfile.avatarId = avatarId;
+            saveProfile();
+            renderAvatarPicker();
+            updateAccountUI();
+            updateProfilePreview();
+        }
+
+        function updateProfileName(value) {
+            userProfile.name = value;
+            saveProfile();
+            updateAccountUI();
+            updateProfilePreview();
+        }
+
+        function saveProfile() {
+            localStorage.setItem('caavo0_profile', JSON.stringify(userProfile));
+        }
+
+        function updateProfilePreview() {
+            const circle = document.getElementById('profilePreviewCircle');
+            if (!circle) return;
+            circle.style.background = getActiveAvatarColor();
+            if (currentUser && currentUser.picture && (!userProfile.name || userProfile.name.trim() === "")) {
+                circle.innerHTML = `<img src="${currentUser.picture}" alt="">`;
+            } else {
+                circle.innerHTML = avatarIconSVG();
+            }
+        }
+
+        function getActiveAvatarColor() {
+            const found = avatarOptions.find(a => a.id === userProfile.avatarId);
+            return found ? found.color : avatarOptions[0].color;
+        }
 
         /* ================= GOOGLE İLE GİRİŞ SİSTEMİ ================= */
 
@@ -1070,6 +1304,7 @@
             currentUser = { name: payload.name, email: payload.email, picture: payload.picture };
             localStorage.setItem('caavo0_user', JSON.stringify(currentUser));
             updateAccountUI();
+            updateProfilePreview();
             closeLoginPage();
         }
 
@@ -1090,18 +1325,25 @@
             const emailEl = document.getElementById('accountEmail');
             const actionBtn = document.getElementById('accountActionBtn');
 
+            const displayName = userProfile.name && userProfile.name.trim() !== ""
+                ? userProfile.name.trim()
+                : (currentUser ? currentUser.name : translations[currentLang].guestLabel);
+
+            avatar.style.background = getActiveAvatarColor();
+
+            if (currentUser && currentUser.picture && (!userProfile.name || userProfile.name.trim() === "")) {
+                avatar.innerHTML = `<img src="${currentUser.picture}" alt="">`;
+            } else {
+                avatar.innerHTML = avatarIconSVG();
+            }
+
+            nameEl.textContent = displayName;
+            emailEl.textContent = currentUser ? (currentUser.email || '') : '';
+
             if (currentUser) {
-                avatar.innerHTML = currentUser.picture
-                    ? `<img src="${currentUser.picture}" alt="">`
-                    : (currentUser.name ? currentUser.name.charAt(0).toUpperCase() : '?');
-                nameEl.textContent = currentUser.name || '';
-                emailEl.textContent = currentUser.email || '';
                 actionBtn.textContent = translations[currentLang].logoutBtn;
                 actionBtn.classList.add('logout');
             } else {
-                avatar.innerHTML = '👤';
-                nameEl.textContent = translations[currentLang].guestLabel;
-                emailEl.textContent = '';
                 actionBtn.textContent = translations[currentLang].loginBtn;
                 actionBtn.classList.remove('logout');
             }
@@ -1122,6 +1364,7 @@
                 google.accounts.id.disableAutoSelect();
             }
             updateAccountUI();
+            updateProfilePreview();
             openLoginPage();
         }
 
@@ -1134,6 +1377,17 @@
         }
         function closeMediaPage() {
             document.getElementById('mediaPage').classList.remove('show');
+        }
+
+        function openProfilePage() {
+            const nameInput = document.getElementById('profileNameInput');
+            if (nameInput) nameInput.value = userProfile.name;
+            renderAvatarPicker();
+            updateProfilePreview();
+            document.getElementById('profilePage').classList.add('show');
+        }
+        function closeProfilePage() {
+            document.getElementById('profilePage').classList.remove('show');
         }
 
         const chatMessages = document.getElementById('chatMessages');
@@ -1176,6 +1430,20 @@
             document.getElementById(id).classList.toggle('open');
         }
 
+        function openLanguagePage() {
+            document.getElementById('languagePage').classList.add('show');
+        }
+        function closeLanguagePage() {
+            document.getElementById('languagePage').classList.remove('show');
+        }
+
+        function openThemePage() {
+            document.getElementById('themePage').classList.add('show');
+        }
+        function closeThemePage() {
+            document.getElementById('themePage').classList.remove('show');
+        }
+
         function selectLanguage(langCode) {
             currentLang = langCode;
             localStorage.setItem('caavo0_lang', langCode);
@@ -1187,7 +1455,7 @@
             updateUIStrings();
 
             setTimeout(() => {
-                document.getElementById('langGroup').classList.remove('open');
+                closeLanguagePage();
             }, 180);
         }
 
@@ -1206,7 +1474,7 @@
             });
 
             setTimeout(() => {
-                document.getElementById('themeGroup').classList.remove('open');
+                closeThemePage();
             }, 180);
         }
 
@@ -1482,23 +1750,40 @@
             });
         }
 
+        /* ================= ÖZEL ONAY MODALI (Tema uyumlu, tarayıcı confirm() yerine) ================= */
+        let pendingConfirmAction = null;
+
+        function showConfirmModal(message, onConfirm) {
+            document.getElementById('confirmModalDesc').textContent = message;
+            pendingConfirmAction = onConfirm;
+            document.getElementById('confirmModalOverlay').classList.add('show');
+        }
+
+        function closeConfirmModal(result) {
+            document.getElementById('confirmModalOverlay').classList.remove('show');
+            if (result && typeof pendingConfirmAction === 'function') {
+                pendingConfirmAction();
+            }
+            pendingConfirmAction = null;
+        }
+
         function deleteChatSession(id) {
-            if (confirm(translations[currentLang].confirmDeleteChat)) {
+            showConfirmModal(translations[currentLang].confirmDeleteChat, () => {
                 chatSessions = chatSessions.filter(s => s.id !== id);
                 saveToLocalStorage();
                 updateSidebarUI();
                 if (currentSessionId === id) createNewChat();
-            }
+            });
         }
 
         function clearAllHistory() {
-            if (confirm(translations[currentLang].confirmClearAll)) {
+            showConfirmModal(translations[currentLang].confirmClearAll, () => {
                 chatSessions = [];
                 saveToLocalStorage();
                 updateSidebarUI();
                 createNewChat();
                 toggleSidebar();
-            }
+            });
         }
 
         function loadChatSession(id) {
@@ -1516,102 +1801,4 @@
             }
         }
 
-        function openSettings() { document.getElementById('settingsPage').classList.add('show'); }
-        function closeSettings() { 
-            document.getElementById('settingsPage').classList.remove('show'); 
-            setTimeout(() => {
-                document.getElementById('langGroup').classList.remove('open');
-                document.getElementById('themeGroup').classList.remove('open');
-            }, 320);
-        }
-
-        /* Hata Bildirim Modal Fonksiyonları */
-        function openBugModal() {
-            document.getElementById('bugModalOverlay').classList.add('show');
-        }
-        function closeBugModal() {
-            document.getElementById('bugModalOverlay').classList.remove('show');
-            setTimeout(() => {
-                document.getElementById('bugDescription').value = '';
-                document.getElementById('bugCategorySelector').classList.remove('open');
-            }, 250);
-        }
-        function sendBugReport() {
-            const category = currentBugCategory;
-            const description = document.getElementById('bugDescription').value.trim();
-
-            if(!description) {
-                alert(translations[currentLang].bugAlertEmpty);
-                return;
-            }
-
-            console.log("--- HATA BİLDİRİMİ GÖNDERİLDİ ---");
-            console.log("Kategori:", category);
-            console.log("Açıklama:", description);
-            console.log("Seçili Dil / Tema:", currentLang, "/", currentTheme);
-
-            alert(translations[currentLang].bugAlertSuccess);
-            closeBugModal();
-        }
-
-        function updateUIStrings() {
-            document.getElementById('mediaMenuBtnText').textContent = translations[currentLang].mediaTab;
-            document.getElementById('mediaPageTitle').textContent = translations[currentLang].mediaTab;
-            chatHeader.textContent = translations[currentLang].chatHeader;
-            
-            const wm = document.getElementById('welcomeMessage');
-            if(wm) wm.textContent = translations[currentLang].welcomeMessage;
-            userInput.placeholder = translations[currentLang].inputPlaceholder;
-            document.getElementById('settingsTitle').textContent = translations[currentLang].settingsTitle;
-            document.getElementById('languageLabel').textContent = translations[currentLang].languageLabel;
-            document.getElementById('themeLabel').textContent = translations[currentLang].themeLabel;
-            
-            document.getElementById('themeDefaultLabel').textContent = translations[currentLang].themeDefault;
-            document.getElementById('themeWhiteLabel').textContent = translations[currentLang].themeWhite;
-            document.getElementById('themeDarkLabel').textContent = translations[currentLang].themeDark;
-            document.getElementById('themeEmeraldLabel').textContent = translations[currentLang].themeEmerald;
-            document.getElementById('themePurpleLabel').textContent = translations[currentLang].themePurple;
-
-            // Hata Modülü Dil Atamaları
-            document.getElementById('bugReportBtnText').textContent = translations[currentLang].bugTrigger;
-            document.getElementById('bugModalTitle').textContent = translations[currentLang].bugTitle;
-            document.getElementById('bugModalDesc').textContent = translations[currentLang].bugDesc;
-            document.getElementById('bugLabelCat').textContent = translations[currentLang].bugLabelCat;
-            document.getElementById('bugLabelDesc').textContent = translations[currentLang].bugLabelDesc;
-            document.getElementById('bugDescription').placeholder = translations[currentLang].bugTextareaPlh;
-            document.getElementById('bugBtnCancel').textContent = translations[currentLang].bugCancel;
-            document.getElementById('bugBtnSubmit').textContent = translations[currentLang].bugSubmit;
-
-            document.getElementById('bugOptUi').textContent = translations[currentLang].bugOptUi;
-            document.getElementById('bugOptAi').textContent = translations[currentLang].bugOptAi;
-            document.getElementById('bugOptPerf').textContent = translations[currentLang].bugOptPerf;
-            document.getElementById('bugOptOther').textContent = translations[currentLang].bugOptOther;
-
-            // Seçili kategori etiketini güncel dile göre yenile
-            document.getElementById('bugCategorySelectedLabel').textContent = translations[currentLang][
-                currentBugCategory === 'ui' ? 'bugOptUi' : currentBugCategory === 'ai' ? 'bugOptAi' : currentBugCategory === 'performance' ? 'bugOptPerf' : 'bugOptOther'
-            ];
-
-            // Medya sekmesindeki kart başlık/açıklamalarını güncel dile göre yenile
-            document.getElementById('mediaGithubTitle').textContent = translations[currentLang].mediaGithubTitle;
-            document.getElementById('mediaGithubDesc').textContent = translations[currentLang].mediaGithubDesc;
-            document.getElementById('mediaYoutubeTitle').textContent = translations[currentLang].mediaYoutubeTitle;
-            document.getElementById('mediaYoutubeDesc').textContent = translations[currentLang].mediaYoutubeDesc;
-            document.getElementById('mediaTiktokTitle').textContent = translations[currentLang].mediaTiktokTitle;
-            document.getElementById('mediaTiktokDesc').textContent = translations[currentLang].mediaTiktokDesc;
-            document.getElementById('mediaDiscordTitle').textContent = translations[currentLang].mediaDiscordTitle;
-            document.getElementById('mediaDiscordDesc').textContent = translations[currentLang].mediaDiscordDesc;
-
-            // Sohbet geçmişi kenar çubuğu metinleri
-            document.getElementById('sidebarHistoryTitle').textContent = translations[currentLang].sidebarHistoryTitle;
-            document.getElementById('clearAllBtnText').textContent = translations[currentLang].clearAllBtnText;
-
-            // Giriş sayfası ve hesap kartı metinleri
-            document.getElementById('loginWelcomeText').textContent = translations[currentLang].loginWelcome;
-            document.getElementById('loginGuestText').textContent = translations[currentLang].guestContinue;
-            updateAccountUI();
-            renderGoogleButton();
-        }
-    </script>
-</body>
-</html>
+        function openSettings() { document.getElementById('se
