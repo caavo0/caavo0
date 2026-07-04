@@ -366,6 +366,7 @@
         .options-list-card .dropdown-option { padding: 16px; }
 
         .profile-page-avatar-preview { display: flex; justify-content: center; padding: 10px 0 4px; }
+        .avatar-wrap { position: relative; display: inline-block; }
         .profile-preview-circle {
             width: 92px; height: 92px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
             overflow: hidden; box-shadow: 0 6px 20px var(--accent-glow); transition: background 0.3s ease, transform 0.25s ease;
@@ -373,6 +374,14 @@
         }
         .profile-preview-circle img { width: 100%; height: 100%; object-fit: cover; }
         .profile-preview-circle svg { width: 46%; height: 46%; fill: rgba(255,255,255,0.95); }
+        .avatar-upload-btn {
+            position: absolute; bottom: 0; right: 0; width: 32px; height: 32px; border-radius: 50%;
+            background: var(--accent-primary); border: 3px solid var(--surface-color);
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.35); transition: transform 0.2s, opacity 0.2s;
+        }
+        .avatar-upload-btn:hover { transform: scale(1.08); opacity: 0.92; }
+        .avatar-upload-btn svg { width: 16px; height: 16px; fill: #ffffff; }
 
         .profile-editor { padding: 16px; display: flex; flex-direction: column; gap: 16px; }
         .profile-field label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px; }
@@ -507,7 +516,7 @@
             pointer-events: none;
             transform: scale(0.96);
             transition: opacity 0.3s ease, transform 0.32s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s linear 0.32s;
-            padding: 20px;
+            padding: 0;
         }
         .login-page.show {
             opacity: 1;
@@ -519,13 +528,18 @@
         .login-card {
             position: relative;
             background: var(--surface-color);
-            border: 1px solid var(--border-color);
-            border-radius: 24px;
+            border: none;
+            border-radius: 0;
             padding: 44px 30px 34px;
-            max-width: 340px;
+            max-width: 100%;
             width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             text-align: center;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.35);
+            box-shadow: none;
         }
         .login-close-btn {
             position: absolute; top: 14px; right: 18px;
@@ -721,7 +735,13 @@
         </div>
         <div class="links-container">
             <div class="profile-page-avatar-preview">
-                <div class="profile-preview-circle" id="profilePreviewCircle"></div>
+                <div class="avatar-wrap">
+                    <div class="profile-preview-circle" id="profilePreviewCircle"></div>
+                    <label class="avatar-upload-btn" for="avatarFileInput" title="Fotoğraf Seç">
+                        <svg viewBox="0 0 24 24"><path d="M4 7h3.17l1.24-1.35A2 2 0 0 1 9.9 5h4.2a2 2 0 0 1 1.49.65L16.83 7H20a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1z" fill-rule="evenodd" clip-rule="evenodd"/><circle cx="12" cy="13.5" r="3.2" fill="none" stroke="var(--accent-primary)" stroke-width="1.6"/></svg>
+                    </label>
+                    <input type="file" id="avatarFileInput" accept="image/*" style="display:none" onchange="handleAvatarFileSelect(event)">
+                </div>
             </div>
             <div class="profile-editor">
                 <div class="profile-field">
@@ -945,7 +965,7 @@
         let chatSessions = []; 
         let currentSessionId = null;
 
-        let userProfile = { name: "", avatarId: "default" };
+        let userProfile = { name: "", avatarId: "default", customPhoto: null };
 
         const avatarOptions = [
             { id: "default", color: "#0077b6", icon: "user" },
@@ -1145,8 +1165,8 @@
             if (savedProfile) {
                 try {
                     const parsed = JSON.parse(savedProfile);
-                    userProfile = { name: parsed.name || "", avatarId: parsed.avatarId || "default" };
-                } catch(e) { userProfile = { name: "", avatarId: "default" }; }
+                    userProfile = { name: parsed.name || "", avatarId: parsed.avatarId || "default", customPhoto: parsed.customPhoto || null };
+                } catch(e) { userProfile = { name: "", avatarId: "default", customPhoto: null }; }
             }
             renderAvatarPicker();
             const nameInput = document.getElementById('profileNameInput');
@@ -1185,10 +1205,54 @@
 
         function selectProfileAvatar(avatarId) {
             userProfile.avatarId = avatarId;
+            userProfile.customPhoto = null;
             saveProfile();
             renderAvatarPicker();
             updateAccountUI();
             updateProfilePreview();
+        }
+
+        function handleAvatarFileSelect(event) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) return;
+            if (!file.type.startsWith('image/')) {
+                event.target.value = '';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const maxSize = 320;
+                    let { width, height } = img;
+                    if (width > height) {
+                        if (width > maxSize) { height = Math.round(height * (maxSize / width)); width = maxSize; }
+                    } else {
+                        if (height > maxSize) { width = Math.round(width * (maxSize / height)); height = maxSize; }
+                    }
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+
+                    userProfile.customPhoto = dataUrl;
+                    saveProfile();
+                    updateProfilePreview();
+                    updateAccountUI();
+                    event.target.value = '';
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function getAvatarImageSrc() {
+            if (userProfile.customPhoto) return userProfile.customPhoto;
+            if (currentUser && currentUser.picture && (!userProfile.name || userProfile.name.trim() === "")) return currentUser.picture;
+            return null;
         }
 
         function updateProfileName(value) {
@@ -1206,8 +1270,9 @@
             const circle = document.getElementById('profilePreviewCircle');
             if (!circle) return;
             circle.style.background = getActiveAvatarColor();
-            if (currentUser && currentUser.picture && (!userProfile.name || userProfile.name.trim() === "")) {
-                circle.innerHTML = `<img src="${currentUser.picture}" alt="">`;
+            const imgSrc = getAvatarImageSrc();
+            if (imgSrc) {
+                circle.innerHTML = `<img src="${imgSrc}" alt="">`;
             } else {
                 circle.innerHTML = avatarIconSVG();
             }
@@ -1288,8 +1353,9 @@
 
             avatar.style.background = getActiveAvatarColor();
 
-            if (currentUser && currentUser.picture && (!userProfile.name || userProfile.name.trim() === "")) {
-                avatar.innerHTML = `<img src="${currentUser.picture}" alt="">`;
+            const imgSrc = getAvatarImageSrc();
+            if (imgSrc) {
+                avatar.innerHTML = `<img src="${imgSrc}" alt="">`;
             } else {
                 avatar.innerHTML = avatarIconSVG();
             }
