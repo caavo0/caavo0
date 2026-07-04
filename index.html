@@ -1813,3 +1813,34 @@
                 createNewChat();
             }
         }
+
+        /* Eklendi: Ayarlar sayfasını açar (dosyada tanımı eksikti) */
+        function openSettings() {
+            document.getElementById('settingsPage').classList.add('show');
+        }
+        function closeSettings() {
+            document.getElementById('settingsPage').classList.remove('show');
+        }
+
+        /* Eklendi: Hata bildirme modalını açar/kapatır ve gönderir (dosyada tanımı eksikti) */
+        function openBugModal() {
+            document.getElementById('bugModalOverlay').classList.add('show');
+        }
+        function closeBugModal() {
+            document.getElementById('bugModalOverlay').classList.remove('show');
+        }
+        function sendBugReport() {
+            const desc = document.getElementById('bugDescription').value.trim();
+            if (!desc) {
+                alert(translations[currentLang].bugAlertEmpty);
+                return;
+            }
+            // Not: Burada gerçek bir backend endpoint'ine gönderim yapılmıyor.
+            // İstersen fetch('/api/bug-report', {method:'POST', body: JSON.stringify({category: currentBugCategory, description: desc})}) ekleyebilirsin.
+            alert(translations[currentLang].bugAlertSuccess);
+            document.getElementById('bugDescription').value = '';
+            closeBugModal();
+        }
+    </script>
+</body>
+</html>
