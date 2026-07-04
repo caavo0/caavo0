@@ -18,15 +18,12 @@
             -webkit-tap-highlight-color: transparent;
         }
         
-        /* Dinamik Tema Değişkenleri */
         :root {
             --bg-color: #080c14;
             --surface-color: #151e2e;
             --surface-hover: #1f2d44;
             --border-color: #1f2d44;
             --sidebar-color: #0c1322;
-            
-            /* Değişen Vurgu Renkleri (Varsayılan Mavi) */
             --accent-primary: #0077b6;
             --accent-light: #90e0ef;
             --accent-glow: rgba(0, 119, 182, 0.4);
@@ -34,12 +31,10 @@
             --text-main: #e3e3e3;
             --text-title: #ffffff;
             --icon-color: #90e0ef;
-            
             --danger-color: #ef4444;
             --overlay-color: rgba(0,0,0,0.6);
         }
 
-        /* TEMA 2: Gece Siyahı (Dark/Gray) */
         [data-theme="dark-gray"] {
             --bg-color: #0d0d0d;
             --surface-color: #1a1a1a;
@@ -55,7 +50,6 @@
             --icon-color: #cccccc;
         }
 
-        /* TEMA 3: Zümrüt Yeşili (Emerald) */
         [data-theme="emerald"] {
             --bg-color: #06100e;
             --surface-color: #0f221e;
@@ -71,7 +65,6 @@
             --icon-color: #84e1bc;
         }
 
-        /* TEMA 4: Neon Mor (Cyber Purple) */
         [data-theme="cyber-purple"] {
             --bg-color: #0f0a1c;
             --surface-color: #1a1230;
@@ -87,7 +80,6 @@
             --icon-color: #e0aaff;
         }
 
-        /* TEMA 5: İnci Beyazı (Pearl White - Light Theme) */
         [data-theme="pearl-white"] {
             --bg-color: #f4f6f9;
             --surface-color: #ffffff;
@@ -121,7 +113,6 @@
 
         html { height: 100vh; height: -webkit-fill-available; }
 
-        /* Medya Sayfası (Ayarlardan açılan tam ekran sayfa) - ANİMASYONLU */
         .media-page {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--bg-color); display: flex; flex-direction: column; z-index: 62;
@@ -150,7 +141,6 @@
             flex-direction: column;
         }
 
-        /* Medya Sekmesi Kart Düzeni */
         .links-container { display: flex; flex-direction: column; gap: 16px; padding: 20px; width: 100%; overflow-y: auto; }
         .media-card {
             display: flex;
@@ -211,7 +201,6 @@
         .media-arrow { font-size: 1.2rem; color: var(--text-muted); transition: transform 0.2s, color 0.2s; margin-left: 10px; }
         .media-card:hover .media-arrow { transform: translateX(3px); color: var(--accent-light); }
 
-        /* Chat Düzeni */
         .chat-container { flex: 1; display: flex; flex-direction: column; height: 100%; overflow: hidden; position: relative; }
         .chat-header-wrapper { display: flex; align-items: center; justify-content: center; position: relative; padding: 8px 20px; flex-shrink: 0; }
         
@@ -232,7 +221,6 @@
         .settings-btn:hover svg { transform: rotate(35deg); }
         .settings-btn svg { transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1); }
 
-        /* Sidebar */
         .sidebar {
             position: fixed; top: 0; left: -280px; width: 280px; height: 100%;
             background-color: var(--sidebar-color); border-right: 1px solid var(--border-color);
@@ -256,7 +244,6 @@
         .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 45; display: none; opacity: 0; transition: opacity 0.25s ease; }
         .sidebar-overlay.show { display: block; opacity: 1; }
 
-        /* Mesaj Alanları */
         .chat-messages { flex: 1; padding: 10px 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
         .message { max-width: 85%; padding: 14px 18px; border-radius: 20px; font-size: 1rem; line-height: 1.5; white-space: pre-wrap; position: relative; animation: messageIn 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
         @keyframes messageIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
@@ -264,7 +251,6 @@
         .ai-message { background: transparent; color: var(--text-main); align-self: flex-start; padding-left: 5px; width: 100%; }
         .welcome-text { text-align: center; color: var(--accent-light); font-size: 1.3rem; margin-top: auto; margin-bottom: auto; padding: 0 20px; }
 
-        /* 🚨 REİS BURAYA DİKKAT: MESAJ ALTI ARAÇ ÇUBUĞU (TOOLBAR) STİLLERİ */
         .message-toolbar {
             display: inline-flex;
             gap: 12px;
@@ -295,7 +281,6 @@
             transform: scale(1.1);
         }
 
-        /* Yanıt yazılırken yanıp sönen imleç (ChatGPT tarzı) */
         .typing-cursor {
             display: inline-block;
             width: 2px;
@@ -318,7 +303,6 @@
         .chat-input-wrapper input { flex: 1; background: transparent; border: none; color: var(--text-main); padding: 12px 0; font-size: 1rem; outline: none; }
         .chat-input-wrapper button { background: var(--accent-primary); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px var(--accent-glow); }
 
-        /* Ayarlar Sayfası - ANİMASYONLU (giriş/çıkış) */
         .settings-page {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); display: flex; flex-direction: column; z-index: 60;
             opacity: 0;
@@ -342,7 +326,6 @@
         
         .setting-item { display: flex; flex-direction: column; gap: 10px; }
 
-        /* Akordeon Başlık Kutusu */
         .setting-dropdown-header {
             background: var(--surface-color); border: 1px solid var(--border-color); padding: 16px;
             border-radius: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none;
@@ -351,7 +334,6 @@
         .setting-label { font-size: 1rem; color: var(--accent-light); font-weight: 500; }
         .dropdown-arrow { font-size: 0.85rem; color: var(--text-muted); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
 
-        /* Seçenek Konteyneri */
         .custom-dropdown-selector {
             background: var(--sidebar-color); border: 1px solid var(--border-color); border-radius: 12px;
             overflow: hidden; display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -368,25 +350,21 @@
         .dropdown-option:hover { background: var(--surface-hover); }
         .option-name { font-size: 0.95rem; color: var(--text-title); font-weight: 500; }
 
-        /* Renkli Temalar İçin Önizleme Yuvarlağı */
         .theme-preview-circle { width: 14px; height: 14px; border-radius: 50%; margin-right: 10px; display: inline-block; border: 1px solid rgba(255,255,255,0.2); }
         [data-theme="pearl-white"] .theme-preview-circle { border: 1px solid rgba(0,0,0,0.15); }
         .option-left-content { display: flex; align-items: center; }
 
-        /* Dinamik Radyo Buton */
         .custom-radio { width: 20px; height: 20px; border: 2px solid var(--text-muted); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
         .dropdown-option.selected .custom-radio { border-color: var(--accent-primary); }
         .custom-radio::after { content: ''; width: 10px; height: 10px; background: var(--accent-primary); border-radius: 50%; transform: scale(0); transition: transform 0.2s; }
         .dropdown-option.selected .custom-radio::after { transform: scale(1); }
 
-        /* Tam Sayfa Seçenek Listesi (Dil / Tema sayfaları için) */
         .options-list-card {
             background: var(--surface-color); border: 1px solid var(--border-color);
             border-radius: 12px; overflow: hidden;
         }
         .options-list-card .dropdown-option { padding: 16px; }
 
-        /* Profil Sayfası */
         .profile-page-avatar-preview { display: flex; justify-content: center; padding: 10px 0 4px; }
         .profile-preview-circle {
             width: 92px; height: 92px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
@@ -396,7 +374,6 @@
         .profile-preview-circle img { width: 100%; height: 100%; object-fit: cover; }
         .profile-preview-circle svg { width: 46%; height: 46%; fill: rgba(255,255,255,0.95); }
 
-        /* Profil Ayarları */
         .profile-editor { padding: 16px; display: flex; flex-direction: column; gap: 16px; }
         .profile-field label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px; }
         .profile-field input {
@@ -415,7 +392,6 @@
         .avatar-option:hover { transform: scale(1.08); }
         .avatar-option.selected { border-color: var(--accent-light); box-shadow: 0 0 0 2px var(--accent-glow); }
 
-        /* Hata Bildirme Özel Butonu */
         .bug-report-trigger-btn {
             background: var(--surface-color); border: 1px solid var(--border-color); padding: 16px;
             border-radius: 12px; display: flex; align-items: center; justify-content: space-between;
@@ -426,7 +402,6 @@
         .bug-report-trigger-btn .bug-trigger-icon { width: 20px; height: 20px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
         .bug-report-trigger-btn .bug-trigger-icon svg { width: 100%; height: 100%; fill: none; stroke: var(--danger-color); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-        /* Medyaya Ayarlardan Erişim Butonu */
         .media-menu-trigger-btn {
             background: var(--surface-color); border: 1px solid var(--border-color); padding: 16px;
             border-radius: 12px; display: flex; align-items: center; justify-content: space-between;
@@ -438,7 +413,6 @@
         .media-menu-trigger-btn .media-menu-icon svg { width: 100%; height: 100%; fill: none; stroke: var(--accent-light); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
         .media-menu-trigger-btn .chevron { color: var(--text-muted); font-size: 1.1rem; }
 
-        /* Hata Bildirme Modalı - ANİMASYONLU */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--overlay-color); z-index: 100; display: flex;
@@ -473,7 +447,6 @@
         .bug-modal-title { font-size: 1.2rem; font-weight: 600; color: var(--text-title); margin: 0; }
         .bug-modal-desc { font-size: 0.85rem; color: var(--text-muted); margin: 0 0 4px 0; line-height: 1.4; }
 
-        /* Onay Modalı (Silme işlemleri için) */
         .confirm-modal-icon {
             width: 52px; height: 52px; border-radius: 50%; background: rgba(239, 68, 68, 0.12);
             display: flex; align-items: center; justify-content: center; margin: 0 auto;
@@ -493,7 +466,6 @@
         .bug-form-group textarea { resize: none; height: 100px; }
         .bug-form-group textarea:focus { border-color: var(--accent-primary); }
 
-        /* Özel Kategori Seçici (Native select yerine) */
         .bug-category-selector { position: relative; }
         .bug-category-header {
             background: var(--bg-color); border: 1px solid var(--border-color);
@@ -525,7 +497,6 @@
         .bug-btn-submit { background: var(--danger-color); color: white; }
         .bug-btn:hover { opacity: 0.9; }
 
-        /* Google ile Giriş Sayfası */
         .login-page {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--bg-color);
@@ -569,7 +540,6 @@
         .login-guest { color: var(--text-muted); font-size: 0.85rem; cursor: pointer; text-decoration: underline; opacity: 0.85; transition: color 0.2s; }
         .login-guest:hover { color: var(--accent-light); }
 
-        /* Ayarlardaki Hesap Kartı */
         .account-section {
             display: flex; align-items: center; gap: 14px;
             background: var(--surface-color); border: 1px solid var(--border-color);
@@ -966,20 +936,15 @@
     </div>
 
     <script>
-        /* 🚨 REİS BURAYA DİKKAT: Google Cloud Console'dan aldığın OAuth Client ID'yi buraya yapıştır.
-           https://console.cloud.google.com/apis/credentials adresinden "OAuth Client ID" (Web application)
-           oluştur ve sitenin yayınlanacağı alan adını (domain) "Authorized JavaScript origins" kısmına ekle.
-           Bu ID olmadan Google giriş butonu çalışmaz. */
         const GOOGLE_CLIENT_ID = "980776370028-k2je8q30ttqd63lvjqlgbdtei2s4jv87.apps.googleusercontent.com";
 
-        let currentUser = null; // { name, email, picture }
+        let currentUser = null;
         let currentLang = "tr";
         let currentTheme = "default";
         let currentBugCategory = "ui";
         let chatSessions = []; 
         let currentSessionId = null;
 
-        /* 🚨 REİS BURAYA DİKKAT: Kullanıcının kendi belirlediği profil adı ve avatarı (Google hesabından bağımsız) */
         let userProfile = { name: "", avatarId: "default" };
 
         const avatarOptions = [
@@ -1176,7 +1141,6 @@
                 selectTheme(savedTheme);
             }
 
-            // Kayıtlı özel profil bilgisini geri yükle
             const savedProfile = localStorage.getItem('caavo0_profile');
             if (savedProfile) {
                 try {
@@ -1189,7 +1153,6 @@
             if (nameInput) nameInput.value = userProfile.name;
             updateProfilePreview();
 
-            // Kayıtlı hesabı geri yükle
             const savedUser = localStorage.getItem('caavo0_user');
             if (savedUser) {
                 try { currentUser = JSON.parse(savedUser); } catch(e) { currentUser = null; }
@@ -1197,13 +1160,10 @@
             updateAccountUI();
             initGoogleSignIn();
 
-            // Hesap yoksa giriş sayfasını zorunlu göster
             if (!currentUser) {
                 document.getElementById('loginPage').classList.add('show');
             }
         });
-
-        /* ================= PROFİL SİSTEMİ (Google'dan bağımsız özelleştirme) ================= */
 
         function avatarIconSVG() {
             return '<svg viewBox="0 0 24 24"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10z"/><path d="M4 21c0-4.42 3.58-8 8-8s8 3.58 8 8"/></svg>';
@@ -1258,8 +1218,6 @@
             return found ? found.color : avatarOptions[0].color;
         }
 
-        /* ================= GOOGLE İLE GİRİŞ SİSTEMİ ================= */
-
         function parseJwt(token) {
             try {
                 const base64Url = token.split('.')[1];
@@ -1282,7 +1240,6 @@
                 });
                 renderGoogleButton();
             } else {
-                // GIS betiği henüz yüklenmediyse kısa süre sonra tekrar dene
                 setTimeout(initGoogleSignIn, 300);
             }
         }
@@ -1395,14 +1352,12 @@
         const chatHeader = document.getElementById('chatHeader');
         const historyList = document.getElementById('historyList');
 
-        /* Akıllı otomatik kaydırma: kullanıcı yukarı kaydırdıysa yapay zeka yazarken onu aşağı zorlamaz */
         let autoScroll = true;
         let programmaticScroll = false;
         function isNearBottom(threshold = 120) {
             return chatMessages.scrollHeight - chatMessages.scrollTop - chatMessages.clientHeight < threshold;
         }
         chatMessages.addEventListener('scroll', () => {
-            // Kendi kodumuzun tetiklediği kaydırmayı gerçek kullanıcı hareketiyle karıştırma
             if (programmaticScroll) {
                 programmaticScroll = false;
                 return;
@@ -1459,6 +1414,80 @@
             }, 180);
         }
 
+        /* Eklendi: Dil değiştiğinde tüm sabit metinleri günceller (bu fonksiyon dosyada eksikti) */
+        function updateUIStrings() {
+            const t = translations[currentLang];
+            const setText = (id, value) => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = value;
+            };
+
+            setText('chatHeader', t.chatHeader);
+            const wm = document.getElementById('welcomeMessage');
+            if (wm) wm.textContent = t.welcomeMessage;
+            if (userInput) userInput.placeholder = t.inputPlaceholder;
+
+            setText('settingsTitle', t.settingsTitle);
+            setText('languageMenuBtnText', t.languageLabel);
+            setText('themeMenuBtnText', t.themeLabel);
+            setText('mediaMenuBtnText', t.mediaTab);
+            setText('bugReportBtnText', t.bugTrigger);
+            setText('profileMenuBtnText', t.profileLabel);
+
+            setText('languagePageTitle', t.languageLabel);
+            setText('themePageTitle', t.themeLabel);
+            setText('mediaPageTitle', t.mediaTab);
+            setText('profilePageTitle', t.profileLabel);
+
+            setText('themeDefaultLabel', t.themeDefault);
+            setText('themeWhiteLabel', t.themeWhite);
+            setText('themeDarkLabel', t.themeDark);
+            setText('themeEmeraldLabel', t.themeEmerald);
+            setText('themePurpleLabel', t.themePurple);
+
+            setText('bugModalTitle', t.bugTitle);
+            setText('bugModalDesc', t.bugDesc);
+            setText('bugLabelCat', t.bugLabelCat);
+            setText('bugLabelDesc', t.bugLabelDesc);
+            setText('bugOptUi', t.bugOptUi);
+            setText('bugOptAi', t.bugOptAi);
+            setText('bugOptPerf', t.bugOptPerf);
+            setText('bugOptOther', t.bugOptOther);
+            setText('bugBtnCancel', t.bugCancel);
+            setText('bugBtnSubmit', t.bugSubmit);
+            const bugDescEl = document.getElementById('bugDescription');
+            if (bugDescEl) bugDescEl.placeholder = t.bugTextareaPlh;
+            const catLabels = { ui: t.bugOptUi, ai: t.bugOptAi, performance: t.bugOptPerf, other: t.bugOptOther };
+            setText('bugCategorySelectedLabel', catLabels[currentBugCategory]);
+
+            setText('mediaGithubTitle', t.mediaGithubTitle);
+            setText('mediaGithubDesc', t.mediaGithubDesc);
+            setText('mediaYoutubeTitle', t.mediaYoutubeTitle);
+            setText('mediaYoutubeDesc', t.mediaYoutubeDesc);
+            setText('mediaTiktokTitle', t.mediaTiktokTitle);
+            setText('mediaTiktokDesc', t.mediaTiktokDesc);
+            setText('mediaDiscordTitle', t.mediaDiscordTitle);
+            setText('mediaDiscordDesc', t.mediaDiscordDesc);
+
+            setText('sidebarHistoryTitle', t.sidebarHistoryTitle);
+            setText('clearAllBtnText', t.clearAllBtnText);
+
+            setText('confirmModalTitle', t.confirmModalTitle);
+            setText('confirmBtnCancel', t.confirmBtnCancel);
+            setText('confirmBtnOk', t.confirmBtnOk);
+
+            setText('loginWelcomeText', t.loginWelcome);
+            setText('loginGuestText', t.guestContinue);
+
+            setText('profileNameLabel', t.profileNameLabel);
+            const profileInput = document.getElementById('profileNameInput');
+            if (profileInput) profileInput.placeholder = t.profileNamePlh;
+            setText('profileAvatarLabel', t.profileAvatarLabel);
+
+            renderGoogleButton();
+            updateAccountUI();
+        }
+
         function selectTheme(themeName) {
             currentTheme = themeName;
             localStorage.setItem('caavo0_theme', themeName);
@@ -1478,7 +1507,6 @@
             }, 180);
         }
 
-        /* Hata türü için kendi tasarımımız olan açılır menü */
         function toggleBugCategoryDropdown() {
             document.getElementById('bugCategorySelector').classList.toggle('open');
         }
@@ -1546,12 +1574,10 @@
             saveToLocalStorage();
         }
 
-        /* 🚨 REİS BURAYA DİKKAT: BUTONLARI OLUŞTURAN GİZLİ MOTOR FONKSİYONU */
         function createToolbarElement(text) {
             const toolbar = document.createElement('div');
             toolbar.className = 'message-toolbar';
 
-            // 1. Kopyala Butonu
             const copyBtn = document.createElement('button');
             copyBtn.innerHTML = '📋';
             copyBtn.title = translations[currentLang].copyTitle;
@@ -1560,7 +1586,6 @@
                 alert(translations[currentLang].copiedAlert);
             };
 
-            // 2. Sesli Oku Butonu
             const speakBtn = document.createElement('button');
             speakBtn.innerHTML = '🔊';
             speakBtn.title = translations[currentLang].speakTitle;
@@ -1574,7 +1599,6 @@
                 }
             };
 
-            // 3. Like Butonu
             const likeBtn = document.createElement('button');
             likeBtn.innerHTML = '👍';
             likeBtn.onclick = () => {
@@ -1582,7 +1606,6 @@
                 dislikeBtn.style.color = '';
             };
 
-            // 4. Dislike Butonu
             const dislikeBtn = document.createElement('button');
             dislikeBtn.innerHTML = '👎';
             dislikeBtn.onclick = () => {
@@ -1601,12 +1624,10 @@
             const div = document.createElement('div');
             div.className = `message ${className}`;
             
-            // İçerik alanı
             const contentDiv = document.createElement('div');
             contentDiv.innerHTML = text.replace(/\n/g, '<br>');
             div.appendChild(contentDiv);
             
-            // Eğer bot mesajıysa altına araç çubuğunu yapıştır
             if (className === 'ai-message') {
                 div.appendChild(createToolbarElement(text));
             }
@@ -1615,7 +1636,6 @@
             scrollToBottom(className === 'user-message');
         }
 
-        /* 🚨 REİS BURAYA DİKKAT: ChatGPT tarzı KARAKTER KARAKTER yazma efekti (kelime kelime değil) */
         function typeWriterEffect(fullText, className) {
             const div = document.createElement('div');
             div.className = `message ${className}`;
@@ -1623,7 +1643,6 @@
             const contentDiv = document.createElement('div');
             div.appendChild(contentDiv);
 
-            // Yanıp sönen imleç - ChatGPT'deki gibi metnin sonunda görünür
             const cursor = document.createElement('span');
             cursor.className = 'typing-cursor';
             div.appendChild(cursor);
@@ -1631,20 +1650,17 @@
             chatMessages.appendChild(div);
             scrollToBottom();
 
-            // Kalın yazı (**metin**) desteği için HTML'e çevir
             const processedText = fullText.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
 
             let i = 0;
             let rendered = '';
 
-            // Doğal bir yazım hissi için her karakter arasında ufak rastgele gecikme
             function nextDelay() {
                 return 8 + Math.random() * 18;
             }
 
             function type() {
                 if (i < processedText.length) {
-                    // HTML etiketleri (<strong> gibi) bozulmadan tek seferde eklenir
                     if (processedText[i] === '<') {
                         const closeIndex = processedText.indexOf('>', i);
                         if (closeIndex !== -1) {
@@ -1667,7 +1683,6 @@
                     scrollToBottom();
                     setTimeout(type, nextDelay());
                 } else {
-                    // Yazma bittiğinde imleç kaldırılır ve araç çubuğu belirir
                     cursor.remove();
                     div.appendChild(createToolbarElement(fullText));
                     scrollToBottom();
@@ -1699,7 +1714,6 @@
             userInput.value = '';
         }
 
-        /* Sohbet silme ikonu (özel tasarım çöp kutusu SVG'si) */
         function createTrashIconSVG() {
             const ns = "http://www.w3.org/2000/svg";
             const svg = document.createElementNS(ns, "svg");
@@ -1750,7 +1764,6 @@
             });
         }
 
-        /* ================= ÖZEL ONAY MODALI (Tema uyumlu, tarayıcı confirm() yerine) ================= */
         let pendingConfirmAction = null;
 
         function showConfirmModal(message, onConfirm) {
@@ -1801,4 +1814,4 @@
             }
         }
 
-        function openSettings() { document.getElementById('se
+        /* Eklendi: Ayarlar sayfası
