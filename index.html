@@ -918,6 +918,21 @@
         const chatHeader = document.getElementById('chatHeader');
         const historyList = document.getElementById('historyList');
 
+        /* Akıllı otomatik kaydırma: kullanıcı yukarı kaydırdıysa yapay zeka yazarken onu aşağı zorlamaz */
+        let autoScroll = true;
+        function isNearBottom(threshold = 120) {
+            return chatMessages.scrollHeight - chatMessages.scrollTop - chatMessages.clientHeight < threshold;
+        }
+        chatMessages.addEventListener('scroll', () => {
+            autoScroll = isNearBottom();
+        });
+        function scrollToBottom(force = false) {
+            if (force || autoScroll) {
+                autoScroll = true;
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+        }
+
         function handleKeyPress(e) {
             if (e.key === 'Enter') sendMessage();
         }
@@ -1099,7 +1114,7 @@
             }
 
             chatMessages.appendChild(div);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+            scrollToBottom(className === 'user-message');
         }
 
         /* 🚨 REİS BURAYA DİKKAT: ChatGPT tarzı KARAKTER KARAKTER yazma efekti (kelime kelime değil) */
@@ -1116,7 +1131,7 @@
             div.appendChild(cursor);
 
             chatMessages.appendChild(div);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+            scrollToBottom();
 
             // Kalın yazı (**metin**) desteği için HTML'e çevir
             const processedText = fullText.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
@@ -1151,13 +1166,13 @@
 
                     contentDiv.innerHTML = rendered;
                     contentDiv.appendChild(cursor);
-                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                    scrollToBottom();
                     setTimeout(type, nextDelay());
                 } else {
                     // Yazma bittiğinde imleç kaldırılır ve araç çubuğu belirir
                     cursor.remove();
                     div.appendChild(createToolbarElement(fullText));
-                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                    scrollToBottom();
                 }
             }
             type();
@@ -1168,12 +1183,13 @@
             div.className = 'typing-indicator';
             div.innerHTML = '<span></span><span></span><span></span>';
             chatMessages.appendChild(div);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+            scrollToBottom(true);
             return div;
         }
 
         function createNewChat() {
             currentSessionId = null;
+            autoScroll = true;
             chatMessages.innerHTML = '';
             
             const wm = document.createElement('div');
@@ -1257,6 +1273,7 @@
 
         function loadChatSession(id) {
             currentSessionId = id;
+            autoScroll = true;
             chatMessages.innerHTML = '';
             const session = chatSessions.find(s => s.id === id);
             
