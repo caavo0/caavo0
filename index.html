@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>CaavoX</title>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         button, a, [onclick], input, textarea {
@@ -475,9 +476,87 @@
         .bug-btn-cancel { background: transparent; color: var(--text-muted); }
         .bug-btn-submit { background: var(--danger-color); color: white; }
         .bug-btn:hover { opacity: 0.9; }
+
+        /* Google ile Giriş Sayfası */
+        .login-page {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-color);
+            background-image: radial-gradient(circle at 50% 20%, var(--accent-glow), transparent 60%);
+            display: flex; align-items: center; justify-content: center; z-index: 90;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transform: scale(0.96);
+            transition: opacity 0.3s ease, transform 0.32s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s linear 0.32s;
+            padding: 20px;
+        }
+        .login-page.show {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            transform: scale(1);
+            transition: opacity 0.3s ease, transform 0.32s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s linear 0s;
+        }
+        .login-card {
+            position: relative;
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 44px 30px 34px;
+            max-width: 340px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.35);
+        }
+        .login-close-btn {
+            position: absolute; top: 14px; right: 18px;
+            font-size: 1.4rem; color: var(--text-muted); cursor: pointer; opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        .login-close-btn:hover { opacity: 1; }
+        .login-logo { font-size: 2rem; font-weight: 700; color: var(--text-title); margin-bottom: 10px; }
+        .login-logo span { color: var(--accent-light); }
+        .login-welcome { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 26px; line-height: 1.4; }
+        .google-btn-container { display: flex; align-items: center; justify-content: center; min-height: 44px; margin-bottom: 20px; }
+        .login-guest { color: var(--text-muted); font-size: 0.85rem; cursor: pointer; text-decoration: underline; opacity: 0.85; transition: color 0.2s; }
+        .login-guest:hover { color: var(--accent-light); }
+
+        /* Ayarlardaki Hesap Kartı */
+        .account-section {
+            display: flex; align-items: center; gap: 14px;
+            background: var(--surface-color); border: 1px solid var(--border-color);
+            padding: 16px; border-radius: 16px;
+        }
+        .account-avatar {
+            width: 50px; height: 50px; border-radius: 50%; flex-shrink: 0;
+            background: var(--accent-primary); color: white;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 600; font-size: 1.2rem; overflow: hidden;
+        }
+        .account-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .account-info { flex: 1; overflow: hidden; }
+        .account-name { font-weight: 600; color: var(--text-title); font-size: 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .account-email { font-size: 0.8rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .account-action-btn {
+            background: none; border: 1px solid var(--accent-primary); color: var(--accent-light);
+            padding: 8px 14px; border-radius: 20px; font-size: 0.85rem; cursor: pointer;
+            flex-shrink: 0; transition: background 0.2s;
+        }
+        .account-action-btn:hover { background: var(--surface-hover); }
+        .account-action-btn.logout { border-color: var(--danger-color); color: var(--danger-color); }
     </style>
 </head>
 <body>
+
+    <div class="login-page" id="loginPage">
+        <div class="login-card">
+            <span class="login-close-btn" onclick="closeLoginPage()">×</span>
+            <div class="login-logo">Caavo<span>X</span></div>
+            <div class="login-welcome" id="loginWelcomeText">Devam etmek için giriş yapın</div>
+            <div class="google-btn-container" id="googleSignInBtn"></div>
+            <div class="login-guest" onclick="continueAsGuest()" id="loginGuestText">Misafir olarak devam et</div>
+        </div>
+    </div>
 
     <div class="media-page" id="mediaPage">
         <div class="settings-header">
@@ -579,6 +658,15 @@
             <div class="settings-title" id="settingsTitle">Ayarlar</div>
         </div>
         <div class="settings-body">
+
+            <div class="account-section" id="accountSection">
+                <div class="account-avatar" id="accountAvatar">👤</div>
+                <div class="account-info">
+                    <div class="account-name" id="accountName">Misafir</div>
+                    <div class="account-email" id="accountEmail"></div>
+                </div>
+                <button class="account-action-btn" id="accountActionBtn" onclick="handleAccountAction()">Giriş Yap</button>
+            </div>
             
             <div class="setting-item" id="langGroup">
                 <div class="setting-dropdown-header" onclick="toggleDropdown('langGroup')">
@@ -744,6 +832,13 @@
     </div>
 
     <script>
+        /* 🚨 REİS BURAYA DİKKAT: Google Cloud Console'dan aldığın OAuth Client ID'yi buraya yapıştır.
+           https://console.cloud.google.com/apis/credentials adresinden "OAuth Client ID" (Web application)
+           oluştur ve sitenin yayınlanacağı alan adını (domain) "Authorized JavaScript origins" kısmına ekle.
+           Bu ID olmadan Google giriş butonu çalışmaz. */
+        const GOOGLE_CLIENT_ID = "BURAYA_GOOGLE_CLIENT_ID_YAPISTIR.apps.googleusercontent.com";
+
+        let currentUser = null; // { name, email, picture }
         let currentLang = "tr";
         let currentTheme = "default";
         let currentBugCategory = "ui";
@@ -768,7 +863,9 @@
                 sidebarHistoryTitle: "Sohbet Geçmişi", clearAllBtnText: "Tümünü Temizle",
                 confirmDeleteChat: "Sohbeti silmek istediğinize emin misiniz?",
                 confirmClearAll: "Tüm sohbet geçmişiniz silinecektir. Emin misiniz?",
-                copiedAlert: "Kopyalandı!", copyTitle: "Kopyala", speakTitle: "Sesli Oku"
+                copiedAlert: "Kopyalandı!", copyTitle: "Kopyala", speakTitle: "Sesli Oku",
+                loginWelcome: "Devam etmek için Google hesabınızla giriş yapın", guestContinue: "Misafir olarak devam et",
+                guestLabel: "Misafir", loginBtn: "Giriş Yap", logoutBtn: "Çıkış Yap"
             },
             en: {
                 mediaTab: "Media", aiTab: "CaavoX", chatHeader: "CaavoX",
@@ -787,7 +884,9 @@
                 sidebarHistoryTitle: "Chat History", clearAllBtnText: "Clear All",
                 confirmDeleteChat: "Are you sure you want to delete this chat?",
                 confirmClearAll: "Your entire chat history will be deleted. Are you sure?",
-                copiedAlert: "Copied!", copyTitle: "Copy", speakTitle: "Read Aloud"
+                copiedAlert: "Copied!", copyTitle: "Copy", speakTitle: "Read Aloud",
+                loginWelcome: "Sign in with your Google account to continue", guestContinue: "Continue as guest",
+                guestLabel: "Guest", loginBtn: "Sign In", logoutBtn: "Log Out"
             },
             de: {
                 mediaTab: "Medien", aiTab: "CaavoX", chatHeader: "CaavoX",
@@ -806,7 +905,9 @@
                 sidebarHistoryTitle: "Chatverlauf", clearAllBtnText: "Alles löschen",
                 confirmDeleteChat: "Möchten Sie diesen Chat wirklich löschen?",
                 confirmClearAll: "Ihr gesamter Chatverlauf wird gelöscht. Sind Sie sicher?",
-                copiedAlert: "Kopiert!", copyTitle: "Kopieren", speakTitle: "Vorlesen"
+                copiedAlert: "Kopiert!", copyTitle: "Kopieren", speakTitle: "Vorlesen",
+                loginWelcome: "Melden Sie sich mit Ihrem Google-Konto an, um fortzufahren", guestContinue: "Als Gast fortfahren",
+                guestLabel: "Gast", loginBtn: "Anmelden", logoutBtn: "Abmelden"
             },
             es: {
                 mediaTab: "Medios", aiTab: "CaavoX", chatHeader: "CaavoX",
@@ -825,7 +926,9 @@
                 sidebarHistoryTitle: "Historial de Chats", clearAllBtnText: "Borrar Todo",
                 confirmDeleteChat: "¿Está seguro de que desea eliminar este chat?",
                 confirmClearAll: "Se eliminará todo su historial de chats. ¿Está seguro?",
-                copiedAlert: "¡Copiado!", copyTitle: "Copiar", speakTitle: "Leer en voz alta"
+                copiedAlert: "¡Copiado!", copyTitle: "Copiar", speakTitle: "Leer en voz alta",
+                loginWelcome: "Inicia sesión con tu cuenta de Google para continuar", guestContinue: "Continuar como invitado",
+                guestLabel: "Invitado", loginBtn: "Iniciar Sesión", logoutBtn: "Cerrar Sesión"
             },
             fr: {
                 mediaTab: "Médias", aiTab: "CaavoX", chatHeader: "CaavoX",
@@ -844,7 +947,9 @@
                 sidebarHistoryTitle: "Historique des Discussions", clearAllBtnText: "Tout Effacer",
                 confirmDeleteChat: "Êtes-vous sûr de vouloir supprimer cette discussion ?",
                 confirmClearAll: "Tout votre historique de discussions sera supprimé. Êtes-vous sûr ?",
-                copiedAlert: "Copié !", copyTitle: "Copier", speakTitle: "Lire à voix haute"
+                copiedAlert: "Copié !", copyTitle: "Copier", speakTitle: "Lire à voix haute",
+                loginWelcome: "Connectez-vous avec votre compte Google pour continuer", guestContinue: "Continuer en tant qu'invité",
+                guestLabel: "Invité", loginBtn: "Se Connecter", logoutBtn: "Se Déconnecter"
             },
             ru: {
                 mediaTab: "Медиа", aiTab: "CaavoX", chatHeader: "CaavoX",
@@ -863,7 +968,9 @@
                 sidebarHistoryTitle: "История Чатов", clearAllBtnText: "Очистить Всё",
                 confirmDeleteChat: "Вы уверены, что хотите удалить этот чат?",
                 confirmClearAll: "Вся история чатов будет удалена. Вы уверены?",
-                copiedAlert: "Скопировано!", copyTitle: "Копировать", speakTitle: "Озвучить"
+                copiedAlert: "Скопировано!", copyTitle: "Копировать", speakTitle: "Озвучить",
+                loginWelcome: "Войдите с помощью аккаунта Google, чтобы продолжить", guestContinue: "Продолжить как гость",
+                guestLabel: "Гость", loginBtn: "Войти", logoutBtn: "Выйти"
             },
             ar: {
                 mediaTab: "وسائل الإعلام", aiTab: "CaavoX", chatHeader: "CaavoX",
@@ -882,7 +989,9 @@
                 sidebarHistoryTitle: "سجل المحادثات", clearAllBtnText: "مسح الكل",
                 confirmDeleteChat: "هل أنت متأكد من رغبتك في حذف هذه المحادثة؟",
                 confirmClearAll: "سيتم حذف سجل المحادثات بالكامل. هل أنت متأكد؟",
-                copiedAlert: "تم النسخ!", copyTitle: "نسخ", speakTitle: "قراءة بصوت عالٍ"
+                copiedAlert: "تم النسخ!", copyTitle: "نسخ", speakTitle: "قراءة بصوت عالٍ",
+                loginWelcome: "سجل الدخول باستخدام حساب جوجل للمتابعة", guestContinue: "المتابعة كضيف",
+                guestLabel: "ضيف", loginBtn: "تسجيل الدخول", logoutBtn: "تسجيل الخروج"
             }
         };
 
@@ -900,7 +1009,121 @@
             if (savedTheme) {
                 selectTheme(savedTheme);
             }
+
+            // Kayıtlı hesabı geri yükle
+            const savedUser = localStorage.getItem('caavo0_user');
+            if (savedUser) {
+                try { currentUser = JSON.parse(savedUser); } catch(e) { currentUser = null; }
+            }
+            updateAccountUI();
+            initGoogleSignIn();
+
+            // Hesap yoksa giriş sayfasını zorunlu göster
+            if (!currentUser) {
+                document.getElementById('loginPage').classList.add('show');
+            }
         });
+
+        /* ================= GOOGLE İLE GİRİŞ SİSTEMİ ================= */
+
+        function parseJwt(token) {
+            try {
+                const base64Url = token.split('.')[1];
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                const jsonPayload = decodeURIComponent(
+                    atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')
+                );
+                return JSON.parse(jsonPayload);
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function initGoogleSignIn() {
+            if (window.google && google.accounts && google.accounts.id) {
+                google.accounts.id.initialize({
+                    client_id: GOOGLE_CLIENT_ID,
+                    callback: handleGoogleCredentialResponse,
+                    auto_select: false
+                });
+                renderGoogleButton();
+            } else {
+                // GIS betiği henüz yüklenmediyse kısa süre sonra tekrar dene
+                setTimeout(initGoogleSignIn, 300);
+            }
+        }
+
+        function renderGoogleButton() {
+            if (window.google && google.accounts && google.accounts.id) {
+                const container = document.getElementById('googleSignInBtn');
+                container.innerHTML = '';
+                google.accounts.id.renderButton(container, {
+                    theme: 'filled_black', size: 'large', shape: 'pill', text: 'signin_with', width: 280,
+                    locale: currentLang
+                });
+            }
+        }
+
+        function handleGoogleCredentialResponse(response) {
+            const payload = parseJwt(response.credential);
+            if (!payload) return;
+            currentUser = { name: payload.name, email: payload.email, picture: payload.picture };
+            localStorage.setItem('caavo0_user', JSON.stringify(currentUser));
+            updateAccountUI();
+            closeLoginPage();
+        }
+
+        function openLoginPage() {
+            document.getElementById('loginPage').classList.add('show');
+            renderGoogleButton();
+        }
+        function closeLoginPage() {
+            document.getElementById('loginPage').classList.remove('show');
+        }
+        function continueAsGuest() {
+            closeLoginPage();
+        }
+
+        function updateAccountUI() {
+            const avatar = document.getElementById('accountAvatar');
+            const nameEl = document.getElementById('accountName');
+            const emailEl = document.getElementById('accountEmail');
+            const actionBtn = document.getElementById('accountActionBtn');
+
+            if (currentUser) {
+                avatar.innerHTML = currentUser.picture
+                    ? `<img src="${currentUser.picture}" alt="">`
+                    : (currentUser.name ? currentUser.name.charAt(0).toUpperCase() : '?');
+                nameEl.textContent = currentUser.name || '';
+                emailEl.textContent = currentUser.email || '';
+                actionBtn.textContent = translations[currentLang].logoutBtn;
+                actionBtn.classList.add('logout');
+            } else {
+                avatar.innerHTML = '👤';
+                nameEl.textContent = translations[currentLang].guestLabel;
+                emailEl.textContent = '';
+                actionBtn.textContent = translations[currentLang].loginBtn;
+                actionBtn.classList.remove('logout');
+            }
+        }
+
+        function handleAccountAction() {
+            if (currentUser) {
+                logoutUser();
+            } else {
+                openLoginPage();
+            }
+        }
+
+        function logoutUser() {
+            currentUser = null;
+            localStorage.removeItem('caavo0_user');
+            if (window.google && google.accounts && google.accounts.id) {
+                google.accounts.id.disableAutoSelect();
+            }
+            updateAccountUI();
+            openLoginPage();
+        }
 
         function saveToLocalStorage() {
             localStorage.setItem('caavo0_chats', JSON.stringify(chatSessions));
@@ -920,15 +1143,22 @@
 
         /* Akıllı otomatik kaydırma: kullanıcı yukarı kaydırdıysa yapay zeka yazarken onu aşağı zorlamaz */
         let autoScroll = true;
+        let programmaticScroll = false;
         function isNearBottom(threshold = 120) {
             return chatMessages.scrollHeight - chatMessages.scrollTop - chatMessages.clientHeight < threshold;
         }
         chatMessages.addEventListener('scroll', () => {
+            // Kendi kodumuzun tetiklediği kaydırmayı gerçek kullanıcı hareketiyle karıştırma
+            if (programmaticScroll) {
+                programmaticScroll = false;
+                return;
+            }
             autoScroll = isNearBottom();
         });
         function scrollToBottom(force = false) {
             if (force || autoScroll) {
                 autoScroll = true;
+                programmaticScroll = true;
                 chatMessages.scrollTop = chatMessages.scrollHeight;
             }
         }
@@ -1375,6 +1605,12 @@
             // Sohbet geçmişi kenar çubuğu metinleri
             document.getElementById('sidebarHistoryTitle').textContent = translations[currentLang].sidebarHistoryTitle;
             document.getElementById('clearAllBtnText').textContent = translations[currentLang].clearAllBtnText;
+
+            // Giriş sayfası ve hesap kartı metinleri
+            document.getElementById('loginWelcomeText').textContent = translations[currentLang].loginWelcome;
+            document.getElementById('loginGuestText').textContent = translations[currentLang].guestContinue;
+            updateAccountUI();
+            renderGoogleButton();
         }
     </script>
 </body>
