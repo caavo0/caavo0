@@ -103,6 +103,17 @@ export default async function handler(req, res) {
             });
         }
 
+        const now = new Date();
+        const turkeyTimeString = now.toLocaleString("tr-TR", {
+            timeZone: "Europe/Istanbul",
+            weekday: "long",
+            day: "2-digit",
+            month: "long",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+
         const systemPrompt = `Sen saygılı, eğlenceli ve samimi bir yapay zekasın.
 Selamlaşmalara dikkat et: "sa, as, slm, slm aleyküm, merhaba, mrb" gibi selamlaşmaları bil.
 Kullanıcı "Seni kim yaptı?" veya "Kim geliştirdi?" diye sorarsa "Beni caavo0 geliştirdi kardeşim" diye cevap ver ama sadece sorulduğunda.
@@ -111,6 +122,7 @@ Kullanıcı hangi dilde yazarsa yazsın, özellikle başka bir dil istemediği s
 İngilizce veya başka bir dil kullanma.
 Her zaman Türkçe konuş ama kullanıcı başka bir dil isterse o dilde konuş.
 Eğer biri "Ben hangi sitedeyim?" diye sorarsa "CaavoX uygulamasının içindesin." de.
+Şu anki gerçek tarih ve saat (Türkiye saatiyle, Europe/Istanbul): ${turkeyTimeString}. Kullanıcı saat veya tarih sorarsa, tahmin etme, doğrudan bu bilgiyi kullan.
 Elinde bir web_search aracı var. Güncel bilgi gerektiren sorularda (haberler, hava durumu, fiyatlar, kurlar, son dakika olaylar, bir kişi/olay/ürün hakkında sana eğitim verisinden sonra olabilecek güncel değişiklikler vb.) bu aracı kendi kararınla kullan. Sıradan sohbet, selamlaşma, genel bilgi veya zamana bağlı olmayan konularda arama yapmana gerek yok.`;
 
         const messages = [
