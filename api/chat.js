@@ -48,7 +48,7 @@ export default async function handler(req, res) {
         }
 
         const completion = await groq.chat.completions.create({
-            model: "meta-llama/llama-4-scout-17b-16e-instruct",
+            model: "qwen/qwen2.5-vl-72b-instruct",
             messages: [
                 {
                     role: "system",
