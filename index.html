@@ -1883,8 +1883,9 @@
                 typing.remove();
                 
                 const replyText = data.reply || translations[currentLang].errorMessage;
-                activeSession.messages.push({ type: 'ai', text: replyText });
-                typeWriterEffect(replyText, 'ai-message');
+                const aiMsgRef = { type: 'ai', text: replyText };
+                activeSession.messages.push(aiMsgRef);
+                typeWriterEffect(replyText, 'ai-message', aiMsgRef);
             } catch (err) {
                 typing.remove();
                 if (err.name === 'AbortError') {
@@ -1893,8 +1894,9 @@
                     return;
                 }
                 const replyText = translations[currentLang].errorMessage;
-                activeSession.messages.push({ type: 'ai', text: replyText });
-                typeWriterEffect(replyText, 'ai-message');
+                const aiMsgRef = { type: 'ai', text: replyText };
+                activeSession.messages.push(aiMsgRef);
+                typeWriterEffect(replyText, 'ai-message', aiMsgRef);
             }
 
             saveToLocalStorage();
@@ -1976,7 +1978,11 @@
             scrollToBottom(className === 'user-message');
         }
 
-        function typeWriterEffect(fullText, className) {
+        function renderFormattedText(str) {
+            return str.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+        }
+
+        function typeWriterEffect(fullText, className, msgRef) {
             const div = document.createElement('div');
             div.className = `message ${className}`;
 
@@ -1990,53 +1996,40 @@
             chatMessages.appendChild(div);
             scrollToBottom();
 
-            const processedText = fullText.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-
             let i = 0;
-            let rendered = '';
+            const charsPerTick = 3;
 
             function nextDelay() {
-                return 8 + Math.random() * 18;
+                return 2 + Math.random() * 4;
             }
 
-            function finalize() {
+            function finalize(shownText) {
                 cursor.remove();
-                div.appendChild(createToolbarElement(fullText));
+                contentDiv.innerHTML = renderFormattedText(shownText);
+                div.appendChild(createToolbarElement(shownText));
                 scrollToBottom();
+                if (msgRef) {
+                    msgRef.text = shownText;
+                }
                 finishGenerating();
+                saveToLocalStorage();
             }
 
             function type() {
                 if (typewriterStopRequested) {
-                    contentDiv.innerHTML = processedText;
-                    finalize();
+                    finalize(fullText.substring(0, i));
                     return;
                 }
 
-                if (i < processedText.length) {
-                    if (processedText[i] === '<') {
-                        const closeIndex = processedText.indexOf('>', i);
-                        if (closeIndex !== -1) {
-                            rendered += processedText.substring(i, closeIndex + 1);
-                            i = closeIndex + 1;
-                        } else {
-                            rendered += processedText[i];
-                            i++;
-                        }
-                    } else if (processedText[i] === '\n') {
-                        rendered += '<br>';
-                        i++;
-                    } else {
-                        rendered += processedText[i];
-                        i++;
-                    }
-
-                    contentDiv.innerHTML = rendered;
+                if (i < fullText.length) {
+                    i = Math.min(i + charsPerTick, fullText.length);
+                    const shown = fullText.substring(0, i);
+                    contentDiv.innerHTML = renderFormattedText(shown);
                     contentDiv.appendChild(cursor);
                     scrollToBottom();
                     setTimeout(type, nextDelay());
                 } else {
-                    finalize();
+                    finalize(fullText);
                 }
             }
             type();
