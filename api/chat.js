@@ -29,29 +29,36 @@ const tools = [
     }
 ];
 
-// Google Custom Search JSON API çağrısı
-async function googleSearch(query) {
-    const apiKey = process.env.GOOGLE_API_KEY;
-    const cx = process.env.GOOGLE_CX;
+// Tavily Search API çağrısı
+async function webSearchTavily(query) {
+    const apiKey = process.env.TAVILY_API_KEY;
 
-    if (!apiKey || !cx) {
-        return "Web arama servisi yapılandırılmamış (GOOGLE_API_KEY / GOOGLE_CX eksik).";
+    if (!apiKey) {
+        return "Web arama servisi yapılandırılmamış (TAVILY_API_KEY eksik).";
     }
 
     try {
-        const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${encodeURIComponent(query)}&num=5`;
-        const response = await fetch(url);
+        const response = await fetch("https://api.tavily.com/search", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                api_key: apiKey,
+                query: query,
+                search_depth: "basic",
+                max_results: 5
+            })
+        });
         const data = await response.json();
 
-        if (!data.items || data.items.length === 0) {
+        if (!data.results || data.results.length === 0) {
             return "Arama sonucu bulunamadı.";
         }
 
-        return data.items
-            .map((item, i) => `${i + 1}. ${item.title}\n${item.snippet}\nKaynak: ${item.link}`)
+        return data.results
+            .map((item, i) => `${i + 1}. ${item.title}\n${item.content}\nKaynak: ${item.url}`)
             .join("\n\n");
     } catch (err) {
-        console.error("Google Search Error:", err);
+        console.error("Tavily Search Error:", err);
         return "Web araması sırasında bir hata oluştu.";
     }
 }
@@ -132,7 +139,7 @@ Eğer biri "Ben hangi sitedeyim?" diye sorarsa "CaavoX uygulamasının içindesi
             for (const toolCall of responseMessage.tool_calls) {
                 if (toolCall.function.name === "web_search") {
                     const args = JSON.parse(toolCall.function.arguments || "{}");
-                    const searchResult = await googleSearch(args.query || message);
+                    const searchResult = await webSearchTavily(args.query || message);
 
                     messages.push({
                         role: "tool",
