@@ -48,7 +48,7 @@ export default async function handler(req, res) {
         }
 
         const completion = await groq.chat.completions.create({
-            model: "qwen/qwen2.5-vl-72b-instruct",
+            model: "openai/gpt-oss-120b",
             messages: [
                 {
                     role: "system",
