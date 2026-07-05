@@ -318,6 +318,8 @@
         .chat-input-wrapper { background: var(--surface-color); border-radius: 32px; display: flex; align-items: center; padding: 6px 10px 6px 10px; border: 1px solid var(--border-color); width: 100%; }
         .chat-input-wrapper input { flex: 1; background: transparent; border: none; color: var(--text-main); padding: 12px 8px; font-size: 1rem; outline: none; }
         .chat-input-wrapper button { background: var(--accent-primary); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px var(--accent-glow); flex-shrink: 0; }
+        .chat-input-wrapper button.stop-mode { background: var(--text-main); }
+        .chat-input-wrapper button.stop-mode svg { width: 14px; height: 14px; fill: var(--surface-color); }
 
         .attach-btn {
             width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; cursor: pointer;
@@ -884,7 +886,7 @@
                     </label>
                     <input type="file" id="chatImageInput" accept="image/*" style="display:none" onchange="handleChatImageSelect(event)">
                     <input type="text" id="userInput" placeholder="CaavoX'e sorun..." onkeypress="handleKeyPress(event)">
-                    <button onclick="sendMessage()">➔</button>
+                    <button id="sendBtn" onclick="handleSendButtonClick()">➔</button>
                 </div>
             </div>
         </div>
@@ -1797,7 +1799,48 @@
             if (thumb) thumb.src = '';
         }
 
+        let isGenerating = false;
+        let currentAbortController = null;
+        let typewriterStopRequested = false;
+
+        function setSendButtonState(state) {
+            const btn = document.getElementById('sendBtn');
+            if (!btn) return;
+            if (state === 'stop') {
+                btn.innerHTML = '<svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2.5"/></svg>';
+                btn.classList.add('stop-mode');
+                btn.title = 'Yanıtı durdur';
+            } else {
+                btn.innerHTML = '➔';
+                btn.classList.remove('stop-mode');
+                btn.title = '';
+            }
+        }
+
+        function finishGenerating() {
+            isGenerating = false;
+            typewriterStopRequested = false;
+            currentAbortController = null;
+            setSendButtonState('send');
+        }
+
+        function handleSendButtonClick() {
+            if (isGenerating) {
+                stopGeneration();
+            } else {
+                sendMessage();
+            }
+        }
+
+        function stopGeneration() {
+            if (currentAbortController) {
+                currentAbortController.abort();
+            }
+            typewriterStopRequested = true;
+        }
+
         async function sendMessage() {
+            if (isGenerating) return;
             const text = userInput.value.trim();
             const imageToSend = pendingImage;
             if (!text && !imageToSend) return;
@@ -1822,13 +1865,19 @@
             removePendingImage();
             
             saveToLocalStorage();
+
+            isGenerating = true;
+            typewriterStopRequested = false;
+            setSendButtonState('stop');
+            currentAbortController = new AbortController();
             const typing = showTypingIndicator();
 
             try {
                 const res = await fetch('/api/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: text, image: imageToSend || null })
+                    body: JSON.stringify({ message: text, image: imageToSend || null }),
+                    signal: currentAbortController.signal
                 });
                 const data = await res.json();
                 typing.remove();
@@ -1838,6 +1887,11 @@
                 typeWriterEffect(replyText, 'ai-message');
             } catch (err) {
                 typing.remove();
+                if (err.name === 'AbortError') {
+                    finishGenerating();
+                    saveToLocalStorage();
+                    return;
+                }
                 const replyText = translations[currentLang].errorMessage;
                 activeSession.messages.push({ type: 'ai', text: replyText });
                 typeWriterEffect(replyText, 'ai-message');
@@ -1945,7 +1999,20 @@
                 return 8 + Math.random() * 18;
             }
 
+            function finalize() {
+                cursor.remove();
+                div.appendChild(createToolbarElement(fullText));
+                scrollToBottom();
+                finishGenerating();
+            }
+
             function type() {
+                if (typewriterStopRequested) {
+                    contentDiv.innerHTML = processedText;
+                    finalize();
+                    return;
+                }
+
                 if (i < processedText.length) {
                     if (processedText[i] === '<') {
                         const closeIndex = processedText.indexOf('>', i);
@@ -1969,9 +2036,7 @@
                     scrollToBottom();
                     setTimeout(type, nextDelay());
                 } else {
-                    cursor.remove();
-                    div.appendChild(createToolbarElement(fullText));
-                    scrollToBottom();
+                    finalize();
                 }
             }
             type();
