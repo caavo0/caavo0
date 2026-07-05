@@ -74,8 +74,9 @@ Eğer biri "Ben hangi sitedeyim?" diye sorarsa "CaavoX uygulamasının içindesi
             content: reply
         });
 
-        if (conversationHistory.length > 20) {
-            conversationHistory = conversationHistory.slice(-20);
+        // Son 200 mesajı hafızada tut
+        if (conversationHistory.length > 200) {
+            conversationHistory = conversationHistory.slice(-200);
         }
 
         res.status(200).json({ reply });
