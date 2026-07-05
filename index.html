@@ -671,6 +671,79 @@
             opacity: 1;
             transform: translateX(-50%) translateY(0);
         }
+
+        /* ---- RTL support ---- */
+        html[dir="rtl"] .menu-toggle-btn { left: auto; right: 20px; }
+        html[dir="rtl"] .actions-wrapper { right: auto; left: 20px; }
+        html[dir="rtl"] .user-message { align-self: flex-start; border-bottom-right-radius: 20px; border-bottom-left-radius: 4px; }
+        html[dir="rtl"] .ai-message { padding-left: 0; padding-right: 5px; }
+        html[dir="rtl"] .back-btn { margin-right: 0; margin-left: 15px; transform: scaleX(-1); }
+        html[dir="rtl"] .media-arrow { margin-left: 0; margin-right: 10px; transform: scaleX(-1); }
+        html[dir="rtl"] .media-icon { margin-right: 0; margin-left: 16px; }
+        html[dir="rtl"] .delete-item-btn, html[dir="rtl"] .history-item-wrapper { direction: rtl; }
+        html[dir="rtl"] .sidebar { left: auto; right: -280px; border-right: none; border-left: 1px solid var(--border-color); }
+        html[dir="rtl"] .sidebar.open { left: auto; right: 0; }
+        html[dir="rtl"] .avatar-upload-btn { right: auto; left: 0; }
+        html[dir="rtl"] .image-preview-remove { right: auto; left: -6px; }
+
+        /* ---- Code blocks ---- */
+        .code-block-wrap { position: relative; margin: 10px 0; border-radius: 12px; overflow: hidden; background: #0b0f1a; border: 1px solid var(--border-color); }
+        [data-theme="pearl-white"] .code-block-wrap { background: #1e293b; }
+        .code-block-header { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: rgba(255,255,255,0.04); font-size: 0.75rem; color: var(--text-muted); }
+        .code-block-copy { cursor: pointer; background: none; border: none; color: var(--accent-light); font-size: 0.75rem; padding: 2px 8px; border-radius: 6px; transition: background 0.2s; }
+        .code-block-copy:hover { background: rgba(255,255,255,0.08); }
+        .code-block-wrap pre { margin: 0; padding: 12px 14px; overflow-x: auto; font-family: 'Consolas', 'Menlo', monospace; font-size: 0.85rem; line-height: 1.5; color: #d7e2f2; }
+        .inline-code { font-family: 'Consolas', 'Menlo', monospace; background: rgba(255,255,255,0.08); padding: 1px 6px; border-radius: 5px; font-size: 0.88em; }
+        [data-theme="pearl-white"] .inline-code { background: rgba(0,0,0,0.07); }
+
+        /* ---- Scroll to bottom button ---- */
+        .scroll-bottom-btn {
+            position: absolute; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(10px);
+            width: 38px; height: 38px; border-radius: 50%; background: var(--surface-color);
+            border: 1px solid var(--border-color); color: var(--accent-light); display: flex;
+            align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+            opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 0.2s ease, transform 0.2s ease, visibility 0s linear 0.2s;
+            z-index: 5;
+        }
+        .scroll-bottom-btn.show { opacity: 1; visibility: visible; pointer-events: auto; transform: translateX(-50%) translateY(0); transition: opacity 0.2s ease, transform 0.2s ease, visibility 0s linear 0s; }
+        .scroll-bottom-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+        /* ---- Mic (voice input) button ---- */
+        .mic-btn {
+            width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; opacity: 0.75; transition: opacity 0.2s, background 0.2s, color 0.2s;
+            background: none; border: none; color: var(--icon-color);
+        }
+        .mic-btn:hover { opacity: 1; background: var(--surface-hover); }
+        .mic-btn svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+        .mic-btn.listening { color: var(--danger-color); opacity: 1; animation: micPulse 1.2s infinite; }
+        @keyframes micPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.4); } 50% { box-shadow: 0 0 0 8px rgba(239,68,68,0); } }
+
+        /* ---- Chat input drag & drop ---- */
+        .chat-input-wrapper.drag-over { border-color: var(--accent-primary); box-shadow: 0 0 0 3px var(--accent-glow); }
+
+        /* ---- Sidebar search & export ---- */
+        .sidebar-search-wrap { margin-bottom: 12px; position: relative; }
+        .sidebar-search-wrap input {
+            width: 100%; background: var(--surface-color); border: 1px solid var(--border-color);
+            border-radius: 20px; color: var(--text-main); padding: 9px 14px 9px 34px; font-size: 0.88rem; outline: none; font-family: inherit;
+        }
+        .sidebar-search-wrap input:focus { border-color: var(--accent-primary); }
+        .sidebar-search-icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; opacity: 0.5; pointer-events: none; }
+        .sidebar-search-icon svg { width: 100%; height: 100%; fill: none; stroke: var(--text-muted); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        html[dir="rtl"] .sidebar-search-wrap input { padding: 9px 34px 9px 14px; }
+        html[dir="rtl"] .sidebar-search-icon { left: auto; right: 11px; }
+
+        .export-all-btn { font-size: 0.85rem; color: var(--accent-light); cursor: pointer; opacity: 0.85; }
+        .rename-item-btn { cursor: pointer; opacity: 0.5; padding: 5px; display: flex; align-items: center; justify-content: center; transition: opacity 0.2s; }
+        .rename-item-btn:hover { opacity: 1; }
+        .rename-item-btn svg { width: 16px; height: 16px; stroke: var(--text-muted); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: stroke 0.2s; }
+        .rename-item-btn:hover svg { stroke: var(--accent-light); }
+        .history-item-actions { display: flex; align-items: center; }
+
+        .no-results-text { text-align: center; color: var(--text-muted); font-size: 0.85rem; padding: 20px 10px; }
+
+        .char-counter { font-size: 0.72rem; color: var(--text-muted); text-align: right; padding: 0 14px; opacity: 0.7; }
     </style>
 </head>
 <body>
@@ -858,6 +931,13 @@
                 </div>
                 <div class="chat-header" id="chatHeader">CaavoX</div>
                 <div class="actions-wrapper">
+                    <div class="new-chat-btn" id="exportCurrentBtn" onclick="exportCurrentChat()" style="display:none;" title="Sohbeti Dışa Aktar">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 3v12"></path>
+                            <path d="M7 10l5 5 5-5"></path>
+                            <path d="M4 21h16"></path>
+                        </svg>
+                    </div>
                     <div class="new-chat-btn" onclick="createNewChat()">
                         <svg viewBox="0 0 24 24">
                             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
@@ -876,6 +956,9 @@
             <div class="chat-messages" id="chatMessages">
                 <div class="welcome-text" id="welcomeMessage">Merhaba! Nasıl yardımcı olabilirim?</div>
             </div>
+            <div class="scroll-bottom-btn" id="scrollBottomBtn" onclick="scrollToBottom(true)">
+                <svg viewBox="0 0 24 24"><path d="M12 5v14"></path><path d="M19 12l-7 7-7-7"></path></svg>
+            </div>
             <div class="chat-input-container">
                 <div class="image-preview-bar" id="imagePreviewBar">
                     <div class="image-preview-item">
@@ -888,6 +971,9 @@
                         <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="8.5" cy="10.5" r="1.4"/><path d="M21 15.5l-4.8-4.8a1.5 1.5 0 0 0-2.1 0L9 15.8"/></svg>
                     </label>
                     <input type="file" id="chatImageInput" accept="image/*" style="display:none" onchange="handleChatImageSelect(event)">
+                    <button type="button" class="mic-btn" id="micBtn" onclick="toggleVoiceInput()" title="Sesle yaz">
+                        <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><path d="M12 19v4"></path><path d="M8 23h8"></path></svg>
+                    </button>
                     <input type="text" id="userInput" placeholder="CaavoX'e sorun..." onkeypress="handleKeyPress(event)">
                     <button id="sendBtn" onclick="handleSendButtonClick()">➔</button>
                 </div>
@@ -901,7 +987,12 @@
             <span id="sidebarHistoryTitle">Sohbet Geçmişi</span>
             <span class="close-sidebar-btn" onclick="toggleSidebar()">×</span>
         </div>
+        <div class="sidebar-search-wrap">
+            <span class="sidebar-search-icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4.3-4.3"></path></svg></span>
+            <input type="text" id="historySearchInput" placeholder="Sohbetlerde ara..." oninput="filterHistoryList(this.value)">
+        </div>
         <div class="sidebar-sub-actions">
+            <span class="export-all-btn" onclick="exportAllChats()" id="exportAllBtnText">Dışa Aktar</span>
             <span class="clear-all-btn" onclick="clearAllHistory()" id="clearAllBtnText">Tümünü Temizle</span>
         </div>
         <div class="history-list" id="historyList"></div>
@@ -1108,7 +1199,8 @@
                 copiedAlert: "Kopyalandı!", copyTitle: "Kopyala", speakTitle: "Sesli Oku",
                 loginWelcome: "Devam etmek için Google hesabınızla giriş yapın", guestContinue: "Misafir olarak devam et",
                 guestLabel: "Misafir", loginBtn: "Giriş Yap", logoutBtn: "Çıkış Yap",
-                profileLabel: "Profil", profileNameLabel: "Görünen Ad", profileNamePlh: "Adınızı girin", profileAvatarLabel: "Profil Simgesi"
+                profileLabel: "Profil", profileNameLabel: "Görünen Ad", profileNamePlh: "Adınızı girin", profileAvatarLabel: "Profil Simgesi",
+                searchPlaceholder: "Sohbetlerde ara...", exportAllBtn: "Dışa Aktar", noResults: "Sonuç bulunamadı.", renameTitle: "Sohbeti Yeniden Adlandır", renamePlaceholder: "Yeni başlık girin", renameSave: "Kaydet", renameCancel: "Vazgeç", micNotSupported: "Tarayıcınız sesli girişi desteklemiyor.", exportSuccessAll: "Tüm sohbetler indirildi.", exportSuccessOne: "Sohbet indirildi.", exportBtnTitle: "Sohbeti Dışa Aktar"
             },
             en: {
                 mediaTab: "Media", aiTab: "CaavoX", chatHeader: "CaavoX",
@@ -1131,7 +1223,8 @@
                 copiedAlert: "Copied!", copyTitle: "Copy", speakTitle: "Read Aloud",
                 loginWelcome: "Sign in with your Google account to continue", guestContinue: "Continue as guest",
                 guestLabel: "Guest", loginBtn: "Sign In", logoutBtn: "Log Out",
-                profileLabel: "Profile", profileNameLabel: "Display Name", profileNamePlh: "Enter your name", profileAvatarLabel: "Profile Icon"
+                profileLabel: "Profile", profileNameLabel: "Display Name", profileNamePlh: "Enter your name", profileAvatarLabel: "Profile Icon",
+                searchPlaceholder: "Search chats...", exportAllBtn: "Export", noResults: "No results found.", renameTitle: "Rename Chat", renamePlaceholder: "Enter new title", renameSave: "Save", renameCancel: "Cancel", micNotSupported: "Your browser does not support voice input.", exportSuccessAll: "All chats downloaded.", exportSuccessOne: "Chat downloaded.", exportBtnTitle: "Export Chat"
             },
             de: {
                 mediaTab: "Medien", aiTab: "CaavoX", chatHeader: "CaavoX",
@@ -1154,7 +1247,8 @@
                 copiedAlert: "Kopiert!", copyTitle: "Kopieren", speakTitle: "Vorlesen",
                 loginWelcome: "Melden Sie sich mit Ihrem Google-Konto an, um fortzufahren", guestContinue: "Als Gast fortfahren",
                 guestLabel: "Gast", loginBtn: "Anmelden", logoutBtn: "Abmelden",
-                profileLabel: "Profil", profileNameLabel: "Anzeigename", profileNamePlh: "Geben Sie Ihren Namen ein", profileAvatarLabel: "Profilsymbol"
+                profileLabel: "Profil", profileNameLabel: "Anzeigename", profileNamePlh: "Geben Sie Ihren Namen ein", profileAvatarLabel: "Profilsymbol",
+                searchPlaceholder: "Chats durchsuchen...", exportAllBtn: "Exportieren", noResults: "Keine Ergebnisse gefunden.", renameTitle: "Chat Umbenennen", renamePlaceholder: "Neuen Titel eingeben", renameSave: "Speichern", renameCancel: "Abbrechen", micNotSupported: "Ihr Browser unterstützt keine Spracheingabe.", exportSuccessAll: "Alle Chats heruntergeladen.", exportSuccessOne: "Chat heruntergeladen.", exportBtnTitle: "Chat Exportieren"
             },
             es: {
                 mediaTab: "Medios", aiTab: "CaavoX", chatHeader: "CaavoX",
@@ -1177,7 +1271,8 @@
                 copiedAlert: "¡Copiado!", copyTitle: "Copiar", speakTitle: "Leer en voz alta",
                 loginWelcome: "Inicia sesión con tu cuenta de Google para continuar", guestContinue: "Continuar como invitado",
                 guestLabel: "Invitado", loginBtn: "Iniciar Sesión", logoutBtn: "Cerrar Sesión",
-                profileLabel: "Perfil", profileNameLabel: "Nombre visible", profileNamePlh: "Ingresa tu nombre", profileAvatarLabel: "Icono de Perfil"
+                profileLabel: "Perfil", profileNameLabel: "Nombre visible", profileNamePlh: "Ingresa tu nombre", profileAvatarLabel: "Icono de Perfil",
+                searchPlaceholder: "Buscar chats...", exportAllBtn: "Exportar", noResults: "No se encontraron resultados.", renameTitle: "Renombrar Chat", renamePlaceholder: "Ingresa nuevo título", renameSave: "Guardar", renameCancel: "Cancelar", micNotSupported: "Tu navegador no admite entrada de voz.", exportSuccessAll: "Todos los chats descargados.", exportSuccessOne: "Chat descargado.", exportBtnTitle: "Exportar Chat"
             },
             fr: {
                 mediaTab: "Médias", aiTab: "CaavoX", chatHeader: "CaavoX",
@@ -1200,7 +1295,8 @@
                 copiedAlert: "Copié !", copyTitle: "Copier", speakTitle: "Lire à voix haute",
                 loginWelcome: "Connectez-vous avec votre compte Google pour continuer", guestContinue: "Continuer en tant qu'invité",
                 guestLabel: "Invité", loginBtn: "Se Connecter", logoutBtn: "Se Déconnecter",
-                profileLabel: "Profil", profileNameLabel: "Nom affiché", profileNamePlh: "Entrez votre nom", profileAvatarLabel: "Icône de Profil"
+                profileLabel: "Profil", profileNameLabel: "Nom affiché", profileNamePlh: "Entrez votre nom", profileAvatarLabel: "Icône de Profil",
+                searchPlaceholder: "Rechercher des discussions...", exportAllBtn: "Exporter", noResults: "Aucun résultat trouvé.", renameTitle: "Renommer la Discussion", renamePlaceholder: "Entrez un nouveau titre", renameSave: "Enregistrer", renameCancel: "Annuler", micNotSupported: "Votre navigateur ne prend pas en charge la saisie vocale.", exportSuccessAll: "Toutes les discussions téléchargées.", exportSuccessOne: "Discussion téléchargée.", exportBtnTitle: "Exporter la Discussion"
             },
             ru: {
                 mediaTab: "Медиа", aiTab: "CaavoX", chatHeader: "CaavoX",
@@ -1223,7 +1319,8 @@
                 copiedAlert: "Скопировано!", copyTitle: "Копировать", speakTitle: "Озвучить",
                 loginWelcome: "Войдите с помощью аккаунта Google, чтобы продолжить", guestContinue: "Продолжить как гость",
                 guestLabel: "Гость", loginBtn: "Войти", logoutBtn: "Выйти",
-                profileLabel: "Профиль", profileNameLabel: "Отображаемое имя", profileNamePlh: "Введите ваше имя", profileAvatarLabel: "Значок профиля"
+                profileLabel: "Профиль", profileNameLabel: "Отображаемое имя", profileNamePlh: "Введите ваше имя", profileAvatarLabel: "Значок профиля",
+                searchPlaceholder: "Поиск по чатам...", exportAllBtn: "Экспорт", noResults: "Результаты не найдены.", renameTitle: "Переименовать Чат", renamePlaceholder: "Введите новое название", renameSave: "Сохранить", renameCancel: "Отмена", micNotSupported: "Ваш браузер не поддерживает голосовой ввод.", exportSuccessAll: "Все чаты загружены.", exportSuccessOne: "Чат загружен.", exportBtnTitle: "Экспортировать Чат"
             },
             ar: {
                 mediaTab: "وسائل الإعلام", aiTab: "CaavoX", chatHeader: "CaavoX",
@@ -1246,7 +1343,8 @@
                 copiedAlert: "تم النسخ!", copyTitle: "نسخ", speakTitle: "قراءة بصوت عالٍ",
                 loginWelcome: "سجل الدخول باستخدام حساب جوجل للمتابعة", guestContinue: "المتابعة كضيف",
                 guestLabel: "ضيف", loginBtn: "تسجيل الدخول", logoutBtn: "تسجيل الخروج",
-                profileLabel: "الملف الشخصي", profileNameLabel: "الاسم المعروض", profileNamePlh: "أدخل اسمك", profileAvatarLabel: "أيقونة الملف الشخصي"
+                profileLabel: "الملف الشخصي", profileNameLabel: "الاسم المعروض", profileNamePlh: "أدخل اسمك", profileAvatarLabel: "أيقونة الملف الشخصي",
+                searchPlaceholder: "ابحث في المحادثات...", exportAllBtn: "تصدير", noResults: "لا توجد نتائج.", renameTitle: "إعادة تسمية المحادثة", renamePlaceholder: "أدخل عنواناً جديداً", renameSave: "حفظ", renameCancel: "إلغاء", micNotSupported: "متصفحك لا يدعم الإدخال الصوتي.", exportSuccessAll: "تم تنزيل جميع المحادثات.", exportSuccessOne: "تم تنزيل المحادثة.", exportBtnTitle: "تصدير المحادثة"
             }
         };
 
@@ -1287,6 +1385,9 @@
             if (!currentUser) {
                 document.getElementById('loginPage').classList.add('show');
             }
+
+            document.documentElement.setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
+            initDragAndDrop();
         });
 
         function avatarIconSVG() {
@@ -1530,16 +1631,24 @@
         chatMessages.addEventListener('scroll', () => {
             if (programmaticScroll) {
                 programmaticScroll = false;
+                updateScrollBottomBtn();
                 return;
             }
             autoScroll = isNearBottom();
+            updateScrollBottomBtn();
         });
+        function updateScrollBottomBtn() {
+            const btn = document.getElementById('scrollBottomBtn');
+            if (!btn) return;
+            btn.classList.toggle('show', !isNearBottom(150) && chatMessages.scrollHeight > chatMessages.clientHeight + 50);
+        }
         function scrollToBottom(force = false) {
             if (force || autoScroll) {
                 autoScroll = true;
                 programmaticScroll = true;
                 chatMessages.scrollTop = chatMessages.scrollHeight;
             }
+            updateScrollBottomBtn();
         }
 
         function handleKeyPress(e) {
@@ -1654,8 +1763,16 @@
             if (profileInput) profileInput.placeholder = t.profileNamePlh;
             setText('profileAvatarLabel', t.profileAvatarLabel);
 
+            const searchInput = document.getElementById('historySearchInput');
+            if (searchInput) searchInput.placeholder = t.searchPlaceholder;
+            setText('exportAllBtnText', t.exportAllBtn);
+
+            document.documentElement.setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
+            document.documentElement.setAttribute('lang', currentLang);
+
             renderGoogleButton();
             updateAccountUI();
+            updateSidebarUI();
         }
 
         function selectTheme(themeName) {
@@ -1856,6 +1973,8 @@
                     messages: []
                 });
                 updateSidebarUI();
+                const exportBtn = document.getElementById('exportCurrentBtn');
+                if (exportBtn) exportBtn.style.display = 'flex';
             }
 
             const wm = document.getElementById('welcomeMessage');
@@ -1969,7 +2088,7 @@
 
             if (text) {
                 const contentDiv = document.createElement('div');
-                contentDiv.innerHTML = text.replace(/\n/g, '<br>');
+                contentDiv.innerHTML = className === 'ai-message' ? renderFormattedText(text) : escapeHtml(text).replace(/\n/g, '<br>');
                 div.appendChild(contentDiv);
             }
             
@@ -1981,8 +2100,42 @@
             scrollToBottom(className === 'user-message');
         }
 
+        function escapeHtml(str) {
+            return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        let codeBlockCounter = 0;
+        const codeBlockStore = {};
+
         function renderFormattedText(str) {
-            return str.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+            // Extract fenced code blocks first so their content isn't touched by other formatting
+            const blocks = [];
+            let working = str.replace(/```(\w*)\n?([\s\S]*?)```/g, (match, lang, code) => {
+                const id = 'cb_' + (codeBlockCounter++);
+                codeBlockStore[id] = code.replace(/\n$/, '');
+                blocks.push({ id, lang: lang || 'code', code: codeBlockStore[id] });
+                return `%%CODEBLOCK_${id}%%`;
+            });
+
+            working = escapeHtml(working)
+                .replace(/`([^`]+)`/g, '<span class="inline-code">$1</span>')
+                .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\n/g, '<br>');
+
+            blocks.forEach(b => {
+                const placeholder = `%%CODEBLOCK_${b.id}%%`;
+                const html = `<div class="code-block-wrap"><div class="code-block-header"><span>${escapeHtml(b.lang)}</span><button class="code-block-copy" onclick="copyCodeBlock('${b.id}')">${translations[currentLang].copyTitle}</button></div><pre><code>${escapeHtml(b.code)}</code></pre></div>`;
+                working = working.replace(placeholder, html);
+            });
+
+            return working;
+        }
+
+        function copyCodeBlock(id) {
+            const code = codeBlockStore[id];
+            if (code === undefined) return;
+            navigator.clipboard.writeText(code);
+            showToast(translations[currentLang].copiedAlert);
         }
 
         function typeWriterEffect(fullText, className, msgRef) {
@@ -2065,6 +2218,9 @@
             chatMessages.appendChild(wm);
             userInput.value = '';
             removePendingImage();
+            const exportBtn = document.getElementById('exportCurrentBtn');
+            if (exportBtn) exportBtn.style.display = 'none';
+            updateScrollBottomBtn();
         }
 
         function createTrashIconSVG() {
@@ -2089,9 +2245,49 @@
             return svg;
         }
 
+        function createPencilIconSVG() {
+            const ns = "http://www.w3.org/2000/svg";
+            const svg = document.createElementNS(ns, "svg");
+            svg.setAttribute("viewBox", "0 0 24 24");
+            const parts = [
+                { tag: "path", d: "M12 20h9" },
+                { tag: "path", d: "M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" }
+            ];
+            parts.forEach(p => {
+                const el = document.createElementNS(ns, p.tag);
+                el.setAttribute("d", p.d);
+                svg.appendChild(el);
+            });
+            return svg;
+        }
+
+        let historyFilterQuery = '';
+
+        function filterHistoryList(query) {
+            historyFilterQuery = query || '';
+            updateSidebarUI();
+        }
+
         function updateSidebarUI() {
             historyList.innerHTML = '';
-            [...chatSessions].reverse().forEach(session => {
+            const q = historyFilterQuery.trim().toLocaleLowerCase(currentLang === 'tr' ? 'tr' : undefined);
+
+            const filtered = [...chatSessions].reverse().filter(session => {
+                if (!q) return true;
+                const titleMatch = session.title.toLocaleLowerCase().includes(q);
+                const msgMatch = (session.messages || []).some(m => m.text && m.text.toLocaleLowerCase().includes(q));
+                return titleMatch || msgMatch;
+            });
+
+            if (q && filtered.length === 0) {
+                const noRes = document.createElement('div');
+                noRes.className = 'no-results-text';
+                noRes.textContent = translations[currentLang].noResults;
+                historyList.appendChild(noRes);
+                return;
+            }
+
+            filtered.forEach(session => {
                 const wrapper = document.createElement('div');
                 wrapper.className = 'history-item-wrapper';
 
@@ -2103,6 +2299,18 @@
                     toggleSidebar();
                 };
 
+                const actions = document.createElement('div');
+                actions.className = 'history-item-actions';
+
+                const renameBtn = document.createElement('div');
+                renameBtn.className = 'rename-item-btn';
+                renameBtn.appendChild(createPencilIconSVG());
+                renameBtn.title = translations[currentLang].renameTitle;
+                renameBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    renameChatSession(session.id);
+                };
+
                 const deleteBtn = document.createElement('div');
                 deleteBtn.className = 'delete-item-btn';
                 deleteBtn.appendChild(createTrashIconSVG());
@@ -2111,10 +2319,59 @@
                     deleteChatSession(session.id);
                 };
 
+                actions.appendChild(renameBtn);
+                actions.appendChild(deleteBtn);
                 wrapper.appendChild(item);
-                wrapper.appendChild(deleteBtn);
+                wrapper.appendChild(actions);
                 historyList.appendChild(wrapper);
             });
+        }
+
+        function renameChatSession(id) {
+            const session = chatSessions.find(s => s.id === id);
+            if (!session) return;
+            const newTitle = window.prompt(translations[currentLang].renamePlaceholder, session.title);
+            if (newTitle && newTitle.trim()) {
+                session.title = newTitle.trim().substring(0, 60);
+                saveToLocalStorage();
+                updateSidebarUI();
+            }
+        }
+
+        function formatChatAsText(session) {
+            const t = translations[currentLang];
+            let out = `# ${session.title}\n\n`;
+            (session.messages || []).forEach(m => {
+                const who = m.type === 'user' ? (userProfile.name || t.guestLabel) : 'CaavoX';
+                out += `${who}:\n${m.text || ''}\n\n`;
+            });
+            return out;
+        }
+
+        function downloadTextFile(filename, text) {
+            const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+        }
+
+        function exportCurrentChat() {
+            const session = chatSessions.find(s => s.id === currentSessionId);
+            if (!session) return;
+            downloadTextFile(`${session.title.replace(/[^\w\- ]/g, '')}.txt`, formatChatAsText(session));
+            showToast(translations[currentLang].exportSuccessOne);
+        }
+
+        function exportAllChats() {
+            if (chatSessions.length === 0) return;
+            const combined = chatSessions.map(formatChatAsText).join('\n---\n\n');
+            downloadTextFile('caavox_sohbetler.txt', combined);
+            showToast(translations[currentLang].exportSuccessAll);
         }
 
         let pendingConfirmAction = null;
@@ -2163,9 +2420,84 @@
                 session.messages.forEach(msg => {
                     appendMessage(msg.text, msg.type === 'user' ? 'user-message' : 'ai-message', msg.image || null);
                 });
+                const exportBtn = document.getElementById('exportCurrentBtn');
+                if (exportBtn) exportBtn.style.display = 'flex';
             } else {
                 createNewChat();
             }
+        }
+
+        /* ---- Sesli giriş (Web Speech API) ---- */
+        let recognition = null;
+        let isListening = false;
+
+        function getSpeechLangCode() {
+            const map = { tr: 'tr-TR', en: 'en-US', de: 'de-DE', es: 'es-ES', fr: 'fr-FR', ru: 'ru-RU', ar: 'ar-SA' };
+            return map[currentLang] || 'en-US';
+        }
+
+        function toggleVoiceInput() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                showToast(translations[currentLang].micNotSupported);
+                return;
+            }
+            if (isListening) {
+                if (recognition) recognition.stop();
+                return;
+            }
+            recognition = new SpeechRecognition();
+            recognition.lang = getSpeechLangCode();
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            const micBtn = document.getElementById('micBtn');
+
+            recognition.onstart = () => {
+                isListening = true;
+                if (micBtn) micBtn.classList.add('listening');
+            };
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                userInput.value = (userInput.value ? userInput.value + ' ' : '') + transcript;
+            };
+            recognition.onerror = () => {
+                isListening = false;
+                if (micBtn) micBtn.classList.remove('listening');
+            };
+            recognition.onend = () => {
+                isListening = false;
+                if (micBtn) micBtn.classList.remove('listening');
+            };
+            recognition.start();
+        }
+
+        /* ---- Sürükle bırak resim ekleme ---- */
+        function initDragAndDrop() {
+            const wrapper = document.querySelector('.chat-input-wrapper');
+            const container = document.querySelector('.chat-input-container');
+            if (!wrapper || !container) return;
+
+            ['dragenter', 'dragover'].forEach(evt => {
+                container.addEventListener(evt, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    wrapper.classList.add('drag-over');
+                });
+            });
+            ['dragleave', 'drop'].forEach(evt => {
+                container.addEventListener(evt, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    wrapper.classList.remove('drag-over');
+                });
+            });
+            container.addEventListener('drop', (e) => {
+                const file = e.dataTransfer.files && e.dataTransfer.files[0];
+                if (!file || !file.type.startsWith('image/')) return;
+                const fakeEvent = { target: { files: [file], value: '' } };
+                handleChatImageSelect(fakeEvent);
+            });
         }
 
         /* Eklendi: Ayarlar sayfasını açar (dosyada tanımı eksikti) */
