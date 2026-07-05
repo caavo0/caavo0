@@ -14,13 +14,13 @@ const tools = [
         function: {
             name: "web_search",
             description:
-                "Güncel bilgiye ihtiyaç duyulduğunda (haberler, hava durumu, fiyatlar, son dakika olaylar, tarihler, güncel veriler vb.) Google üzerinden internette arama yapar ve sonuçları metin olarak döner.",
+                "Güncel bilgiye ihtiyaç duyulduğunda (haberler, hava durumu, fiyatlar, son dakika olaylar, tarihler, güncel veriler vb.) internette arama yapar ve sonuçları metin olarak döner.",
             parameters: {
                 type: "object",
                 properties: {
                     query: {
                         type: "string",
-                        description: "Google'da aranacak arama sorgusu"
+                        description: "İnternette aranacak arama sorgusu"
                     }
                 },
                 required: ["query"]
@@ -74,7 +74,7 @@ export default async function handler(req, res) {
     }
 
     try {
-        const { message, image, webSearch } = req.body;
+        const { message, image } = req.body;
 
         if (!message && !image) {
             return res.status(400).json({ error: "Mesaj veya resim gerekli." });
@@ -110,11 +110,8 @@ Her konu değiştirdiğinde paragraf başı yap. Sen sadece Türkçe konuşan bi
 Kullanıcı hangi dilde yazarsa yazsın, özellikle başka bir dil istemediği sürece her zaman Türkçe cevap ver.
 İngilizce veya başka bir dil kullanma.
 Her zaman Türkçe konuş ama kullanıcı başka bir dil isterse o dilde konuş.
-Eğer biri "Ben hangi sitedeyim?" diye sorarsa "CaavoX uygulamasının içindesin." de.${
-            webSearch
-                ? "\nKullanıcı bu mesaj için web araması istiyor: Güncel bilgi gerektiren bu soruyu cevaplamadan önce mutlaka web_search aracını kullanarak internetten güncel bilgi al, sonra bu sonuçlara dayanarak cevap ver. Kaynak linklerini cevabının sonunda kısaca belirt."
-                : ""
-        }`;
+Eğer biri "Ben hangi sitedeyim?" diye sorarsa "CaavoX uygulamasının içindesin." de.
+Elinde bir web_search aracı var. Güncel bilgi gerektiren sorularda (haberler, hava durumu, fiyatlar, kurlar, son dakika olaylar, bir kişi/olay/ürün hakkında sana eğitim verisinden sonra olabilecek güncel değişiklikler vb.) bu aracı kendi kararınla kullan. Sıradan sohbet, selamlaşma, genel bilgi veya zamana bağlı olmayan konularda arama yapmana gerek yok.`;
 
         const messages = [
             { role: "system", content: systemPrompt },
@@ -126,8 +123,8 @@ Eğer biri "Ben hangi sitedeyim?" diye sorarsa "CaavoX uygulamasının içindesi
             messages,
             temperature: 0.75,
             max_tokens: 800,
-            tools: webSearch ? tools : undefined,
-            tool_choice: webSearch ? "auto" : undefined
+            tools,
+            tool_choice: "auto"
         });
 
         let responseMessage = completion.choices[0]?.message;
