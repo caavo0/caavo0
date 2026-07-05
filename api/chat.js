@@ -7,6 +7,55 @@ const groq = new OpenAI({
 
 let conversationHistory = [];
 
+// Modelin çağırabileceği web arama aracının tanımı
+const tools = [
+    {
+        type: "function",
+        function: {
+            name: "web_search",
+            description:
+                "Güncel bilgiye ihtiyaç duyulduğunda (haberler, hava durumu, fiyatlar, son dakika olaylar, tarihler, güncel veriler vb.) Google üzerinden internette arama yapar ve sonuçları metin olarak döner.",
+            parameters: {
+                type: "object",
+                properties: {
+                    query: {
+                        type: "string",
+                        description: "Google'da aranacak arama sorgusu"
+                    }
+                },
+                required: ["query"]
+            }
+        }
+    }
+];
+
+// Google Custom Search JSON API çağrısı
+async function googleSearch(query) {
+    const apiKey = process.env.GOOGLE_API_KEY;
+    const cx = process.env.GOOGLE_CX;
+
+    if (!apiKey || !cx) {
+        return "Web arama servisi yapılandırılmamış (GOOGLE_API_KEY / GOOGLE_CX eksik).";
+    }
+
+    try {
+        const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${encodeURIComponent(query)}&num=5`;
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (!data.items || data.items.length === 0) {
+            return "Arama sonucu bulunamadı.";
+        }
+
+        return data.items
+            .map((item, i) => `${i + 1}. ${item.title}\n${item.snippet}\nKaynak: ${item.link}`)
+            .join("\n\n");
+    } catch (err) {
+        console.error("Google Search Error:", err);
+        return "Web araması sırasında bir hata oluştu.";
+    }
+}
+
 export default async function handler(req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
@@ -18,7 +67,7 @@ export default async function handler(req, res) {
     }
 
     try {
-        const { message, image } = req.body;
+        const { message, image, webSearch } = req.body;
 
         if (!message && !image) {
             return res.status(400).json({ error: "Mesaj veya resim gerekli." });
@@ -47,29 +96,64 @@ export default async function handler(req, res) {
             });
         }
 
-        const completion = await groq.chat.completions.create({
-            model: "meta-llama/llama-4-scout-17b-16e-instruct",
-            messages: [
-                {
-                    role: "system",
-                    content: `Sen saygılı, eğlenceli ve samimi bir yapay zekasın.
+        const systemPrompt = `Sen saygılı, eğlenceli ve samimi bir yapay zekasın.
 Selamlaşmalara dikkat et: "sa, as, slm, slm aleyküm, merhaba, mrb" gibi selamlaşmaları bil.
 Kullanıcı "Seni kim yaptı?" veya "Kim geliştirdi?" diye sorarsa "Beni caavo0 geliştirdi kardeşim" diye cevap ver ama sadece sorulduğunda.
-Her konu değiştirdiğinde paragraf başı yap.Sen sadece Türkçe konuşan bir yapay zekasın.
+Her konu değiştirdiğinde paragraf başı yap. Sen sadece Türkçe konuşan bir yapay zekasın.
 Kullanıcı hangi dilde yazarsa yazsın, özellikle başka bir dil istemediği sürece her zaman Türkçe cevap ver.
 İngilizce veya başka bir dil kullanma.
 Her zaman Türkçe konuş ama kullanıcı başka bir dil isterse o dilde konuş.
-Eğer biri "Ben hangi sitedeyim?" diye sorarsa "CaavoX uygulamasının içindesin." de.`
-                },
-                ...conversationHistory
-            ],
+Eğer biri "Ben hangi sitedeyim?" diye sorarsa "CaavoX uygulamasının içindesin." de.${
+            webSearch
+                ? "\nKullanıcı bu mesaj için web araması istiyor: Güncel bilgi gerektiren bu soruyu cevaplamadan önce mutlaka web_search aracını kullanarak internetten güncel bilgi al, sonra bu sonuçlara dayanarak cevap ver. Kaynak linklerini cevabının sonunda kısaca belirt."
+                : ""
+        }`;
+
+        const messages = [
+            { role: "system", content: systemPrompt },
+            ...conversationHistory
+        ];
+
+        let completion = await groq.chat.completions.create({
+            model: "meta-llama/llama-4-scout-17b-16e-instruct",
+            messages,
             temperature: 0.75,
-            max_tokens: 800
+            max_tokens: 800,
+            tools: webSearch ? tools : undefined,
+            tool_choice: webSearch ? "auto" : undefined
         });
 
-        const reply =
-            completion.choices[0]?.message?.content ||
-            "Üzgünüm, anlayamadım kardeşim.";
+        let responseMessage = completion.choices[0]?.message;
+
+        // Model web_search aracını çağırmak istediyse
+        if (responseMessage?.tool_calls?.length > 0) {
+            messages.push(responseMessage);
+
+            for (const toolCall of responseMessage.tool_calls) {
+                if (toolCall.function.name === "web_search") {
+                    const args = JSON.parse(toolCall.function.arguments || "{}");
+                    const searchResult = await googleSearch(args.query || message);
+
+                    messages.push({
+                        role: "tool",
+                        tool_call_id: toolCall.id,
+                        content: searchResult
+                    });
+                }
+            }
+
+            // Arama sonuçlarını gördükten sonra modele son cevabı ürettiriyoruz
+            completion = await groq.chat.completions.create({
+                model: "meta-llama/llama-4-scout-17b-16e-instruct",
+                messages,
+                temperature: 0.75,
+                max_tokens: 800
+            });
+
+            responseMessage = completion.choices[0]?.message;
+        }
+
+        const reply = responseMessage?.content || "Üzgünüm, anlayamadım kardeşim.";
 
         conversationHistory.push({
             role: "assistant",
