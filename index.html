@@ -318,18 +318,31 @@
         @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
 
         .chat-input-container { padding: 12px 16px; background: var(--bg-color); flex-shrink: 0; }
-        .chat-input-wrapper { background: var(--surface-color); border-radius: 32px; display: flex; align-items: center; padding: 6px 10px 6px 10px; border: 1px solid var(--border-color); width: 100%; }
-        .chat-input-wrapper input { flex: 1; background: transparent; border: none; color: var(--text-main); padding: 12px 8px; font-size: 1rem; outline: none; }
-        .chat-input-wrapper button { background: var(--accent-primary); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px var(--accent-glow); flex-shrink: 0; }
+        .chat-input-wrapper {
+            background: #1b1b1f;
+            border-radius: 32px;
+            display: flex;
+            align-items: center;
+            padding: 8px 8px 8px 14px;
+            border: 1px solid rgba(255,255,255,0.08);
+            width: 100%;
+            gap: 4px;
+        }
+        [data-theme="pearl-white"] .chat-input-wrapper { background: #ffffff; border: 1px solid var(--border-color); }
+        .chat-input-wrapper input { flex: 1; background: transparent; border: none; color: var(--text-main); padding: 12px 8px; font-size: 1rem; outline: none; min-width: 0; }
+        .chat-input-wrapper input::placeholder { color: var(--text-muted); opacity: 0.9; }
+        .chat-input-wrapper button { background: var(--accent-primary); border: none; color: white; width: 38px; height: 38px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px var(--accent-glow); flex-shrink: 0; }
         .chat-input-wrapper button.stop-mode { background: var(--text-main); }
         .chat-input-wrapper button.stop-mode svg { width: 14px; height: 14px; fill: var(--surface-color); }
 
         .attach-btn {
-            width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; opacity: 0.75; transition: opacity 0.2s, background 0.2s;
+            width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; opacity: 0.85; transition: opacity 0.2s, background 0.2s;
+            color: var(--text-main);
         }
-        .attach-btn:hover { opacity: 1; background: var(--surface-hover); }
-        .attach-btn svg { width: 21px; height: 21px; fill: none; stroke: var(--icon-color); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+        .attach-btn:hover { opacity: 1; background: rgba(255,255,255,0.06); }
+        [data-theme="pearl-white"] .attach-btn:hover { background: var(--surface-hover); }
+        .attach-btn svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
         .image-preview-bar { display: none; padding: 0 6px 10px; }
         .image-preview-item { position: relative; display: inline-block; }
@@ -542,6 +555,13 @@
         .bug-form-group textarea { resize: none; height: 100px; }
         .bug-form-group textarea:focus { border-color: var(--accent-primary); }
 
+        .rename-input {
+            background: var(--bg-color); border: 1px solid var(--border-color);
+            border-radius: 10px; color: var(--text-main); padding: 12px 14px;
+            font-size: 1rem; outline: none; font-family: inherit; width: 100%; transition: border-color 0.2s;
+        }
+        .rename-input:focus { border-color: var(--accent-primary); }
+
         .bug-category-selector { position: relative; }
         .bug-category-header {
             background: var(--bg-color); border: 1px solid var(--border-color);
@@ -710,11 +730,12 @@
 
         /* ---- Mic (voice input) button ---- */
         .mic-btn {
-            width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; opacity: 0.75; transition: opacity 0.2s, background 0.2s, color 0.2s;
-            background: none; border: none; color: var(--icon-color);
+            width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; opacity: 0.85; transition: opacity 0.2s, background 0.2s, color 0.2s;
+            background: none; border: none; color: var(--text-main);
         }
-        .mic-btn:hover { opacity: 1; background: var(--surface-hover); }
+        .mic-btn:hover { opacity: 1; background: rgba(255,255,255,0.06); }
+        [data-theme="pearl-white"] .mic-btn:hover { background: var(--surface-hover); }
         .mic-btn svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
         .mic-btn.listening { color: var(--danger-color); opacity: 1; animation: micPulse 1.2s infinite; }
         @keyframes micPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.4); } 50% { box-shadow: 0 0 0 8px rgba(239,68,68,0); } }
@@ -734,7 +755,6 @@
         html[dir="rtl"] .sidebar-search-wrap input { padding: 9px 34px 9px 14px; }
         html[dir="rtl"] .sidebar-search-icon { left: auto; right: 11px; }
 
-        .export-all-btn { font-size: 0.85rem; color: var(--accent-light); cursor: pointer; opacity: 0.85; }
         .rename-item-btn { cursor: pointer; opacity: 0.5; padding: 5px; display: flex; align-items: center; justify-content: center; transition: opacity 0.2s; }
         .rename-item-btn:hover { opacity: 1; }
         .rename-item-btn svg { width: 16px; height: 16px; stroke: var(--text-muted); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: stroke 0.2s; }
@@ -931,13 +951,6 @@
                 </div>
                 <div class="chat-header" id="chatHeader">CaavoX</div>
                 <div class="actions-wrapper">
-                    <div class="new-chat-btn" id="exportCurrentBtn" onclick="exportCurrentChat()" style="display:none;" title="Sohbeti Dışa Aktar">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M12 3v12"></path>
-                            <path d="M7 10l5 5 5-5"></path>
-                            <path d="M4 21h16"></path>
-                        </svg>
-                    </div>
                     <div class="new-chat-btn" onclick="createNewChat()">
                         <svg viewBox="0 0 24 24">
                             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
@@ -968,14 +981,16 @@
                 </div>
                 <div class="chat-input-wrapper">
                     <label class="attach-btn" for="chatImageInput" title="Fotoğraf Ekle">
-                        <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="8.5" cy="10.5" r="1.4"/><path d="M21 15.5l-4.8-4.8a1.5 1.5 0 0 0-2.1 0L9 15.8"/></svg>
+                        <svg viewBox="0 0 24 24"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg>
                     </label>
                     <input type="file" id="chatImageInput" accept="image/*" style="display:none" onchange="handleChatImageSelect(event)">
+                    <input type="text" id="userInput" placeholder="CaavoX'e sorun..." onkeypress="handleKeyPress(event)">
                     <button type="button" class="mic-btn" id="micBtn" onclick="toggleVoiceInput()" title="Sesle yaz">
                         <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><path d="M12 19v4"></path><path d="M8 23h8"></path></svg>
                     </button>
-                    <input type="text" id="userInput" placeholder="CaavoX'e sorun..." onkeypress="handleKeyPress(event)">
-                    <button id="sendBtn" onclick="handleSendButtonClick()">➔</button>
+                    <button id="sendBtn" onclick="handleSendButtonClick()">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="white" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"></path><path d="M6 11l6-6 6 6"></path></svg>
+                    </button>
                 </div>
             </div>
         </div>
@@ -992,7 +1007,6 @@
             <input type="text" id="historySearchInput" placeholder="Sohbetlerde ara..." oninput="filterHistoryList(this.value)">
         </div>
         <div class="sidebar-sub-actions">
-            <span class="export-all-btn" onclick="exportAllChats()" id="exportAllBtnText">Dışa Aktar</span>
             <span class="clear-all-btn" onclick="clearAllHistory()" id="clearAllBtnText">Tümünü Temizle</span>
         </div>
         <div class="history-list" id="historyList"></div>
@@ -1150,6 +1164,19 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="renameModalOverlay" onclick="closeRenameModal(false)">
+        <div class="bug-modal" style="max-width: 380px;" onclick="event.stopPropagation()">
+            <h3 class="bug-modal-title" id="renameModalTitle">Sohbeti Yeniden Adlandır</h3>
+            <div class="bug-form-group">
+                <input type="text" class="rename-input" id="renameInput" placeholder="Yeni başlık girin" onkeypress="handleRenameKeyPress(event)">
+            </div>
+            <div class="bug-modal-actions">
+                <button class="bug-btn bug-btn-cancel" onclick="closeRenameModal(false)" id="renameBtnCancel">Vazgeç</button>
+                <button class="bug-btn bug-btn-submit" onclick="closeRenameModal(true)" id="renameBtnSave" style="background: var(--accent-primary);">Kaydet</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         const GOOGLE_CLIENT_ID = "980776370028-k2je8q30ttqd63lvjqlgbdtei2s4jv87.apps.googleusercontent.com";
 
@@ -1200,7 +1227,7 @@
                 loginWelcome: "Devam etmek için Google hesabınızla giriş yapın", guestContinue: "Misafir olarak devam et",
                 guestLabel: "Misafir", loginBtn: "Giriş Yap", logoutBtn: "Çıkış Yap",
                 profileLabel: "Profil", profileNameLabel: "Görünen Ad", profileNamePlh: "Adınızı girin", profileAvatarLabel: "Profil Simgesi",
-                searchPlaceholder: "Sohbetlerde ara...", exportAllBtn: "Dışa Aktar", noResults: "Sonuç bulunamadı.", renameTitle: "Sohbeti Yeniden Adlandır", renamePlaceholder: "Yeni başlık girin", renameSave: "Kaydet", renameCancel: "Vazgeç", micNotSupported: "Tarayıcınız sesli girişi desteklemiyor.", exportSuccessAll: "Tüm sohbetler indirildi.", exportSuccessOne: "Sohbet indirildi.", exportBtnTitle: "Sohbeti Dışa Aktar"
+                searchPlaceholder: "Sohbetlerde ara...", noResults: "Sonuç bulunamadı.", renameTitle: "Sohbeti Yeniden Adlandır", renamePlaceholder: "Yeni başlık girin", renameSave: "Kaydet", renameCancel: "Vazgeç", micNotSupported: "Tarayıcınız sesli girişi desteklemiyor."
             },
             en: {
                 mediaTab: "Media", aiTab: "CaavoX", chatHeader: "CaavoX",
@@ -1224,7 +1251,7 @@
                 loginWelcome: "Sign in with your Google account to continue", guestContinue: "Continue as guest",
                 guestLabel: "Guest", loginBtn: "Sign In", logoutBtn: "Log Out",
                 profileLabel: "Profile", profileNameLabel: "Display Name", profileNamePlh: "Enter your name", profileAvatarLabel: "Profile Icon",
-                searchPlaceholder: "Search chats...", exportAllBtn: "Export", noResults: "No results found.", renameTitle: "Rename Chat", renamePlaceholder: "Enter new title", renameSave: "Save", renameCancel: "Cancel", micNotSupported: "Your browser does not support voice input.", exportSuccessAll: "All chats downloaded.", exportSuccessOne: "Chat downloaded.", exportBtnTitle: "Export Chat"
+                searchPlaceholder: "Search chats...", noResults: "No results found.", renameTitle: "Rename Chat", renamePlaceholder: "Enter new title", renameSave: "Save", renameCancel: "Cancel", micNotSupported: "Your browser does not support voice input."
             },
             de: {
                 mediaTab: "Medien", aiTab: "CaavoX", chatHeader: "CaavoX",
@@ -1248,7 +1275,7 @@
                 loginWelcome: "Melden Sie sich mit Ihrem Google-Konto an, um fortzufahren", guestContinue: "Als Gast fortfahren",
                 guestLabel: "Gast", loginBtn: "Anmelden", logoutBtn: "Abmelden",
                 profileLabel: "Profil", profileNameLabel: "Anzeigename", profileNamePlh: "Geben Sie Ihren Namen ein", profileAvatarLabel: "Profilsymbol",
-                searchPlaceholder: "Chats durchsuchen...", exportAllBtn: "Exportieren", noResults: "Keine Ergebnisse gefunden.", renameTitle: "Chat Umbenennen", renamePlaceholder: "Neuen Titel eingeben", renameSave: "Speichern", renameCancel: "Abbrechen", micNotSupported: "Ihr Browser unterstützt keine Spracheingabe.", exportSuccessAll: "Alle Chats heruntergeladen.", exportSuccessOne: "Chat heruntergeladen.", exportBtnTitle: "Chat Exportieren"
+                searchPlaceholder: "Chats durchsuchen...", noResults: "Keine Ergebnisse gefunden.", renameTitle: "Chat Umbenennen", renamePlaceholder: "Neuen Titel eingeben", renameSave: "Speichern", renameCancel: "Abbrechen", micNotSupported: "Ihr Browser unterstützt keine Spracheingabe."
             },
             es: {
                 mediaTab: "Medios", aiTab: "CaavoX", chatHeader: "CaavoX",
@@ -1272,7 +1299,7 @@
                 loginWelcome: "Inicia sesión con tu cuenta de Google para continuar", guestContinue: "Continuar como invitado",
                 guestLabel: "Invitado", loginBtn: "Iniciar Sesión", logoutBtn: "Cerrar Sesión",
                 profileLabel: "Perfil", profileNameLabel: "Nombre visible", profileNamePlh: "Ingresa tu nombre", profileAvatarLabel: "Icono de Perfil",
-                searchPlaceholder: "Buscar chats...", exportAllBtn: "Exportar", noResults: "No se encontraron resultados.", renameTitle: "Renombrar Chat", renamePlaceholder: "Ingresa nuevo título", renameSave: "Guardar", renameCancel: "Cancelar", micNotSupported: "Tu navegador no admite entrada de voz.", exportSuccessAll: "Todos los chats descargados.", exportSuccessOne: "Chat descargado.", exportBtnTitle: "Exportar Chat"
+                searchPlaceholder: "Buscar chats...", noResults: "No se encontraron resultados.", renameTitle: "Renombrar Chat", renamePlaceholder: "Ingresa nuevo título", renameSave: "Guardar", renameCancel: "Cancelar", micNotSupported: "Tu navegador no admite entrada de voz."
             },
             fr: {
                 mediaTab: "Médias", aiTab: "CaavoX", chatHeader: "CaavoX",
@@ -1296,7 +1323,7 @@
                 loginWelcome: "Connectez-vous avec votre compte Google pour continuer", guestContinue: "Continuer en tant qu'invité",
                 guestLabel: "Invité", loginBtn: "Se Connecter", logoutBtn: "Se Déconnecter",
                 profileLabel: "Profil", profileNameLabel: "Nom affiché", profileNamePlh: "Entrez votre nom", profileAvatarLabel: "Icône de Profil",
-                searchPlaceholder: "Rechercher des discussions...", exportAllBtn: "Exporter", noResults: "Aucun résultat trouvé.", renameTitle: "Renommer la Discussion", renamePlaceholder: "Entrez un nouveau titre", renameSave: "Enregistrer", renameCancel: "Annuler", micNotSupported: "Votre navigateur ne prend pas en charge la saisie vocale.", exportSuccessAll: "Toutes les discussions téléchargées.", exportSuccessOne: "Discussion téléchargée.", exportBtnTitle: "Exporter la Discussion"
+                searchPlaceholder: "Rechercher des discussions...", noResults: "Aucun résultat trouvé.", renameTitle: "Renommer la Discussion", renamePlaceholder: "Entrez un nouveau titre", renameSave: "Enregistrer", renameCancel: "Annuler", micNotSupported: "Votre navigateur ne prend pas en charge la saisie vocale."
             },
             ru: {
                 mediaTab: "Медиа", aiTab: "CaavoX", chatHeader: "CaavoX",
@@ -1320,7 +1347,7 @@
                 loginWelcome: "Войдите с помощью аккаунта Google, чтобы продолжить", guestContinue: "Продолжить как гость",
                 guestLabel: "Гость", loginBtn: "Войти", logoutBtn: "Выйти",
                 profileLabel: "Профиль", profileNameLabel: "Отображаемое имя", profileNamePlh: "Введите ваше имя", profileAvatarLabel: "Значок профиля",
-                searchPlaceholder: "Поиск по чатам...", exportAllBtn: "Экспорт", noResults: "Результаты не найдены.", renameTitle: "Переименовать Чат", renamePlaceholder: "Введите новое название", renameSave: "Сохранить", renameCancel: "Отмена", micNotSupported: "Ваш браузер не поддерживает голосовой ввод.", exportSuccessAll: "Все чаты загружены.", exportSuccessOne: "Чат загружен.", exportBtnTitle: "Экспортировать Чат"
+                searchPlaceholder: "Поиск по чатам...", noResults: "Результаты не найдены.", renameTitle: "Переименовать Чат", renamePlaceholder: "Введите новое название", renameSave: "Сохранить", renameCancel: "Отмена", micNotSupported: "Ваш браузер не поддерживает голосовой ввод."
             },
             ar: {
                 mediaTab: "وسائل الإعلام", aiTab: "CaavoX", chatHeader: "CaavoX",
@@ -1344,7 +1371,7 @@
                 loginWelcome: "سجل الدخول باستخدام حساب جوجل للمتابعة", guestContinue: "المتابعة كضيف",
                 guestLabel: "ضيف", loginBtn: "تسجيل الدخول", logoutBtn: "تسجيل الخروج",
                 profileLabel: "الملف الشخصي", profileNameLabel: "الاسم المعروض", profileNamePlh: "أدخل اسمك", profileAvatarLabel: "أيقونة الملف الشخصي",
-                searchPlaceholder: "ابحث في المحادثات...", exportAllBtn: "تصدير", noResults: "لا توجد نتائج.", renameTitle: "إعادة تسمية المحادثة", renamePlaceholder: "أدخل عنواناً جديداً", renameSave: "حفظ", renameCancel: "إلغاء", micNotSupported: "متصفحك لا يدعم الإدخال الصوتي.", exportSuccessAll: "تم تنزيل جميع المحادثات.", exportSuccessOne: "تم تنزيل المحادثة.", exportBtnTitle: "تصدير المحادثة"
+                searchPlaceholder: "ابحث في المحادثات...", noResults: "لا توجد نتائج.", renameTitle: "إعادة تسمية المحادثة", renamePlaceholder: "أدخل عنواناً جديداً", renameSave: "حفظ", renameCancel: "إلغاء", micNotSupported: "متصفحك لا يدعم الإدخال الصوتي."
             }
         };
 
@@ -1693,7 +1720,6 @@
             }, 180);
         }
 
-        /* Eklendi: Dil değiştiğinde tüm sabit metinleri günceller (bu fonksiyon dosyada eksikti) */
         function updateUIStrings() {
             const t = translations[currentLang];
             const setText = (id, value) => {
@@ -1755,6 +1781,12 @@
             setText('confirmBtnCancel', t.confirmBtnCancel);
             setText('confirmBtnOk', t.confirmBtnOk);
 
+            setText('renameModalTitle', t.renameTitle);
+            setText('renameBtnCancel', t.renameCancel);
+            setText('renameBtnSave', t.renameSave);
+            const renameInputEl = document.getElementById('renameInput');
+            if (renameInputEl) renameInputEl.placeholder = t.renamePlaceholder;
+
             setText('loginWelcomeText', t.loginWelcome);
             setText('loginGuestText', t.guestContinue);
 
@@ -1765,7 +1797,6 @@
 
             const searchInput = document.getElementById('historySearchInput');
             if (searchInput) searchInput.placeholder = t.searchPlaceholder;
-            setText('exportAllBtnText', t.exportAllBtn);
 
             document.documentElement.setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
             document.documentElement.setAttribute('lang', currentLang);
@@ -1931,7 +1962,7 @@
                 btn.classList.add('stop-mode');
                 btn.title = 'Yanıtı durdur';
             } else {
-                btn.innerHTML = '➔';
+                btn.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="white" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"></path><path d="M6 11l6-6 6 6"></path></svg>';
                 btn.classList.remove('stop-mode');
                 btn.title = '';
             }
@@ -1973,8 +2004,6 @@
                     messages: []
                 });
                 updateSidebarUI();
-                const exportBtn = document.getElementById('exportCurrentBtn');
-                if (exportBtn) exportBtn.style.display = 'flex';
             }
 
             const wm = document.getElementById('welcomeMessage');
@@ -2108,7 +2137,6 @@
         const codeBlockStore = {};
 
         function renderFormattedText(str) {
-            // Extract fenced code blocks first so their content isn't touched by other formatting
             const blocks = [];
             let working = str.replace(/```(\w*)\n?([\s\S]*?)```/g, (match, lang, code) => {
                 const id = 'cb_' + (codeBlockCounter++);
@@ -2218,8 +2246,6 @@
             chatMessages.appendChild(wm);
             userInput.value = '';
             removePendingImage();
-            const exportBtn = document.getElementById('exportCurrentBtn');
-            if (exportBtn) exportBtn.style.display = 'none';
             updateScrollBottomBtn();
         }
 
@@ -2327,51 +2353,42 @@
             });
         }
 
+        let pendingRenameId = null;
+
         function renameChatSession(id) {
             const session = chatSessions.find(s => s.id === id);
             if (!session) return;
-            const newTitle = window.prompt(translations[currentLang].renamePlaceholder, session.title);
-            if (newTitle && newTitle.trim()) {
-                session.title = newTitle.trim().substring(0, 60);
-                saveToLocalStorage();
-                updateSidebarUI();
-            }
-        }
-
-        function formatChatAsText(session) {
+            pendingRenameId = id;
             const t = translations[currentLang];
-            let out = `# ${session.title}\n\n`;
-            (session.messages || []).forEach(m => {
-                const who = m.type === 'user' ? (userProfile.name || t.guestLabel) : 'CaavoX';
-                out += `${who}:\n${m.text || ''}\n\n`;
-            });
-            return out;
+            document.getElementById('renameModalTitle').textContent = t.renameTitle;
+            document.getElementById('renameBtnCancel').textContent = t.renameCancel;
+            document.getElementById('renameBtnSave').textContent = t.renameSave;
+            const input = document.getElementById('renameInput');
+            input.placeholder = t.renamePlaceholder;
+            input.value = session.title;
+            document.getElementById('renameModalOverlay').classList.add('show');
+            setTimeout(() => { input.focus(); input.select(); }, 200);
         }
 
-        function downloadTextFile(filename, text) {
-            const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            setTimeout(() => URL.revokeObjectURL(url), 1000);
+        function closeRenameModal(shouldSave) {
+            document.getElementById('renameModalOverlay').classList.remove('show');
+            if (shouldSave && pendingRenameId !== null) {
+                const session = chatSessions.find(s => s.id === pendingRenameId);
+                const newTitle = document.getElementById('renameInput').value.trim();
+                if (session && newTitle) {
+                    session.title = newTitle.substring(0, 60);
+                    saveToLocalStorage();
+                    updateSidebarUI();
+                }
+            }
+            pendingRenameId = null;
         }
 
-        function exportCurrentChat() {
-            const session = chatSessions.find(s => s.id === currentSessionId);
-            if (!session) return;
-            downloadTextFile(`${session.title.replace(/[^\w\- ]/g, '')}.txt`, formatChatAsText(session));
-            showToast(translations[currentLang].exportSuccessOne);
-        }
-
-        function exportAllChats() {
-            if (chatSessions.length === 0) return;
-            const combined = chatSessions.map(formatChatAsText).join('\n---\n\n');
-            downloadTextFile('caavox_sohbetler.txt', combined);
-            showToast(translations[currentLang].exportSuccessAll);
+        function handleRenameKeyPress(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                closeRenameModal(true);
+            }
         }
 
         let pendingConfirmAction = null;
@@ -2420,8 +2437,6 @@
                 session.messages.forEach(msg => {
                     appendMessage(msg.text, msg.type === 'user' ? 'user-message' : 'ai-message', msg.image || null);
                 });
-                const exportBtn = document.getElementById('exportCurrentBtn');
-                if (exportBtn) exportBtn.style.display = 'flex';
             } else {
                 createNewChat();
             }
@@ -2500,7 +2515,6 @@
             });
         }
 
-        /* Eklendi: Ayarlar sayfasını açar (dosyada tanımı eksikti) */
         function openSettings() {
             document.getElementById('settingsPage').classList.add('show');
         }
@@ -2508,7 +2522,6 @@
             document.getElementById('settingsPage').classList.remove('show');
         }
 
-        /* Eklendi: Hata bildirme modalını açar/kapatır ve gönderir (dosyada tanımı eksikti) */
         function openBugModal() {
             document.getElementById('bugModalOverlay').classList.add('show');
         }
@@ -2521,8 +2534,6 @@
                 showToast(translations[currentLang].bugAlertEmpty);
                 return;
             }
-            // Not: Burada gerçek bir backend endpoint'ine gönderim yapılmıyor.
-            // İstersen fetch('/api/bug-report', {method:'POST', body: JSON.stringify({category: currentBugCategory, description: desc})}) ekleyebilirsin.
             showToast(translations[currentLang].bugAlertSuccess);
             document.getElementById('bugDescription').value = '';
             closeBugModal();
