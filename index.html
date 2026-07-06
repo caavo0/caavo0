@@ -339,6 +339,7 @@
             width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0; cursor: pointer;
             display: flex; align-items: center; justify-content: center; opacity: 0.85; transition: opacity 0.2s, background 0.2s;
             color: var(--text-main);
+            background: none; border: none;
         }
         .attach-btn:hover { opacity: 1; background: rgba(255,255,255,0.06); }
         [data-theme="pearl-white"] .attach-btn:hover { background: var(--surface-hover); }
@@ -692,6 +693,86 @@
             transform: translateX(-50%) translateY(0);
         }
 
+        /* ---- Attach menu bottom sheet ---- */
+        .attach-sheet-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--overlay-color); z-index: 120;
+            display: flex; align-items: flex-end; justify-content: center;
+            opacity: 0; visibility: hidden; pointer-events: none;
+            transition: opacity 0.25s ease, visibility 0s linear 0.25s;
+        }
+        .attach-sheet-overlay.show {
+            opacity: 1; visibility: visible; pointer-events: auto;
+            transition: opacity 0.25s ease, visibility 0s linear 0s;
+        }
+        .attach-sheet {
+            background: var(--surface-color);
+            width: 100%; max-width: 600px;
+            border-radius: 24px 24px 0 0;
+            padding: 10px 20px 26px;
+            display: flex; flex-direction: column; gap: 18px;
+            transform: translateY(30px);
+            opacity: 0;
+            transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+        .attach-sheet-overlay.show .attach-sheet {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .attach-sheet-handle {
+            width: 40px; height: 4px; border-radius: 3px; background: var(--border-color);
+            margin: 4px auto 0;
+        }
+        .attach-sheet-title {
+            text-align: center; font-size: 1.05rem; font-weight: 600; color: var(--text-title);
+        }
+        .attach-quick-row { display: flex; gap: 12px; }
+        .attach-quick-item {
+            flex: 1; background: var(--sidebar-color); border: 1px solid var(--border-color);
+            border-radius: 16px; padding: 16px 8px; display: flex; flex-direction: column;
+            align-items: center; gap: 8px; cursor: pointer; transition: background 0.2s;
+        }
+        .attach-quick-item:hover { background: var(--surface-hover); }
+        .attach-quick-icon-circle {
+            width: 46px; height: 46px; border-radius: 50%; background: var(--surface-hover);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .attach-quick-icon-circle svg { width: 22px; height: 22px; fill: none; stroke: var(--accent-light); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+        .attach-quick-label { font-size: 0.85rem; color: var(--text-main); font-weight: 500; }
+
+        .attach-list-card {
+            background: var(--sidebar-color); border: 1px solid var(--border-color);
+            border-radius: 14px; overflow: hidden;
+        }
+        .attach-list-row {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 16px; cursor: pointer; border-bottom: 1px solid var(--border-color);
+            transition: background 0.2s;
+        }
+        .attach-list-row:last-child { border-bottom: none; }
+        .attach-list-row:hover { background: var(--surface-hover); }
+        .attach-list-left { display: flex; align-items: center; gap: 12px; }
+        .attach-list-icon-circle {
+            width: 32px; height: 32px; border-radius: 50%; background: var(--surface-hover);
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .attach-list-icon-circle svg { width: 17px; height: 17px; fill: none; stroke: var(--accent-light); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+        .attach-list-text { display: flex; flex-direction: column; }
+        .attach-list-name { font-size: 0.95rem; color: var(--text-title); font-weight: 500; }
+        .attach-list-sub { font-size: 0.78rem; color: var(--text-muted); }
+        .attach-list-chevron { color: var(--text-muted); font-size: 1.1rem; }
+
+        .file-chip {
+            display: flex; align-items: center; gap: 8px; background: var(--surface-hover);
+            border: 1px solid var(--border-color); border-radius: 12px; padding: 8px 10px 8px 8px;
+            position: relative; max-width: 220px;
+        }
+        .file-chip-icon { width: 30px; height: 30px; border-radius: 8px; background: var(--bg-color); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .file-chip-icon svg { width: 16px; height: 16px; fill: none; stroke: var(--accent-light); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .file-chip-name { font-size: 0.82rem; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 130px; }
+
         /* ---- RTL support ---- */
         html[dir="rtl"] .menu-toggle-btn { left: auto; right: 20px; }
         html[dir="rtl"] .actions-wrapper { right: auto; left: 20px; }
@@ -980,10 +1061,12 @@
                     </div>
                 </div>
                 <div class="chat-input-wrapper">
-                    <label class="attach-btn" for="chatImageInput" title="Fotoğraf Ekle">
+                    <button type="button" class="attach-btn" onclick="openAttachSheet()" title="Ekle">
                         <svg viewBox="0 0 24 24"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg>
-                    </label>
+                    </button>
                     <input type="file" id="chatImageInput" accept="image/*" style="display:none" onchange="handleChatImageSelect(event)">
+                    <input type="file" id="chatCameraInput" accept="image/*" capture="environment" style="display:none" onchange="handleChatImageSelect(event)">
+                    <input type="file" id="chatFileInput" accept="*/*" style="display:none" onchange="handleChatFileSelect(event)">
                     <input type="text" id="userInput" placeholder="CaavoX'e sorun..." onkeypress="handleKeyPress(event)">
                     <button type="button" class="mic-btn" id="micBtn" onclick="toggleVoiceInput()" title="Sesle yaz">
                         <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><path d="M12 19v4"></path><path d="M8 23h8"></path></svg>
@@ -1177,6 +1260,28 @@
         </div>
     </div>
 
+    <div class="attach-sheet-overlay" id="attachSheetOverlay" onclick="closeAttachSheet()">
+        <div class="attach-sheet" onclick="event.stopPropagation()">
+            <div class="attach-sheet-handle"></div>
+            <div class="attach-sheet-title" id="attachSheetTitle">Sohbete Ekle</div>
+
+            <div class="attach-quick-row">
+                <div class="attach-quick-item" onclick="triggerCameraInput()">
+                    <div class="attach-quick-icon-circle">
+                        <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                    </div>
+                    <span class="attach-quick-label" id="attachQuickCamera">Kamera</span>
+                </div>
+                <div class="attach-quick-item" onclick="triggerPhotoInput()">
+                    <div class="attach-quick-icon-circle">
+                        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><path d="M21 15l-5-5L5 21"></path></svg>
+                    </div>
+                    <span class="attach-quick-label" id="attachQuickPhotos">Fotoğraflar</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         const GOOGLE_CLIENT_ID = "980776370028-k2je8q30ttqd63lvjqlgbdtei2s4jv87.apps.googleusercontent.com";
 
@@ -1227,7 +1332,10 @@
                 loginWelcome: "Devam etmek için Google hesabınızla giriş yapın", guestContinue: "Misafir olarak devam et",
                 guestLabel: "Misafir", loginBtn: "Giriş Yap", logoutBtn: "Çıkış Yap",
                 profileLabel: "Profil", profileNameLabel: "Görünen Ad", profileNamePlh: "Adınızı girin", profileAvatarLabel: "Profil Simgesi",
-                searchPlaceholder: "Sohbetlerde ara...", noResults: "Sonuç bulunamadı.", renameTitle: "Sohbeti Yeniden Adlandır", renamePlaceholder: "Yeni başlık girin", renameSave: "Kaydet", renameCancel: "Vazgeç", micNotSupported: "Tarayıcınız sesli girişi desteklemiyor."
+                searchPlaceholder: "Sohbetlerde ara...", noResults: "Sonuç bulunamadı.", renameTitle: "Sohbeti Yeniden Adlandır", renamePlaceholder: "Yeni başlık girin", renameSave: "Kaydet", renameCancel: "Vazgeç", micNotSupported: "Tarayıcınız sesli girişi desteklemiyor.",
+                attachSheetTitle: "Sohbete Ekle", attachQuickCamera: "Kamera", attachQuickPhotos: "Fotoğraflar", attachQuickFiles: "Dosyalar",
+                attachProjectName: "Projeye Ekle", attachProjectSub: "Yok", attachToolsName: "Araç Erişimi", attachToolsSub: "Otomatik", attachConnectorsName: "Bağlayıcılar",
+                attachComingSoon: "Bu özellik yakında eklenecek."
             },
             en: {
                 mediaTab: "Media", aiTab: "CaavoX", chatHeader: "CaavoX",
@@ -1251,7 +1359,10 @@
                 loginWelcome: "Sign in with your Google account to continue", guestContinue: "Continue as guest",
                 guestLabel: "Guest", loginBtn: "Sign In", logoutBtn: "Log Out",
                 profileLabel: "Profile", profileNameLabel: "Display Name", profileNamePlh: "Enter your name", profileAvatarLabel: "Profile Icon",
-                searchPlaceholder: "Search chats...", noResults: "No results found.", renameTitle: "Rename Chat", renamePlaceholder: "Enter new title", renameSave: "Save", renameCancel: "Cancel", micNotSupported: "Your browser does not support voice input."
+                searchPlaceholder: "Search chats...", noResults: "No results found.", renameTitle: "Rename Chat", renamePlaceholder: "Enter new title", renameSave: "Save", renameCancel: "Cancel", micNotSupported: "Your browser does not support voice input.",
+                attachSheetTitle: "Add to chat", attachQuickCamera: "Camera", attachQuickPhotos: "Photos", attachQuickFiles: "Files",
+                attachProjectName: "Add to project", attachProjectSub: "None", attachToolsName: "Tool access", attachToolsSub: "Auto", attachConnectorsName: "Connectors",
+                attachComingSoon: "This feature is coming soon."
             },
             de: {
                 mediaTab: "Medien", aiTab: "CaavoX", chatHeader: "CaavoX",
@@ -1275,7 +1386,10 @@
                 loginWelcome: "Melden Sie sich mit Ihrem Google-Konto an, um fortzufahren", guestContinue: "Als Gast fortfahren",
                 guestLabel: "Gast", loginBtn: "Anmelden", logoutBtn: "Abmelden",
                 profileLabel: "Profil", profileNameLabel: "Anzeigename", profileNamePlh: "Geben Sie Ihren Namen ein", profileAvatarLabel: "Profilsymbol",
-                searchPlaceholder: "Chats durchsuchen...", noResults: "Keine Ergebnisse gefunden.", renameTitle: "Chat Umbenennen", renamePlaceholder: "Neuen Titel eingeben", renameSave: "Speichern", renameCancel: "Abbrechen", micNotSupported: "Ihr Browser unterstützt keine Spracheingabe."
+                searchPlaceholder: "Chats durchsuchen...", noResults: "Keine Ergebnisse gefunden.", renameTitle: "Chat Umbenennen", renamePlaceholder: "Neuen Titel eingeben", renameSave: "Speichern", renameCancel: "Abbrechen", micNotSupported: "Ihr Browser unterstützt keine Spracheingabe.",
+                attachSheetTitle: "Zum Chat hinzufügen", attachQuickCamera: "Kamera", attachQuickPhotos: "Fotos", attachQuickFiles: "Dateien",
+                attachProjectName: "Zum Projekt hinzufügen", attachProjectSub: "Keine", attachToolsName: "Toolzugriff", attachToolsSub: "Automatisch", attachConnectorsName: "Konnektoren",
+                attachComingSoon: "Diese Funktion kommt bald."
             },
             es: {
                 mediaTab: "Medios", aiTab: "CaavoX", chatHeader: "CaavoX",
@@ -1299,7 +1413,10 @@
                 loginWelcome: "Inicia sesión con tu cuenta de Google para continuar", guestContinue: "Continuar como invitado",
                 guestLabel: "Invitado", loginBtn: "Iniciar Sesión", logoutBtn: "Cerrar Sesión",
                 profileLabel: "Perfil", profileNameLabel: "Nombre visible", profileNamePlh: "Ingresa tu nombre", profileAvatarLabel: "Icono de Perfil",
-                searchPlaceholder: "Buscar chats...", noResults: "No se encontraron resultados.", renameTitle: "Renombrar Chat", renamePlaceholder: "Ingresa nuevo título", renameSave: "Guardar", renameCancel: "Cancelar", micNotSupported: "Tu navegador no admite entrada de voz."
+                searchPlaceholder: "Buscar chats...", noResults: "No se encontraron resultados.", renameTitle: "Renombrar Chat", renamePlaceholder: "Ingresa nuevo título", renameSave: "Guardar", renameCancel: "Cancelar", micNotSupported: "Tu navegador no admite entrada de voz.",
+                attachSheetTitle: "Añadir al chat", attachQuickCamera: "Cámara", attachQuickPhotos: "Fotos", attachQuickFiles: "Archivos",
+                attachProjectName: "Añadir al proyecto", attachProjectSub: "Ninguno", attachToolsName: "Acceso a herramientas", attachToolsSub: "Automático", attachConnectorsName: "Conectores",
+                attachComingSoon: "Esta función llegará pronto."
             },
             fr: {
                 mediaTab: "Médias", aiTab: "CaavoX", chatHeader: "CaavoX",
@@ -1323,7 +1440,10 @@
                 loginWelcome: "Connectez-vous avec votre compte Google pour continuer", guestContinue: "Continuer en tant qu'invité",
                 guestLabel: "Invité", loginBtn: "Se Connecter", logoutBtn: "Se Déconnecter",
                 profileLabel: "Profil", profileNameLabel: "Nom affiché", profileNamePlh: "Entrez votre nom", profileAvatarLabel: "Icône de Profil",
-                searchPlaceholder: "Rechercher des discussions...", noResults: "Aucun résultat trouvé.", renameTitle: "Renommer la Discussion", renamePlaceholder: "Entrez un nouveau titre", renameSave: "Enregistrer", renameCancel: "Annuler", micNotSupported: "Votre navigateur ne prend pas en charge la saisie vocale."
+                searchPlaceholder: "Rechercher des discussions...", noResults: "Aucun résultat trouvé.", renameTitle: "Renommer la Discussion", renamePlaceholder: "Entrez un nouveau titre", renameSave: "Enregistrer", renameCancel: "Annuler", micNotSupported: "Votre navigateur ne prend pas en charge la saisie vocale.",
+                attachSheetTitle: "Ajouter à la discussion", attachQuickCamera: "Caméra", attachQuickPhotos: "Photos", attachQuickFiles: "Fichiers",
+                attachProjectName: "Ajouter au projet", attachProjectSub: "Aucun", attachToolsName: "Accès aux outils", attachToolsSub: "Automatique", attachConnectorsName: "Connecteurs",
+                attachComingSoon: "Cette fonctionnalité arrive bientôt."
             },
             ru: {
                 mediaTab: "Медиа", aiTab: "CaavoX", chatHeader: "CaavoX",
@@ -1347,7 +1467,10 @@
                 loginWelcome: "Войдите с помощью аккаунта Google, чтобы продолжить", guestContinue: "Продолжить как гость",
                 guestLabel: "Гость", loginBtn: "Войти", logoutBtn: "Выйти",
                 profileLabel: "Профиль", profileNameLabel: "Отображаемое имя", profileNamePlh: "Введите ваше имя", profileAvatarLabel: "Значок профиля",
-                searchPlaceholder: "Поиск по чатам...", noResults: "Результаты не найдены.", renameTitle: "Переименовать Чат", renamePlaceholder: "Введите новое название", renameSave: "Сохранить", renameCancel: "Отмена", micNotSupported: "Ваш браузер не поддерживает голосовой ввод."
+                searchPlaceholder: "Поиск по чатам...", noResults: "Результаты не найдены.", renameTitle: "Переименовать Чат", renamePlaceholder: "Введите новое название", renameSave: "Сохранить", renameCancel: "Отмена", micNotSupported: "Ваш браузер не поддерживает голосовой ввод.",
+                attachSheetTitle: "Добавить в чат", attachQuickCamera: "Камера", attachQuickPhotos: "Фото", attachQuickFiles: "Файлы",
+                attachProjectName: "Добавить в проект", attachProjectSub: "Нет", attachToolsName: "Доступ к инструментам", attachToolsSub: "Авто", attachConnectorsName: "Коннекторы",
+                attachComingSoon: "Эта функция скоро появится."
             },
             ar: {
                 mediaTab: "وسائل الإعلام", aiTab: "CaavoX", chatHeader: "CaavoX",
@@ -1371,7 +1494,10 @@
                 loginWelcome: "سجل الدخول باستخدام حساب جوجل للمتابعة", guestContinue: "المتابعة كضيف",
                 guestLabel: "ضيف", loginBtn: "تسجيل الدخول", logoutBtn: "تسجيل الخروج",
                 profileLabel: "الملف الشخصي", profileNameLabel: "الاسم المعروض", profileNamePlh: "أدخل اسمك", profileAvatarLabel: "أيقونة الملف الشخصي",
-                searchPlaceholder: "ابحث في المحادثات...", noResults: "لا توجد نتائج.", renameTitle: "إعادة تسمية المحادثة", renamePlaceholder: "أدخل عنواناً جديداً", renameSave: "حفظ", renameCancel: "إلغاء", micNotSupported: "متصفحك لا يدعم الإدخال الصوتي."
+                searchPlaceholder: "ابحث في المحادثات...", noResults: "لا توجد نتائج.", renameTitle: "إعادة تسمية المحادثة", renamePlaceholder: "أدخل عنواناً جديداً", renameSave: "حفظ", renameCancel: "إلغاء", micNotSupported: "متصفحك لا يدعم الإدخال الصوتي.",
+                attachSheetTitle: "إضافة إلى المحادثة", attachQuickCamera: "الكاميرا", attachQuickPhotos: "الصور", attachQuickFiles: "الملفات",
+                attachProjectName: "إضافة إلى المشروع", attachProjectSub: "لا شيء", attachToolsName: "الوصول إلى الأدوات", attachToolsSub: "تلقائي", attachConnectorsName: "الموصلات",
+                attachComingSoon: "هذه الميزة قادمة قريباً."
             }
         };
 
@@ -1798,6 +1924,16 @@
             const searchInput = document.getElementById('historySearchInput');
             if (searchInput) searchInput.placeholder = t.searchPlaceholder;
 
+            setText('attachSheetTitle', t.attachSheetTitle);
+            setText('attachQuickCamera', t.attachQuickCamera);
+            setText('attachQuickPhotos', t.attachQuickPhotos);
+            setText('attachQuickFiles', t.attachQuickFiles);
+            setText('attachProjectName', t.attachProjectName);
+            setText('attachProjectSub', t.attachProjectSub);
+            setText('attachToolsName', t.attachToolsName);
+            setText('attachToolsSub', t.attachToolsSub);
+            setText('attachConnectorsName', t.attachConnectorsName);
+
             document.documentElement.setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
             document.documentElement.setAttribute('lang', currentLang);
 
@@ -1899,6 +2035,31 @@
         }
 
         let pendingImage = null;
+        let pendingFile = null;
+
+        /* ---- Attach bottom sheet ---- */
+        function openAttachSheet() {
+            document.getElementById('attachSheetOverlay').classList.add('show');
+        }
+        function closeAttachSheet() {
+            document.getElementById('attachSheetOverlay').classList.remove('show');
+        }
+        function triggerCameraInput() {
+            closeAttachSheet();
+            document.getElementById('chatCameraInput').click();
+        }
+        function triggerPhotoInput() {
+            closeAttachSheet();
+            document.getElementById('chatImageInput').click();
+        }
+        function triggerFileInput() {
+            closeAttachSheet();
+            document.getElementById('chatFileInput').click();
+        }
+        function showAttachPlaceholder(kind) {
+            showToast(translations[currentLang].attachComingSoon);
+            closeAttachSheet();
+        }
 
         function handleChatImageSelect(event) {
             const file = event.target.files && event.target.files[0];
@@ -1926,6 +2087,7 @@
                     ctx.drawImage(img, 0, 0, width, height);
 
                     pendingImage = canvas.toDataURL('image/jpeg', 0.85);
+                    pendingFile = null;
                     showImagePreview(pendingImage);
                     event.target.value = '';
                 };
@@ -1934,20 +2096,51 @@
             reader.readAsDataURL(file);
         }
 
+        function handleChatFileSelect(event) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) return;
+
+            if (file.type.startsWith('image/')) {
+                handleChatImageSelect(event);
+                return;
+            }
+
+            pendingFile = { name: file.name };
+            pendingImage = null;
+            showFileChip(file.name);
+            event.target.value = '';
+        }
+
+        function showFileChip(name) {
+            const bar = document.getElementById('imagePreviewBar');
+            if (!bar) return;
+            bar.innerHTML = `
+                <div class="file-chip">
+                    <div class="file-chip-icon">
+                        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6"></path></svg>
+                    </div>
+                    <span class="file-chip-name">${escapeHtml(name)}</span>
+                    <span class="image-preview-remove" style="position:static; margin-left:4px;" onclick="removePendingImage()">×</span>
+                </div>`;
+            bar.style.display = 'block';
+        }
+
         function showImagePreview(src) {
             const bar = document.getElementById('imagePreviewBar');
-            const thumb = document.getElementById('imagePreviewThumb');
-            if (!bar || !thumb) return;
-            thumb.src = src;
+            if (!bar) return;
+            bar.innerHTML = `
+                <div class="image-preview-item">
+                    <img id="imagePreviewThumb" src="${src}" alt="">
+                    <span class="image-preview-remove" onclick="removePendingImage()">×</span>
+                </div>`;
             bar.style.display = 'block';
         }
 
         function removePendingImage() {
             pendingImage = null;
+            pendingFile = null;
             const bar = document.getElementById('imagePreviewBar');
-            const thumb = document.getElementById('imagePreviewThumb');
-            if (bar) bar.style.display = 'none';
-            if (thumb) thumb.src = '';
+            if (bar) { bar.style.display = 'none'; bar.innerHTML = ''; }
         }
 
         let isGenerating = false;
@@ -2509,9 +2702,14 @@
             });
             container.addEventListener('drop', (e) => {
                 const file = e.dataTransfer.files && e.dataTransfer.files[0];
-                if (!file || !file.type.startsWith('image/')) return;
-                const fakeEvent = { target: { files: [file], value: '' } };
-                handleChatImageSelect(fakeEvent);
+                if (!file) return;
+                if (file.type.startsWith('image/')) {
+                    const fakeEvent = { target: { files: [file], value: '' } };
+                    handleChatImageSelect(fakeEvent);
+                } else {
+                    const fakeEvent = { target: { files: [file], value: '' } };
+                    handleChatFileSelect(fakeEvent);
+                }
             });
         }
 
