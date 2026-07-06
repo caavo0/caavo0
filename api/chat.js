@@ -1,8 +1,8 @@
 import OpenAI from "openai";
 
 const groq = new OpenAI({
-    apiKey: process.env.GROQ_API_KEY,
-    baseURL: "https://api.groq.com/openai/v1"
+    apiKey: process.env.OPENROUTER_API_KEY,
+    baseURL: "https://openrouter.ai/api/v1"
 });
 
 let conversationHistory = [];
