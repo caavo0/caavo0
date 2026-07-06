@@ -162,7 +162,7 @@ Asla sayısal veri (kur, fiyat, istatistik, tarih vb.) uydurma. Emin olmadığı
 
             // Arama sonuçlarını gördükten sonra modele son cevabı ürettiriyoruz
             completion = await groq.chat.completions.create({
-                model: "meta-llama/llama-4-scout-17b-16e-instruct",
+                model: "google/gemma-4-31b-it:free",
                 messages,
                 temperature: 0.75,
                 max_tokens: 800
