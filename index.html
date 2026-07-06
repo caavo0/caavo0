@@ -693,7 +693,6 @@
             transform: translateX(-50%) translateY(0);
         }
 
-        /* ---- Attach menu bottom sheet ---- */
         .attach-sheet-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--overlay-color); z-index: 120;
@@ -773,7 +772,6 @@
         .file-chip-icon svg { width: 16px; height: 16px; fill: none; stroke: var(--accent-light); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
         .file-chip-name { font-size: 0.82rem; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 130px; }
 
-        /* ---- RTL support ---- */
         html[dir="rtl"] .menu-toggle-btn { left: auto; right: 20px; }
         html[dir="rtl"] .actions-wrapper { right: auto; left: 20px; }
         html[dir="rtl"] .user-message { align-self: flex-start; border-bottom-right-radius: 20px; border-bottom-left-radius: 4px; }
@@ -787,7 +785,6 @@
         html[dir="rtl"] .avatar-upload-btn { right: auto; left: 0; }
         html[dir="rtl"] .image-preview-remove { right: auto; left: -6px; }
 
-        /* ---- Code blocks ---- */
         .code-block-wrap { position: relative; margin: 10px 0; border-radius: 12px; overflow: hidden; background: #0b0f1a; border: 1px solid var(--border-color); }
         [data-theme="pearl-white"] .code-block-wrap { background: #1e293b; }
         .code-block-header { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: rgba(255,255,255,0.04); font-size: 0.75rem; color: var(--text-muted); }
@@ -797,7 +794,6 @@
         .inline-code { font-family: 'Consolas', 'Menlo', monospace; background: rgba(255,255,255,0.08); padding: 1px 6px; border-radius: 5px; font-size: 0.88em; }
         [data-theme="pearl-white"] .inline-code { background: rgba(0,0,0,0.07); }
 
-        /* ---- Scroll to bottom button ---- */
         .scroll-bottom-btn {
             position: absolute; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(10px);
             width: 38px; height: 38px; border-radius: 50%; background: var(--surface-color);
@@ -809,7 +805,6 @@
         .scroll-bottom-btn.show { opacity: 1; visibility: visible; pointer-events: auto; transform: translateX(-50%) translateY(0); transition: opacity 0.2s ease, transform 0.2s ease, visibility 0s linear 0s; }
         .scroll-bottom-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-        /* ---- Mic (voice input) button ---- */
         .mic-btn {
             width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0; cursor: pointer;
             display: flex; align-items: center; justify-content: center; opacity: 0.85; transition: opacity 0.2s, background 0.2s, color 0.2s;
@@ -821,10 +816,8 @@
         .mic-btn.listening { color: var(--danger-color); opacity: 1; animation: micPulse 1.2s infinite; }
         @keyframes micPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.4); } 50% { box-shadow: 0 0 0 8px rgba(239,68,68,0); } }
 
-        /* ---- Chat input drag & drop ---- */
         .chat-input-wrapper.drag-over { border-color: var(--accent-primary); box-shadow: 0 0 0 3px var(--accent-glow); }
 
-        /* ---- Sidebar search & export ---- */
         .sidebar-search-wrap { margin-bottom: 12px; position: relative; }
         .sidebar-search-wrap input {
             width: 100%; background: var(--surface-color); border: 1px solid var(--border-color);
@@ -917,7 +910,7 @@
             <div class="settings-title" id="languagePageTitle">Dil Seçimi</div>
         </div>
         <div class="links-container">
-            <div class="options-list-card">
+            <div class="options-list-card" id="languageOptionsList">
                 <div class="dropdown-option lang-option selected" data-value="tr" onclick="selectLanguage('tr')">
                     <span class="option-name">Türkçe</span>
                     <div class="custom-radio"></div>
@@ -946,6 +939,38 @@
                     <span class="option-name">العربية</span>
                     <div class="custom-radio"></div>
                 </div>
+                <div class="dropdown-option lang-option" data-value="it" onclick="selectLanguage('it')">
+                    <span class="option-name">Italiano</span>
+                    <div class="custom-radio"></div>
+                </div>
+                <div class="dropdown-option lang-option" data-value="pt" onclick="selectLanguage('pt')">
+                    <span class="option-name">Português</span>
+                    <div class="custom-radio"></div>
+                </div>
+                <div class="dropdown-option lang-option" data-value="nl" onclick="selectLanguage('nl')">
+                    <span class="option-name">Nederlands</span>
+                    <div class="custom-radio"></div>
+                </div>
+                <div class="dropdown-option lang-option" data-value="pl" onclick="selectLanguage('pl')">
+                    <span class="option-name">Polski</span>
+                    <div class="custom-radio"></div>
+                </div>
+                <div class="dropdown-option lang-option" data-value="zh" onclick="selectLanguage('zh')">
+                    <span class="option-name">中文</span>
+                    <div class="custom-radio"></div>
+                </div>
+                <div class="dropdown-option lang-option" data-value="ja" onclick="selectLanguage('ja')">
+                    <span class="option-name">日本語</span>
+                    <div class="custom-radio"></div>
+                </div>
+                <div class="dropdown-option lang-option" data-value="ko" onclick="selectLanguage('ko')">
+                    <span class="option-name">한국어</span>
+                    <div class="custom-radio"></div>
+                </div>
+                <div class="dropdown-option lang-option" data-value="hi" onclick="selectLanguage('hi')">
+                    <span class="option-name">हिन्दी</span>
+                    <div class="custom-radio"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -960,35 +985,35 @@
                 <div class="dropdown-option theme-option selected" data-value="default" onclick="selectTheme('default')">
                     <div class="option-left-content">
                         <span class="theme-preview-circle" style="background: #0077b6;"></span>
-                        <span class="option-name" id="themeDefaultLabel">Varsayılan (Mavi)</span>
+                        <span class="option-name" id="themeDefaultLabel">Mavi</span>
                     </div>
                     <div class="custom-radio"></div>
                 </div>
                 <div class="dropdown-option theme-option" data-value="pearl-white" onclick="selectTheme('pearl-white')">
                     <div class="option-left-content">
                         <span class="theme-preview-circle" style="background: #ffffff;"></span>
-                        <span class="option-name" id="themeWhiteLabel">İnci Beyazı</span>
+                        <span class="option-name" id="themeWhiteLabel">Beyaz</span>
                     </div>
                     <div class="custom-radio"></div>
                 </div>
                 <div class="dropdown-option theme-option" data-value="dark-gray" onclick="selectTheme('dark-gray')">
                     <div class="option-left-content">
                         <span class="theme-preview-circle" style="background: #4f4f4f;"></span>
-                        <span class="option-name" id="themeDarkLabel">Gece Siyahı</span>
+                        <span class="option-name" id="themeDarkLabel">Siyah</span>
                     </div>
                     <div class="custom-radio"></div>
                 </div>
                 <div class="dropdown-option theme-option" data-value="emerald" onclick="selectTheme('emerald')">
                     <div class="option-left-content">
                         <span class="theme-preview-circle" style="background: #0f9f68;"></span>
-                        <span class="option-name" id="themeEmeraldLabel">Zümrüt Yeşili</span>
+                        <span class="option-name" id="themeEmeraldLabel">Yeşil</span>
                     </div>
                     <div class="custom-radio"></div>
                 </div>
                 <div class="dropdown-option theme-option" data-value="cyber-purple" onclick="selectTheme('cyber-purple')">
                     <div class="option-left-content">
                         <span class="theme-preview-circle" style="background: #7b2cbf;"></span>
-                        <span class="option-name" id="themePurpleLabel">Neon Mor</span>
+                        <span class="option-name" id="themePurpleLabel">Mor</span>
                     </div>
                     <div class="custom-radio"></div>
                 </div>
@@ -1314,7 +1339,7 @@
                 mediaTab: "Medya", aiTab: "CaavoX", chatHeader: "CaavoX",
                 welcomeMessage: "Merhaba! Nasıl yardımcı olabilirim?", inputPlaceholder: "CaavoX'e sorun...",
                 settingsTitle: "Ayarlar", languageLabel: "Dil Seçimi", themeLabel: "Tema Seçimi",
-                themeDefault: "Varsayılan (Mavi)", themeWhite: "İnci Beyazı", themeDark: "Gece Siyahı", themeEmerald: "Zümrüt Yeşili", themePurple: "Neon Mor",
+                themeDefault: "Mavi", themeWhite: "Beyaz", themeDark: "Siyah", themeEmerald: "Yeşil", themePurple: "Mor",
                 errorMessage: "Bağlantı hatası, tekrar dene.",
                 bugTrigger: "Hata Bildir", bugTitle: "Sistem Hatası Bildir", bugDesc: "Karşılaştığın problemi kısaca bize ilet, hemen düzeltelim.",
                 bugLabelCat: "Hata Türü", bugLabelDesc: "Açıklama", bugTextareaPlh: "Adım adım hatayı nasıl aldığını yazar mısın?",
@@ -1341,7 +1366,7 @@
                 mediaTab: "Media", aiTab: "CaavoX", chatHeader: "CaavoX",
                 welcomeMessage: "Hello! How can I help you today?", inputPlaceholder: "Ask CaavoX...",
                 settingsTitle: "Settings", languageLabel: "Language", themeLabel: "Theme Selection",
-                themeDefault: "Default (Blue)", themeWhite: "Pearl White", themeDark: "Midnight Black", themeEmerald: "Emerald Green", themePurple: "Cyber Purple",
+                themeDefault: "Blue", themeWhite: "White", themeDark: "Black", themeEmerald: "Green", themePurple: "Purple",
                 errorMessage: "Connection error, please try again.",
                 bugTrigger: "Report a Bug", bugTitle: "Report a System Bug", bugDesc: "Briefly tell us about the issue you encountered, we'll fix it.",
                 bugLabelCat: "Bug Type", bugLabelDesc: "Description", bugTextareaPlh: "Could you write step by step how you got the error?",
@@ -1368,7 +1393,7 @@
                 mediaTab: "Medien", aiTab: "CaavoX", chatHeader: "CaavoX",
                 welcomeMessage: "Hallo! Wie kann ich dir heute helfen?", inputPlaceholder: "Frag CaavoX...",
                 settingsTitle: "Einstellungen", languageLabel: "Sprache", themeLabel: "Thema Auswählen",
-                themeDefault: "Standard (Blau)", themeWhite: "Perlweiß", themeDark: "Mitternachtsschwarz", themeEmerald: "Smaragdgrün", themePurple: "Cyber-Violett",
+                themeDefault: "Blau", themeWhite: "Weiß", themeDark: "Schwarz", themeEmerald: "Grün", themePurple: "Lila",
                 errorMessage: "Verbindungsfehler, bitte erneut versuchen.",
                 bugTrigger: "Fehler melden", bugTitle: "Systemfehler melden", bugDesc: "Teilen Sie uns das Problem kurz mit, wir beheben es sofort.",
                 bugLabelCat: "Fehlertyp", bugLabelDesc: "Beschreibung", bugTextareaPlh: "Schreiben Sie Schritt für Schritt, wie der Fehler aufgetreten ist.",
@@ -1395,7 +1420,7 @@
                 mediaTab: "Medios", aiTab: "CaavoX", chatHeader: "CaavoX",
                 welcomeMessage: "¿Hola! Cómo puedo ayudarte hoy?", inputPlaceholder: "Pregunta a CaavoX...",
                 settingsTitle: "Ajustes", languageLabel: "Idioma", themeLabel: "Selección de Tema",
-                themeDefault: "Por defecto (Azul)", themeWhite: "Blanco Perla", themeDark: "Negro Medianoche", themeEmerald: "Verde Esmeralda", themePurple: "Púrpura Neón",
+                themeDefault: "Azul", themeWhite: "Blanco", themeDark: "Negro", themeEmerald: "Verde", themePurple: "Morado",
                 errorMessage: "Error de conexión, inténtalo de nuevo.",
                 bugTrigger: "Reportar un Error", bugTitle: "Reportar un Error del Sistema", bugDesc: "Cuéntanos brevemente el problema y lo solucionaremos de inmediato.",
                 bugLabelCat: "Tipo de Error", bugLabelDesc: "Descripción", bugTextareaPlh: "¿Podrías escribir paso a paso cómo surgió el error?",
@@ -1422,7 +1447,7 @@
                 mediaTab: "Médias", aiTab: "CaavoX", chatHeader: "CaavoX",
                 welcomeMessage: "Bonjour! Comment puis-je vous aider aujourd'hui?", inputPlaceholder: "Demander à CaavoX...",
                 settingsTitle: "Paramètres", languageLabel: "Langue", themeLabel: "Sélection du Thème",
-                themeDefault: "Par défaut (Bleu)", themeWhite: "Blanc Perle", themeDark: "Noir Minuit", themeEmerald: "Vert Émeraude", themePurple: "Pourpre Néon",
+                themeDefault: "Bleu", themeWhite: "Blanc", themeDark: "Noir", themeEmerald: "Vert", themePurple: "Violet",
                 errorMessage: "Erreur de connexion, veuillez réessayer.",
                 bugTrigger: "Signaler un Bug", bugTitle: "Signaler un Bug Système", bugDesc: "Décrivez brièvement le problème rencontré, nous le corrigerons immédiatement.",
                 bugLabelCat: "Type de Bug", bugLabelDesc: "Description", bugTextareaPlh: "Pouvez-vous écrire étape par étape comment le bug s'est produit ?",
@@ -1449,7 +1474,7 @@
                 mediaTab: "Медиа", aiTab: "CaavoX", chatHeader: "CaavoX",
                 welcomeMessage: "Привет! Чем я могу тебе помочь?", inputPlaceholder: "Спроси CaavoX...",
                 settingsTitle: "Настройки", languageLabel: "Язык", themeLabel: "Выбор Темы",
-                themeDefault: "По умолчанию (Синий)", themeWhite: "Жемчужно-белый", themeDark: "Полуночный черный", themeEmerald: "Изумрудно-зеленый", themePurple: "Неоновый фиолетовый",
+                themeDefault: "Синий", themeWhite: "Белый", themeDark: "Черный", themeEmerald: "Зелёный", themePurple: "Фиолетовый",
                 errorMessage: "Ошибка подключения, попробуйте еще раз.",
                 bugTrigger: "Сообщить об ошибке", bugTitle: "Сообщить о системной ошибке", bugDesc: "Кратко расскажите о проблеме, и мы сразу её исправим.",
                 bugLabelCat: "Тип ошибки", bugLabelDesc: "Описание", bugTextareaPlh: "Опишите пошагово, как вы столкнулись с ошибкой.",
@@ -1475,8 +1500,8 @@
             ar: {
                 mediaTab: "وسائل الإعلام", aiTab: "CaavoX", chatHeader: "CaavoX",
                 welcomeMessage: "مرحباً! كيف يمكنني مساعدتك اليوم؟", inputPlaceholder: "اسأل CaavoX...",
-                settingsTitle: "الإعدادات", languageLabel: "اللغة", themeLabel: "اختيار Mظهر",
-                themeDefault: "افتراضي (أزرق)", themeWhite: "أبيض لؤلؤي", themeDark: "أسود منتصف الليل", themeEmerald: "أخضر زمردي", themePurple: "أرجواني سايبر",
+                settingsTitle: "الإعدادات", languageLabel: "اللغة", themeLabel: "اختيار المظهر",
+                themeDefault: "أزرق", themeWhite: "أبيض", themeDark: "أسود", themeEmerald: "أخضر", themePurple: "أرجواني",
                 errorMessage: "خطأ في الاتصال، يرجى المحاولة مرة أخرى.",
                 bugTrigger: "الإبلاغ عن خطأ", bugTitle: "الإبلاغ عن خطأ في النظام", bugDesc: "أدخل باختصار عن المشكلة التي واجهتها وسنصلحها فوراً.",
                 bugLabelCat: "نوع الخطأ", bugLabelDesc: "الوصف", bugTextareaPlh: "هل يمكنك كتابة خطوات حدوث الخطأ بالتفصيل؟",
@@ -1498,6 +1523,222 @@
                 attachSheetTitle: "إضافة إلى المحادثة", attachQuickCamera: "الكاميرا", attachQuickPhotos: "الصور", attachQuickFiles: "الملفات",
                 attachProjectName: "إضافة إلى المشروع", attachProjectSub: "لا شيء", attachToolsName: "الوصول إلى الأدوات", attachToolsSub: "تلقائي", attachConnectorsName: "الموصلات",
                 attachComingSoon: "هذه الميزة قادمة قريباً."
+            },
+            it: {
+                mediaTab: "Media", aiTab: "CaavoX", chatHeader: "CaavoX",
+                welcomeMessage: "Ciao! Come posso aiutarti oggi?", inputPlaceholder: "Chiedi a CaavoX...",
+                settingsTitle: "Impostazioni", languageLabel: "Lingua", themeLabel: "Scelta Tema",
+                themeDefault: "Blu", themeWhite: "Bianco", themeDark: "Nero", themeEmerald: "Verde", themePurple: "Viola",
+                errorMessage: "Errore di connessione, riprova.",
+                bugTrigger: "Segnala un Errore", bugTitle: "Segnala un Errore di Sistema", bugDesc: "Descrivi brevemente il problema riscontrato, lo risolveremo subito.",
+                bugLabelCat: "Tipo di Errore", bugLabelDesc: "Descrizione", bugTextareaPlh: "Puoi scrivere passo dopo passo come è avvenuto l'errore?",
+                bugOptUi: "Problema Interfaccia / Design", bugOptAi: "Errore di Risposta IA", bugOptPerf: "Problema di Prestazioni / Lentezza", bugOptOther: "Altri Problemi",
+                bugCancel: "Annulla", bugSubmit: "Invia", bugAlertEmpty: "Per favore non lasciare la descrizione vuota.", bugAlertSuccess: "La tua segnalazione è stata inviata con successo! Grazie.",
+                mediaGithubTitle: "GitHub", mediaGithubDesc: "I miei progetti open source e il mio repository.",
+                mediaYoutubeTitle: "YouTube", mediaYoutubeDesc: "I miei processi di sviluppo, video su software e tecnologia.",
+                mediaTiktokTitle: "TikTok", mediaTiktokDesc: "Clip brevi e divertenti dal mondo del software.",
+                mediaDiscordTitle: "Discord", mediaDiscordDesc: "Il mio server per contattarmi direttamente.",
+                sidebarHistoryTitle: "Cronologia Chat", clearAllBtnText: "Cancella Tutto",
+                confirmDeleteChat: "Sei sicuro di voler eliminare questa chat? Questa azione non può essere annullata.",
+                confirmClearAll: "L'intera cronologia delle chat verrà eliminata definitivamente. Vuoi continuare?",
+                confirmModalTitle: "Sei sicuro?", confirmBtnCancel: "Annulla", confirmBtnOk: "Elimina",
+                copiedAlert: "Copiato!", copyTitle: "Copia", speakTitle: "Leggi ad Alta Voce",
+                loginWelcome: "Accedi con il tuo account Google per continuare", guestContinue: "Continua come ospite",
+                guestLabel: "Ospite", loginBtn: "Accedi", logoutBtn: "Esci",
+                profileLabel: "Profilo", profileNameLabel: "Nome Visualizzato", profileNamePlh: "Inserisci il tuo nome", profileAvatarLabel: "Icona Profilo",
+                searchPlaceholder: "Cerca nelle chat...", noResults: "Nessun risultato trovato.", renameTitle: "Rinomina Chat", renamePlaceholder: "Inserisci nuovo titolo", renameSave: "Salva", renameCancel: "Annulla", micNotSupported: "Il tuo browser non supporta l'input vocale.",
+                attachSheetTitle: "Aggiungi alla chat", attachQuickCamera: "Fotocamera", attachQuickPhotos: "Foto", attachQuickFiles: "File",
+                attachProjectName: "Aggiungi al progetto", attachProjectSub: "Nessuno", attachToolsName: "Accesso Strumenti", attachToolsSub: "Automatico", attachConnectorsName: "Connettori",
+                attachComingSoon: "Questa funzione arriverà presto."
+            },
+            pt: {
+                mediaTab: "Mídia", aiTab: "CaavoX", chatHeader: "CaavoX",
+                welcomeMessage: "Olá! Como posso te ajudar hoje?", inputPlaceholder: "Pergunte ao CaavoX...",
+                settingsTitle: "Configurações", languageLabel: "Idioma", themeLabel: "Seleção de Tema",
+                themeDefault: "Azul", themeWhite: "Branco", themeDark: "Preto", themeEmerald: "Verde", themePurple: "Roxo",
+                errorMessage: "Erro de conexão, tente novamente.",
+                bugTrigger: "Reportar um Erro", bugTitle: "Reportar um Erro do Sistema", bugDesc: "Conte-nos brevemente o problema que encontrou, vamos corrigi-lo.",
+                bugLabelCat: "Tipo de Erro", bugLabelDesc: "Descrição", bugTextareaPlh: "Você pode descrever passo a passo como o erro ocorreu?",
+                bugOptUi: "Problema de Interface / Design", bugOptAi: "Erro de Resposta da IA", bugOptPerf: "Problema de Desempenho / Lentidão", bugOptOther: "Outros Problemas",
+                bugCancel: "Cancelar", bugSubmit: "Enviar", bugAlertEmpty: "Por favor, não deixe a descrição em branco.", bugAlertSuccess: "Seu relatório de erro foi enviado com sucesso! Obrigado.",
+                mediaGithubTitle: "GitHub", mediaGithubDesc: "Meus projetos de código aberto e repositório.",
+                mediaYoutubeTitle: "YouTube", mediaYoutubeDesc: "Meus processos de desenvolvimento, vídeos de software e tecnologia.",
+                mediaTiktokTitle: "TikTok", mediaTiktokDesc: "Clipes curtos e divertidos do mundo do software.",
+                mediaDiscordTitle: "Discord", mediaDiscordDesc: "Meu servidor para contato direto comigo.",
+                sidebarHistoryTitle: "Histórico de Conversas", clearAllBtnText: "Limpar Tudo",
+                confirmDeleteChat: "Tem certeza de que deseja excluir esta conversa? Esta ação não pode ser desfeita.",
+                confirmClearAll: "Todo o seu histórico de conversas será excluído permanentemente. Deseja continuar?",
+                confirmModalTitle: "Tem certeza?", confirmBtnCancel: "Cancelar", confirmBtnOk: "Excluir",
+                copiedAlert: "Copiado!", copyTitle: "Copiar", speakTitle: "Ler em Voz Alta",
+                loginWelcome: "Entre com sua conta do Google para continuar", guestContinue: "Continuar como convidado",
+                guestLabel: "Convidado", loginBtn: "Entrar", logoutBtn: "Sair",
+                profileLabel: "Perfil", profileNameLabel: "Nome de Exibição", profileNamePlh: "Digite seu nome", profileAvatarLabel: "Ícone de Perfil",
+                searchPlaceholder: "Pesquisar conversas...", noResults: "Nenhum resultado encontrado.", renameTitle: "Renomear Conversa", renamePlaceholder: "Digite o novo título", renameSave: "Salvar", renameCancel: "Cancelar", micNotSupported: "Seu navegador não suporta entrada de voz.",
+                attachSheetTitle: "Adicionar à conversa", attachQuickCamera: "Câmera", attachQuickPhotos: "Fotos", attachQuickFiles: "Arquivos",
+                attachProjectName: "Adicionar ao projeto", attachProjectSub: "Nenhum", attachToolsName: "Acesso a Ferramentas", attachToolsSub: "Automático", attachConnectorsName: "Conectores",
+                attachComingSoon: "Este recurso chegará em breve."
+            },
+            nl: {
+                mediaTab: "Media", aiTab: "CaavoX", chatHeader: "CaavoX",
+                welcomeMessage: "Hallo! Hoe kan ik je vandaag helpen?", inputPlaceholder: "Vraag CaavoX...",
+                settingsTitle: "Instellingen", languageLabel: "Taal", themeLabel: "Thema Kiezen",
+                themeDefault: "Blauw", themeWhite: "Wit", themeDark: "Zwart", themeEmerald: "Groen", themePurple: "Paars",
+                errorMessage: "Verbindingsfout, probeer het opnieuw.",
+                bugTrigger: "Fout Melden", bugTitle: "Systeemfout Melden", bugDesc: "Vertel ons kort over het probleem, we lossen het meteen op.",
+                bugLabelCat: "Type Fout", bugLabelDesc: "Beschrijving", bugTextareaPlh: "Kun je stap voor stap beschrijven hoe de fout ontstond?",
+                bugOptUi: "Interface / Ontwerp Probleem", bugOptAi: "AI-Antwoordfout", bugOptPerf: "Vertraging / Prestatieprobleem", bugOptOther: "Andere Problemen",
+                bugCancel: "Annuleren", bugSubmit: "Verzenden", bugAlertEmpty: "Laat de beschrijving niet leeg.", bugAlertSuccess: "Je foutmelding is succesvol verzonden! Bedankt.",
+                mediaGithubTitle: "GitHub", mediaGithubDesc: "Mijn open-source projecten en repository.",
+                mediaYoutubeTitle: "YouTube", mediaYoutubeDesc: "Mijn ontwikkelproces, software- en techvideo's.",
+                mediaTiktokTitle: "TikTok", mediaTiktokDesc: "Leuke en korte clips uit de wereld van software.",
+                mediaDiscordTitle: "Discord", mediaDiscordDesc: "Mijn server om direct contact met mij op te nemen.",
+                sidebarHistoryTitle: "Chatgeschiedenis", clearAllBtnText: "Alles Wissen",
+                confirmDeleteChat: "Weet je zeker dat je deze chat wilt verwijderen? Dit kan niet ongedaan worden gemaakt.",
+                confirmClearAll: "Je hele chatgeschiedenis wordt permanent verwijderd. Wil je doorgaan?",
+                confirmModalTitle: "Weet je het zeker?", confirmBtnCancel: "Annuleren", confirmBtnOk: "Verwijderen",
+                copiedAlert: "Gekopieerd!", copyTitle: "Kopiëren", speakTitle: "Voorlezen",
+                loginWelcome: "Log in met je Google-account om door te gaan", guestContinue: "Doorgaan als gast",
+                guestLabel: "Gast", loginBtn: "Inloggen", logoutBtn: "Uitloggen",
+                profileLabel: "Profiel", profileNameLabel: "Weergavenaam", profileNamePlh: "Voer je naam in", profileAvatarLabel: "Profielicoon",
+                searchPlaceholder: "Chats doorzoeken...", noResults: "Geen resultaten gevonden.", renameTitle: "Chat Hernoemen", renamePlaceholder: "Voer nieuwe titel in", renameSave: "Opslaan", renameCancel: "Annuleren", micNotSupported: "Je browser ondersteunt geen spraakinvoer.",
+                attachSheetTitle: "Toevoegen aan chat", attachQuickCamera: "Camera", attachQuickPhotos: "Foto's", attachQuickFiles: "Bestanden",
+                attachProjectName: "Toevoegen aan project", attachProjectSub: "Geen", attachToolsName: "Toolstoegang", attachToolsSub: "Automatisch", attachConnectorsName: "Connectors",
+                attachComingSoon: "Deze functie komt binnenkort."
+            },
+            pl: {
+                mediaTab: "Media", aiTab: "CaavoX", chatHeader: "CaavoX",
+                welcomeMessage: "Cześć! Jak mogę Ci dziś pomóc?", inputPlaceholder: "Zapytaj CaavoX...",
+                settingsTitle: "Ustawienia", languageLabel: "Język", themeLabel: "Wybór Motywu",
+                themeDefault: "Niebieski", themeWhite: "Biały", themeDark: "Czarny", themeEmerald: "Zielony", themePurple: "Fioletowy",
+                errorMessage: "Błąd połączenia, spróbuj ponownie.",
+                bugTrigger: "Zgłoś Błąd", bugTitle: "Zgłoś Błąd Systemu", bugDesc: "Krótko opisz napotkany problem, naprawimy go od razu.",
+                bugLabelCat: "Rodzaj Błędu", bugLabelDesc: "Opis", bugTextareaPlh: "Czy możesz opisać krok po kroku, jak wystąpił błąd?",
+                bugOptUi: "Problem z Interfejsem / Designem", bugOptAi: "Błąd Odpowiedzi AI", bugOptPerf: "Problem z Wydajnością / Zacinaniem", bugOptOther: "Inne Problemy",
+                bugCancel: "Anuluj", bugSubmit: "Wyślij", bugAlertEmpty: "Proszę nie zostawiać opisu pustego.", bugAlertSuccess: "Twoje zgłoszenie zostało wysłane pomyślnie! Dziękujemy.",
+                mediaGithubTitle: "GitHub", mediaGithubDesc: "Moje projekty open source i repozytorium.",
+                mediaYoutubeTitle: "YouTube", mediaYoutubeDesc: "Moje procesy programistyczne, filmy o oprogramowaniu i technologii.",
+                mediaTiktokTitle: "TikTok", mediaTiktokDesc: "Krótkie i zabawne klipy ze świata oprogramowania.",
+                mediaDiscordTitle: "Discord", mediaDiscordDesc: "Mój serwer do bezpośredniego kontaktu ze mną.",
+                sidebarHistoryTitle: "Historia Czatów", clearAllBtnText: "Wyczyść Wszystko",
+                confirmDeleteChat: "Czy na pewno chcesz usunąć ten czat? Tej czynności nie można cofnąć.",
+                confirmClearAll: "Cała Twoja historia czatów zostanie trwale usunięta. Czy chcesz kontynuować?",
+                confirmModalTitle: "Czy jesteś pewien?", confirmBtnCancel: "Anuluj", confirmBtnOk: "Usuń",
+                copiedAlert: "Skopiowano!", copyTitle: "Kopiuj", speakTitle: "Czytaj na głos",
+                loginWelcome: "Zaloguj się kontem Google, aby kontynuować", guestContinue: "Kontynuuj jako gość",
+                guestLabel: "Gość", loginBtn: "Zaloguj się", logoutBtn: "Wyloguj się",
+                profileLabel: "Profil", profileNameLabel: "Wyświetlana Nazwa", profileNamePlh: "Wpisz swoje imię", profileAvatarLabel: "Ikona Profilu",
+                searchPlaceholder: "Szukaj w czatach...", noResults: "Nie znaleziono wyników.", renameTitle: "Zmień Nazwę Czatu", renamePlaceholder: "Wpisz nowy tytuł", renameSave: "Zapisz", renameCancel: "Anuluj", micNotSupported: "Twoja przeglądarka nie obsługuje wprowadzania głosowego.",
+                attachSheetTitle: "Dodaj do czatu", attachQuickCamera: "Aparat", attachQuickPhotos: "Zdjęcia", attachQuickFiles: "Pliki",
+                attachProjectName: "Dodaj do projektu", attachProjectSub: "Brak", attachToolsName: "Dostęp do Narzędzi", attachToolsSub: "Automatyczny", attachConnectorsName: "Konektory",
+                attachComingSoon: "Ta funkcja pojawi się wkrótce."
+            },
+            zh: {
+                mediaTab: "媒体", aiTab: "CaavoX", chatHeader: "CaavoX",
+                welcomeMessage: "你好！今天我能帮你什么？", inputPlaceholder: "问问 CaavoX...",
+                settingsTitle: "设置", languageLabel: "语言", themeLabel: "选择主题",
+                themeDefault: "蓝色", themeWhite: "白色", themeDark: "黑色", themeEmerald: "绿色", themePurple: "紫色",
+                errorMessage: "连接错误，请重试。",
+                bugTrigger: "报告错误", bugTitle: "报告系统错误", bugDesc: "请简要描述您遇到的问题，我们会立即修复。",
+                bugLabelCat: "错误类型", bugLabelDesc: "描述", bugTextareaPlh: "您能一步步描述错误是如何发生的吗？",
+                bugOptUi: "界面 / 设计问题", bugOptAi: "AI 回复错误", bugOptPerf: "卡顿 / 性能问题", bugOptOther: "其他问题",
+                bugCancel: "取消", bugSubmit: "提交", bugAlertEmpty: "请不要将描述留空。", bugAlertSuccess: "您的错误报告已成功发送！谢谢。",
+                mediaGithubTitle: "GitHub", mediaGithubDesc: "我的开源项目和代码仓库。",
+                mediaYoutubeTitle: "YouTube", mediaYoutubeDesc: "我的开发过程、软件和技术视频。",
+                mediaTiktokTitle: "TikTok", mediaTiktokDesc: "来自软件世界的有趣短片。",
+                mediaDiscordTitle: "Discord", mediaDiscordDesc: "直接联系我的服务器。",
+                sidebarHistoryTitle: "聊天记录", clearAllBtnText: "清除全部",
+                confirmDeleteChat: "确定要删除此聊天吗？此操作无法撤销。",
+                confirmClearAll: "您的全部聊天记录将被永久删除。要继续吗？",
+                confirmModalTitle: "确定吗？", confirmBtnCancel: "取消", confirmBtnOk: "删除",
+                copiedAlert: "已复制！", copyTitle: "复制", speakTitle: "朗读",
+                loginWelcome: "使用您的 Google 账户登录以继续", guestContinue: "以访客身份继续",
+                guestLabel: "访客", loginBtn: "登录", logoutBtn: "退出登录",
+                profileLabel: "个人资料", profileNameLabel: "显示名称", profileNamePlh: "输入您的姓名", profileAvatarLabel: "个人头像",
+                searchPlaceholder: "搜索聊天记录...", noResults: "未找到结果。", renameTitle: "重命名聊天", renamePlaceholder: "输入新标题", renameSave: "保存", renameCancel: "取消", micNotSupported: "您的浏览器不支持语音输入。",
+                attachSheetTitle: "添加到聊天", attachQuickCamera: "相机", attachQuickPhotos: "照片", attachQuickFiles: "文件",
+                attachProjectName: "添加到项目", attachProjectSub: "无", attachToolsName: "工具访问", attachToolsSub: "自动", attachConnectorsName: "连接器",
+                attachComingSoon: "此功能即将推出。"
+            },
+            ja: {
+                mediaTab: "メディア", aiTab: "CaavoX", chatHeader: "CaavoX",
+                welcomeMessage: "こんにちは！今日はどのようにお手伝いしましょうか？", inputPlaceholder: "CaavoX に質問する...",
+                settingsTitle: "設定", languageLabel: "言語", themeLabel: "テーマ選択",
+                themeDefault: "青", themeWhite: "白", themeDark: "黒", themeEmerald: "緑", themePurple: "紫",
+                errorMessage: "接続エラーです。もう一度お試しください。",
+                bugTrigger: "不具合を報告", bugTitle: "システムの不具合を報告", bugDesc: "発生した問題を簡単にお知らせください。すぐに修正します。",
+                bugLabelCat: "不具合の種類", bugLabelDesc: "説明", bugTextareaPlh: "エラーが発生した手順を教えていただけますか？",
+                bugOptUi: "UI / デザインの問題", bugOptAi: "AI応答の問題", bugOptPerf: "動作が重い / パフォーマンスの問題", bugOptOther: "その他の問題",
+                bugCancel: "キャンセル", bugSubmit: "送信", bugAlertEmpty: "説明を空欄にしないでください。", bugAlertSuccess: "不具合報告が正常に送信されました！ありがとうございます。",
+                mediaGithubTitle: "GitHub", mediaGithubDesc: "私のオープンソースプロジェクトとリポジトリ。",
+                mediaYoutubeTitle: "YouTube", mediaYoutubeDesc: "開発プロセス、ソフトウェアと技術の動画。",
+                mediaTiktokTitle: "TikTok", mediaTiktokDesc: "ソフトウェアの世界からの楽しい短い動画。",
+                mediaDiscordTitle: "Discord", mediaDiscordDesc: "直接連絡できる私のサーバー。",
+                sidebarHistoryTitle: "チャット履歴", clearAllBtnText: "すべて削除",
+                confirmDeleteChat: "このチャットを削除してもよろしいですか？この操作は元に戻せません。",
+                confirmClearAll: "すべてのチャット履歴が完全に削除されます。続けますか？",
+                confirmModalTitle: "よろしいですか？", confirmBtnCancel: "キャンセル", confirmBtnOk: "削除",
+                copiedAlert: "コピーしました！", copyTitle: "コピー", speakTitle: "読み上げ",
+                loginWelcome: "続けるには Google アカウントでログインしてください", guestContinue: "ゲストとして続ける",
+                guestLabel: "ゲスト", loginBtn: "ログイン", logoutBtn: "ログアウト",
+                profileLabel: "プロフィール", profileNameLabel: "表示名", profileNamePlh: "お名前を入力してください", profileAvatarLabel: "プロフィールアイコン",
+                searchPlaceholder: "チャットを検索...", noResults: "結果が見つかりません。", renameTitle: "チャット名を変更", renamePlaceholder: "新しいタイトルを入力", renameSave: "保存", renameCancel: "キャンセル", micNotSupported: "お使いのブラウザは音声入力に対応していません。",
+                attachSheetTitle: "チャットに追加", attachQuickCamera: "カメラ", attachQuickPhotos: "写真", attachQuickFiles: "ファイル",
+                attachProjectName: "プロジェクトに追加", attachProjectSub: "なし", attachToolsName: "ツールアクセス", attachToolsSub: "自動", attachConnectorsName: "コネクタ",
+                attachComingSoon: "この機能は近日公開予定です。"
+            },
+            ko: {
+                mediaTab: "미디어", aiTab: "CaavoX", chatHeader: "CaavoX",
+                welcomeMessage: "안녕하세요! 오늘 무엇을 도와드릴까요?", inputPlaceholder: "CaavoX에게 물어보세요...",
+                settingsTitle: "설정", languageLabel: "언어", themeLabel: "테마 선택",
+                themeDefault: "파랑", themeWhite: "흰색", themeDark: "검정", themeEmerald: "초록", themePurple: "보라",
+                errorMessage: "연결 오류입니다. 다시 시도해 주세요.",
+                bugTrigger: "버그 신고", bugTitle: "시스템 버그 신고", bugDesc: "발생한 문제를 간단히 알려주시면 바로 수정하겠습니다.",
+                bugLabelCat: "버그 유형", bugLabelDesc: "설명", bugTextareaPlh: "오류가 발생한 과정을 단계별로 적어주시겠어요?",
+                bugOptUi: "UI / 디자인 문제", bugOptAi: "AI 응답 오류", bugOptPerf: "지연 / 성능 문제", bugOptOther: "기타 문제",
+                bugCancel: "취소", bugSubmit: "제출", bugAlertEmpty: "설명을 비워두지 마세요.", bugAlertSuccess: "버그 신고가 성공적으로 전송되었습니다! 감사합니다.",
+                mediaGithubTitle: "GitHub", mediaGithubDesc: "제 오픈소스 프로젝트와 저장소입니다.",
+                mediaYoutubeTitle: "YouTube", mediaYoutubeDesc: "개발 과정, 소프트웨어 및 기술 영상입니다.",
+                mediaTiktokTitle: "TikTok", mediaTiktokDesc: "소프트웨어 세계의 재미있고 짧은 클립입니다.",
+                mediaDiscordTitle: "Discord", mediaDiscordDesc: "저와 직접 연락할 수 있는 서버입니다.",
+                sidebarHistoryTitle: "대화 기록", clearAllBtnText: "전체 삭제",
+                confirmDeleteChat: "이 대화를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
+                confirmClearAll: "모든 대화 기록이 영구적으로 삭제됩니다. 계속하시겠습니까?",
+                confirmModalTitle: "확실합니까?", confirmBtnCancel: "취소", confirmBtnOk: "삭제",
+                copiedAlert: "복사되었습니다!", copyTitle: "복사", speakTitle: "소리내어 읽기",
+                loginWelcome: "계속하려면 Google 계정으로 로그인하세요", guestContinue: "게스트로 계속하기",
+                guestLabel: "게스트", loginBtn: "로그인", logoutBtn: "로그아웃",
+                profileLabel: "프로필", profileNameLabel: "표시 이름", profileNamePlh: "이름을 입력하세요", profileAvatarLabel: "프로필 아이콘",
+                searchPlaceholder: "대화 검색...", noResults: "결과를 찾을 수 없습니다.", renameTitle: "대화 이름 변경", renamePlaceholder: "새 제목 입력", renameSave: "저장", renameCancel: "취소", micNotSupported: "브라우저가 음성 입력을 지원하지 않습니다.",
+                attachSheetTitle: "대화에 추가", attachQuickCamera: "카메라", attachQuickPhotos: "사진", attachQuickFiles: "파일",
+                attachProjectName: "프로젝트에 추가", attachProjectSub: "없음", attachToolsName: "도구 액세스", attachToolsSub: "자동", attachConnectorsName: "커넥터",
+                attachComingSoon: "이 기능은 곧 제공됩니다."
+            },
+            hi: {
+                mediaTab: "मीडिया", aiTab: "CaavoX", chatHeader: "CaavoX",
+                welcomeMessage: "नमस्ते! मैं आज आपकी कैसे मदद कर सकता हूँ?", inputPlaceholder: "CaavoX से पूछें...",
+                settingsTitle: "सेटिंग्स", languageLabel: "भाषा", themeLabel: "थीम चुनें",
+                themeDefault: "नीला", themeWhite: "सफ़ेद", themeDark: "काला", themeEmerald: "हरा", themePurple: "बैंगनी",
+                errorMessage: "कनेक्शन त्रुटि, कृपया पुनः प्रयास करें।",
+                bugTrigger: "बग रिपोर्ट करें", bugTitle: "सिस्टम बग रिपोर्ट करें", bugDesc: "कृपया समस्या के बारे में संक्षेप में बताएं, हम इसे तुरंत ठीक करेंगे।",
+                bugLabelCat: "बग का प्रकार", bugLabelDesc: "विवरण", bugTextareaPlh: "क्या आप बता सकते हैं कि त्रुटि कैसे हुई?",
+                bugOptUi: "UI / डिज़ाइन समस्या", bugOptAi: "AI प्रतिक्रिया त्रुटि", bugOptPerf: "धीमापन / प्रदर्शन समस्या", bugOptOther: "अन्य समस्याएँ",
+                bugCancel: "रद्द करें", bugSubmit: "जमा करें", bugAlertEmpty: "कृपया विवरण खाली न छोड़ें।", bugAlertSuccess: "आपकी बग रिपोर्ट सफलतापूर्वक भेज दी गई है! धन्यवाद।",
+                mediaGithubTitle: "GitHub", mediaGithubDesc: "मेरे ओपन-सोर्स प्रोजेक्ट और रिपॉजिटरी।",
+                mediaYoutubeTitle: "YouTube", mediaYoutubeDesc: "मेरी विकास प्रक्रिया, सॉफ्टवेयर और तकनीक वीडियो।",
+                mediaTiktokTitle: "TikTok", mediaTiktokDesc: "सॉफ्टवेयर की दुनिया से मज़ेदार और छोटे क्लिप्स।",
+                mediaDiscordTitle: "Discord", mediaDiscordDesc: "मुझसे सीधे संपर्क करने के लिए मेरा सर्वर।",
+                sidebarHistoryTitle: "चैट इतिहास", clearAllBtnText: "सभी साफ़ करें",
+                confirmDeleteChat: "क्या आप वाकई इस चैट को हटाना चाहते हैं? यह क्रिया पूर्ववत नहीं की जा सकती।",
+                confirmClearAll: "आपका पूरा चैट इतिहास स्थायी रूप से हटा दिया जाएगा। क्या आप जारी रखना चाहते हैं?",
+                confirmModalTitle: "क्या आप सुनिश्चित हैं?", confirmBtnCancel: "रद्द करें", confirmBtnOk: "हटाएं",
+                copiedAlert: "कॉपी हो गया!", copyTitle: "कॉपी करें", speakTitle: "ज़ोर से पढ़ें",
+                loginWelcome: "जारी रखने के लिए अपने Google खाते से लॉगिन करें", guestContinue: "अतिथि के रूप में जारी रखें",
+                guestLabel: "अतिथि", loginBtn: "लॉग इन करें", logoutBtn: "लॉग आउट करें",
+                profileLabel: "प्रोफ़ाइल", profileNameLabel: "प्रदर्शन नाम", profileNamePlh: "अपना नाम दर्ज करें", profileAvatarLabel: "प्रोफ़ाइल आइकन",
+                searchPlaceholder: "चैट खोजें...", noResults: "कोई परिणाम नहीं मिला।", renameTitle: "चैट का नाम बदलें", renamePlaceholder: "नया शीर्षक दर्ज करें", renameSave: "सहेजें", renameCancel: "रद्द करें", micNotSupported: "आपका ब्राउज़र वॉइस इनपुट का समर्थन नहीं करता।",
+                attachSheetTitle: "चैट में जोड़ें", attachQuickCamera: "कैमरा", attachQuickPhotos: "फ़ोटो", attachQuickFiles: "फ़ाइलें",
+                attachProjectName: "प्रोजेक्ट में जोड़ें", attachProjectSub: "कोई नहीं", attachToolsName: "टूल एक्सेस", attachToolsSub: "स्वचालित", attachConnectorsName: "कनेक्टर्स",
+                attachComingSoon: "यह सुविधा जल्द ही आ रही है।"
             }
         };
 
@@ -2037,7 +2278,6 @@
         let pendingImage = null;
         let pendingFile = null;
 
-        /* ---- Attach bottom sheet ---- */
         function openAttachSheet() {
             document.getElementById('attachSheetOverlay').classList.add('show');
         }
@@ -2266,7 +2506,7 @@
                     window.speechSynthesis.cancel();
                 } else {
                     const utterance = new SpeechSynthesisUtterance(text);
-                    utterance.lang = currentLang === 'en' ? 'en-US' : 'tr-TR';
+                    utterance.lang = getSpeechLangCode();
                     window.speechSynthesis.speak(utterance);
                 }
             };
@@ -2635,12 +2875,11 @@
             }
         }
 
-        /* ---- Sesli giriş (Web Speech API) ---- */
         let recognition = null;
         let isListening = false;
 
         function getSpeechLangCode() {
-            const map = { tr: 'tr-TR', en: 'en-US', de: 'de-DE', es: 'es-ES', fr: 'fr-FR', ru: 'ru-RU', ar: 'ar-SA' };
+            const map = { tr: 'tr-TR', en: 'en-US', de: 'de-DE', es: 'es-ES', fr: 'fr-FR', ru: 'ru-RU', ar: 'ar-SA', it: 'it-IT', pt: 'pt-PT', nl: 'nl-NL', pl: 'pl-PL', zh: 'zh-CN', ja: 'ja-JP', ko: 'ko-KR', hi: 'hi-IN' };
             return map[currentLang] || 'en-US';
         }
 
@@ -2680,7 +2919,6 @@
             recognition.start();
         }
 
-        /* ---- Sürükle bırak resim ekleme ---- */
         function initDragAndDrop() {
             const wrapper = document.querySelector('.chat-input-wrapper');
             const container = document.querySelector('.chat-input-container');
