@@ -1,13 +1,14 @@
 import OpenAI from "openai";
 
-const deepseek = new OpenAI({
-    apiKey: process.env.DEEPSEEK_API_KEY,
-    baseURL: "https://api.deepseek.com"
+// ✅ DEĞİŞİKLİK 1: OpenAI SDK'sını Cloudflare'ın OpenAI-uyumlu endpoint'ine yönlendiriyoruz
+const cfAI = new OpenAI({
+    apiKey: process.env.CLOUDFLARE_API_TOKEN,
+    baseURL: `https://api.cloudflare.com/client/v4/accounts/${process.env.CLOUDFLARE_ACCOUNT_ID}/ai/v1`
 });
 
 let conversationHistory = [];
 
-// Modelin çağırabileceği web arama aracının tanımı
+// Modelin çağırabileceği web arama aracının tanımı (Aynı kalıyor)
 const tools = [
     {
         type: "function",
@@ -29,7 +30,7 @@ const tools = [
     }
 ];
 
-// Tavily Search API çağrısı
+// Tavily Search API çağrısı (Aynı kalıyor)
 async function webSearchTavily(query) {
     const apiKey = process.env.TAVILY_API_KEY;
 
@@ -81,6 +82,9 @@ export default async function handler(req, res) {
         }
 
         if (image) {
+            // ⚠️ ÖNEMLİ NOT: Cloudflare Vision modelleri URL'den ziyade Base64 string bekler.
+            // Eğer frontend'den gelen 'image' değişkeni bir URL ise, onu base64'e çevirmen gerekebilir.
+            // Eğer zaten base64 ise veya data:image/jpeg;base64,... formatındaysa olduğu gibi çalışır.
             conversationHistory.push({
                 role: "user",
                 content: [
@@ -91,7 +95,7 @@ export default async function handler(req, res) {
                     {
                         type: "image_url",
                         image_url: {
-                            url: image
+                            url: image // Cloudflare OpenAI uyumlu endpoint'i bu formatı kabul eder
                         }
                     }
                 ]
@@ -132,13 +136,22 @@ Asla sayısal veri (kur, fiyat, istatistik, tarih vb.) uydurma. Emin olmadığı
             ...conversationHistory
         ];
 
-        let completion = await groq.chat.completions.create({
-            model: "deepseek-chat",
+        // ✅ DEĞİŞİKLİK 2: Cloudflare'da metin ve görsel modelleri farklıdır.
+        // Eğer resim varsa Vision modelini, yoksa normal metin modelini seçiyoruz.
+        const textModel = "@cf/meta/llama-3.1-8b-instruct"; // Tool calling ve metin için
+        const visionModel = "@cf/meta/llama-3.2-11b-vision-instruct"; // Resim yorumlama için
+        const currentModel = image ? visionModel : textModel;
+
+        // ✅ DEĞİŞİKLİK 3: 'groq' veya 'deepseek' yerine 'cfAI' kullanıyoruz.
+        // Not: Vision modelleri genellikle tool calling (fonksiyon çağırma) desteklemez, 
+        // bu yüzden resim varsa tools kısmını devre dışı bırakıyoruz.
+        let completion = await cfAI.chat.completions.create({
+            model: currentModel,
             messages,
             temperature: 0.75,
             max_tokens: 800,
-            tools,
-            tool_choice: "auto"
+            tools: image ? undefined : tools, 
+            tool_choice: image ? undefined : "auto"
         });
 
         let responseMessage = completion.choices[0]?.message;
@@ -161,8 +174,8 @@ Asla sayısal veri (kur, fiyat, istatistik, tarih vb.) uydurma. Emin olmadığı
             }
 
             // Arama sonuçlarını gördükten sonra modele son cevabı ürettiriyoruz
-            completion = await deepseek.chat.completions.create({
-                model: "deepseek-chat",
+            completion = await cfAI.chat.completions.create({
+                model: currentModel,
                 messages,
                 temperature: 0.75,
                 max_tokens: 800
@@ -186,7 +199,7 @@ Asla sayısal veri (kur, fiyat, istatistik, tarih vb.) uydurma. Emin olmadığı
         res.status(200).json({ reply });
 
     } catch (e) {
-        console.error("Deepseek Error:", e);
+        console.error("Cloudflare AI Error:", e);
         res.status(500).json({
             error: e.message || "Bir hata oluştu."
         });
