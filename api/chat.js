@@ -138,7 +138,7 @@ Asla sayısal veri (kur, fiyat, istatistik, tarih vb.) uydurma. Emin olmadığı
 
         // ✅ DEĞİŞİKLİK 2: Cloudflare'da metin ve görsel modelleri farklıdır.
         // Eğer resim varsa Vision modelini, yoksa normal metin modelini seçiyoruz.
-        const textModel = "@cf/meta/llama-3.1-8b-instruct"; // Tool calling ve metin için
+        const textModel = "@cf/openai/gpt-oss-120b"; // Tool calling ve metin için
         const visionModel = "@cf/meta/llama-3.2-11b-vision-instruct"; // Resim yorumlama için
         const currentModel = image ? visionModel : textModel;
 
