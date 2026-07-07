@@ -133,7 +133,7 @@ Asla sayısal veri (kur, fiyat, istatistik, tarih vb.) uydurma. Emin olmadığı
         ];
 
         let completion = await groq.chat.completions.create({
-            model: "meta-llama/llama-4-scout-17b-16e-instruct",
+            model: "openrouter/free",
             messages,
             temperature: 0.75,
             max_tokens: 800,
