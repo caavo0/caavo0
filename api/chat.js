@@ -75,6 +75,10 @@ export default async function handler(req, res) {
     }
 
     try {
+        console.log({
+  token: !!process.env.CLOUDFLARE_API_TOKEN,
+  account: process.env.CLOUDFLARE_ACCOUNT_ID
+});
         const { message, image } = req.body;
 
         if (!message && !image) {
