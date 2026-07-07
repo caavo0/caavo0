@@ -1,211 +1,111 @@
-import OpenAI from "openai";
+/**
+ * api/chat.js — SUNUCU TARAFI versiyonu
+ * Eğer projende package.json var ve "npm run dev / npm start" ile
+ * çalıştırıyorsan (Next.js, Express gibi) muhtemelen bu dosya sana lazım.
+ *
+ * Pollinations.ai kullanır — API key GEREKMEZ, ücretsiz.
+ */
 
-// ✅ DEĞİŞİKLİK 1: OpenAI SDK'sını Cloudflare'ın OpenAI-uyumlu endpoint'ine yönlendiriyoruz
-const cfAI = new OpenAI({
-    apiKey: process.env.CLOUDFLARE_API_TOKEN,
-    baseURL: `https://api.cloudflare.com/client/v4/accounts/${process.env.CLOUDFLARE_ACCOUNT_ID}/ai/v1`
-});
-
-let conversationHistory = [];
-
-// Modelin çağırabileceği web arama aracının tanımı (Aynı kalıyor)
-const tools = [
-    {
-        type: "function",
-        function: {
-            name: "web_search",
-            description:
-                "Güncel bilgiye ihtiyaç duyulduğunda (haberler, hava durumu, fiyatlar, son dakika olaylar, tarihler, güncel veriler vb.) internette arama yapar ve sonuçları metin olarak döner.",
-            parameters: {
-                type: "object",
-                properties: {
-                    query: {
-                        type: "string",
-                        description: "İnternette aranacak arama sorgusu"
-                    }
-                },
-                required: ["query"]
-            }
-        }
-    }
-];
-
-// Tavily Search API çağrısı (Aynı kalıyor)
-async function webSearchTavily(query) {
-    const apiKey = process.env.TAVILY_API_KEY;
-
-    if (!apiKey) {
-        return "Web arama servisi yapılandırılmamış (TAVILY_API_KEY eksik).";
-    }
-
-    try {
-        const response = await fetch("https://api.tavily.com/search", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                api_key: apiKey,
-                query: query,
-                search_depth: "basic",
-                max_results: 5
-            })
-        });
-        const data = await response.json();
-
-        if (!data.results || data.results.length === 0) {
-            return "Arama sonucu bulunamadı.";
-        }
-
-        return data.results
-            .map((item, i) => `${i + 1}. ${item.title}\n${item.content}\nKaynak: ${item.url}`)
-            .join("\n\n");
-    } catch (err) {
-        console.error("Tavily Search Error:", err);
-        return "Web araması sırasında bir hata oluştu.";
-    }
-}
-
+// ------------------------------
+// NEXT.JS (pages/api/chat.js) İÇİN
+// ------------------------------
 export default async function handler(req, res) {
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Sadece POST isteği kabul edilir" });
+  }
 
-    if (req.method === "OPTIONS") return res.status(200).end();
-    if (req.method !== "POST") {
-        return res.status(405).json({ error: "Method not allowed" });
+  const { prompt, type = "text" } = req.body;
+
+  if (!prompt) {
+    return res.status(400).json({ error: "prompt eksik" });
+  }
+
+  try {
+    if (type === "image") {
+      const encodedPrompt = encodeURIComponent(prompt);
+      const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1024&height=1024&nologo=true`;
+      return res.status(200).json({ imageUrl });
     }
+
+    // type === "text"
+    const response = await fetch("https://text.pollinations.ai/openai", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "openai",
+        messages: [{ role: "user", content: prompt }],
+      }),
+    });
+
+    const data = await response.json();
+    const reply = data.choices?.[0]?.message?.content || "Cevap alınamadı.";
+    return res.status(200).json({ reply });
+  } catch (err) {
+    console.error("API hata:", err);
+    return res.status(500).json({ error: "Sunucu hatası" });
+  }
+}
+
+/*
+  ------------------------------
+  EXPRESS.JS İÇİN (bu bloğu ayrı bir dosyada kullan, yukarıdaki export default'u değil)
+  ------------------------------
+
+  const express = require("express");
+  const router = express.Router();
+
+  router.post("/chat", async (req, res) => {
+    const { prompt, type = "text" } = req.body;
+    if (!prompt) return res.status(400).json({ error: "prompt eksik" });
 
     try {
-        console.log({
-  token: !!process.env.CLOUDFLARE_API_TOKEN,
-  account: process.env.CLOUDFLARE_ACCOUNT_ID
-});
-        const { message, image } = req.body;
+      if (type === "image") {
+        const encodedPrompt = encodeURIComponent(prompt);
+        const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1024&height=1024&nologo=true`;
+        return res.json({ imageUrl });
+      }
 
-        if (!message && !image) {
-            return res.status(400).json({ error: "Mesaj veya resim gerekli." });
-        }
+      const response = await fetch("https://text.pollinations.ai/openai", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "openai",
+          messages: [{ role: "user", content: prompt }],
+        }),
+      });
 
-        if (image) {
-            // ⚠️ ÖNEMLİ NOT: Cloudflare Vision modelleri URL'den ziyade Base64 string bekler.
-            // Eğer frontend'den gelen 'image' değişkeni bir URL ise, onu base64'e çevirmen gerekebilir.
-            // Eğer zaten base64 ise veya data:image/jpeg;base64,... formatındaysa olduğu gibi çalışır.
-            conversationHistory.push({
-                role: "user",
-                content: [
-                    {
-                        type: "text",
-                        text: message || "Bu resmi analiz et."
-                    },
-                    {
-                        type: "image_url",
-                        image_url: {
-                            url: image // Cloudflare OpenAI uyumlu endpoint'i bu formatı kabul eder
-                        }
-                    }
-                ]
-            });
-        } else {
-            conversationHistory.push({
-                role: "user",
-                content: message
-            });
-        }
-
-        const now = new Date();
-        const turkeyTimeString = now.toLocaleString("tr-TR", {
-            timeZone: "Europe/Istanbul",
-            weekday: "long",
-            day: "2-digit",
-            month: "long",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit"
-        });
-
-        const systemPrompt = `Sen saygılı, eğlenceli ve samimi bir yapay zekasın.
-Selamlaşmalara dikkat et: "sa, as, slm, slm aleyküm, merhaba, mrb" gibi selamlaşmaları bil.
-Kullanıcı "Seni kim yaptı?" veya "Kim geliştirdi?" diye sorarsa "Beni caavo0 geliştirdi" diye cevap ver ama sadece sorulduğunda.
-Her konu değiştirdiğinde paragraf başı yap. Sen sadece Türkçe konuşan bir yapay zekasın.
-Kullanıcı hangi dilde yazarsa yazsın, özellikle başka bir dil istemediği sürece her zaman Türkçe cevap ver.
-İngilizce veya başka bir dil kullanma.
-Her zaman Türkçe konuş ama kullanıcı başka bir dil isterse o dilde konuş.
-Eğer biri "Ben hangi sitedeyim?" diye sorarsa "CaavoX uygulamasının içindesin." de.
-Şu anki gerçek tarih ve saat (Türkiye saatiyle, Europe/Istanbul): ${turkeyTimeString}. Kullanıcı saat veya tarih sorarsa, tahmin etme, doğrudan bu bilgiyi kullan.
-Elinde bir web_search aracı var. Güncel bilgi gerektiren sorularda (haberler, hava durumu, fiyatlar, kurlar, son dakika olaylar, bir kişi/olay/ürün hakkında sana eğitim verisinden sonra olabilecek güncel değişiklikler vb.) bu aracı kendi kararınla kullan. Sıradan sohbet, selamlaşma, genel bilgi veya zamana bağlı olmayan konularda arama yapmana gerek yok.
-Kullanıcı kısa, eksik veya belirsiz bir mesaj yazarsa (örn. "peki şu an kaç", "ya o", "peki ya bu") bunu MUTLAKA bir önceki mesajın devamı olarak yorumla, konuyu değiştirme. Örneğin önceki mesaj saatle ilgiliyse ve kullanıcı "peki şu an kaç" derse, bunu "saat kaç" gibi anla; alakasız bir konuya (döviz, hava durumu vb.) sıçrama. Eğer mesaj gerçekten belirsizse ve önceki bağlamdan da anlaşılmıyorsa, tahmin edip uydurma cevap verme, kullanıcıya ne demek istediğini kısaca sor.
-Asla sayısal veri (kur, fiyat, istatistik, tarih vb.) uydurma. Emin olmadığın veya web_search sonucu net olmayan bir sayısal bilgiyi ASLA icat etme; bu durumda dürüstçe bilmediğini söyle.`;
-
-        const messages = [
-            { role: "system", content: systemPrompt },
-            ...conversationHistory
-        ];
-
-        // ✅ DEĞİŞİKLİK 2: Cloudflare'da metin ve görsel modelleri farklıdır.
-        // Eğer resim varsa Vision modelini, yoksa normal metin modelini seçiyoruz.
-        const textModel = "@cf/openai/gpt-oss-120b"; // Tool calling ve metin için
-        const visionModel = "@cf/meta/llama-3.2-11b-vision-instruct"; // Resim yorumlama için
-        const currentModel = image ? visionModel : textModel;
-
-        // ✅ DEĞİŞİKLİK 3: 'groq' veya 'deepseek' yerine 'cfAI' kullanıyoruz.
-        // Not: Vision modelleri genellikle tool calling (fonksiyon çağırma) desteklemez, 
-        // bu yüzden resim varsa tools kısmını devre dışı bırakıyoruz.
-        let completion = await cfAI.chat.completions.create({
-            model: currentModel,
-            messages,
-            temperature: 0.75,
-            max_tokens: 800,
-            tools: image ? undefined : tools, 
-            tool_choice: image ? undefined : "auto"
-        });
-
-        let responseMessage = completion.choices[0]?.message;
-
-        // Model web_search aracını çağırmak istediyse
-        if (responseMessage?.tool_calls?.length > 0) {
-            messages.push(responseMessage);
-
-            for (const toolCall of responseMessage.tool_calls) {
-                if (toolCall.function.name === "web_search") {
-                    const args = JSON.parse(toolCall.function.arguments || "{}");
-                    const searchResult = await webSearchTavily(args.query || message);
-
-                    messages.push({
-                        role: "tool",
-                        tool_call_id: toolCall.id,
-                        content: searchResult
-                    });
-                }
-            }
-
-            // Arama sonuçlarını gördükten sonra modele son cevabı ürettiriyoruz
-            completion = await cfAI.chat.completions.create({
-                model: currentModel,
-                messages,
-                temperature: 0.75,
-                max_tokens: 800
-            });
-
-            responseMessage = completion.choices[0]?.message;
-        }
-
-        const reply = responseMessage?.content || "Üzgünüm, anlayamadım kardeşim.";
-
-        conversationHistory.push({
-            role: "assistant",
-            content: reply
-        });
-
-        // Son 200 mesajı hafızada tut
-        if (conversationHistory.length > 200) {
-            conversationHistory = conversationHistory.slice(-200);
-        }
-
-        res.status(200).json({ reply });
-
-    } catch (e) {
-        console.error("Cloudflare AI Error:", e);
-        res.status(500).json({
-            error: e.message || "Bir hata oluştu."
-        });
+      const data = await response.json();
+      const reply = data.choices?.[0]?.message?.content || "Cevap alınamadı.";
+      res.json({ reply });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: "Sunucu hatası" });
     }
-}
+  });
+
+  module.exports = router;
+*/
+
+/*
+  ------------------------------
+  Frontend'den bu API'yi nasıl çağırırsın (her iki durumda da aynı):
+  ------------------------------
+
+  // Metin için:
+  const res = await fetch("/api/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ prompt: "merhaba", type: "text" }),
+  });
+  const data = await res.json();
+  console.log(data.reply);
+
+  // Görsel için:
+  const res = await fetch("/api/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ prompt: "uçan araba", type: "image" }),
+  });
+  const data = await res.json();
+  document.getElementById("img").src = data.imageUrl;
+*/
