@@ -1,7 +1,7 @@
 import OpenAI from "openai";
 
 const groq = new OpenAI({
-    apiKey: process.env.OPENROUTER_API_KEY,
+    apiKey: process.env.DEEPSEEK_API_KEY,
     baseURL: "https://api.deepseek.com"
 });
 
