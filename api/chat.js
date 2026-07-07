@@ -161,7 +161,7 @@ Asla sayısal veri (kur, fiyat, istatistik, tarih vb.) uydurma. Emin olmadığı
             }
 
             // Arama sonuçlarını gördükten sonra modele son cevabı ürettiriyoruz
-            completion = await groq.chat.completions.create({
+            completion = await deepseek.chat.completions.create({
                 model: "deepseek-v4-pro",
                 messages,
                 temperature: 0.75,
