@@ -1,6 +1,6 @@
 import OpenAI from "openai";
 
-const groq = new OpenAI({
+const deepseek = new OpenAI({
     apiKey: process.env.DEEPSEEK_API_KEY,
     baseURL: "https://api.deepseek.com"
 });
@@ -162,7 +162,7 @@ Asla sayısal veri (kur, fiyat, istatistik, tarih vb.) uydurma. Emin olmadığı
 
             // Arama sonuçlarını gördükten sonra modele son cevabı ürettiriyoruz
             completion = await groq.chat.completions.create({
-                model: "google/gemma-4-31b-it:free",
+                model: "deepseek-v4-pro",
                 messages,
                 temperature: 0.75,
                 max_tokens: 800
