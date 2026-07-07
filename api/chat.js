@@ -186,7 +186,7 @@ Asla sayısal veri (kur, fiyat, istatistik, tarih vb.) uydurma. Emin olmadığı
         res.status(200).json({ reply });
 
     } catch (e) {
-        console.error("Groq Error:", e);
+        console.error("Deepseek Error:", e);
         res.status(500).json({
             error: e.message || "Bir hata oluştu."
         });
