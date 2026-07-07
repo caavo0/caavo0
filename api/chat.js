@@ -2,7 +2,7 @@ import OpenAI from "openai";
 
 const groq = new OpenAI({
     apiKey: process.env.OPENROUTER_API_KEY,
-    baseURL: "https://openrouter.ai/api/v1"
+    baseURL: "https://api.deepseek.com"
 });
 
 let conversationHistory = [];
@@ -133,7 +133,7 @@ Asla sayısal veri (kur, fiyat, istatistik, tarih vb.) uydurma. Emin olmadığı
         ];
 
         let completion = await groq.chat.completions.create({
-            model: "deepseek/deepseek-r1-0528",
+            model: "deepseek-v4-pro",
             messages,
             temperature: 0.75,
             max_tokens: 800,
