@@ -1,10 +1,10 @@
-import Groq from "groq-sdk";
+import OpenAI from "openai";
 
-const groq = new Groq({
+const groq = new OpenAI({
   apiKey: process.env.GROQ_API_KEY,
+  baseURL: "https://api.groq.com/openai/v1" // Burası kritik. Groq'u OpenAI gibi kullanıyoruz
 });
 
-// TÜRKİYE SAATİ HER İSTEKTE GÜNCELLENSİN DİYE FONKSİYON YAPTIK
 const getTurkeyTime = () => {
   return new Date().toLocaleString('tr-TR', {
     timeZone: 'Europe/Istanbul',
@@ -13,7 +13,6 @@ const getTurkeyTime = () => {
   });
 };
 
-// SENİN PROMPTUN
 const getSystemPrompt = () => {
   return `Sen saygılı, eğlenceli ve samimi bir yapay zekasın. Adın CaavoX.
 Selamlaşmalara dikkat et: "sa, as, slm, slm aleyküm, merhaba, mrb" gibi selamlaşmaları bil ve aynı tonda karşılık ver.
@@ -37,23 +36,21 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Groq Vision formatı: text + image_url
     const userContent = image
-    ? [
+   ? [
           { type: "text", text: message || "Bu görseli detaylı açıkla." },
-          { type: "image_url", image_url: { url: image } }, // frontend'den base64 gelmeli
+          { type: "image_url", image_url: { url: image } },
         ]
-      : message;
+      : [{ type: "text", text: message }];
 
     const completion = await groq.chat.completions.create({
-      model: "meta-llama/llama-4-scout-17b-16e-instruct", // İSTEDİĞİN MODEL
+      model: "meta-llama/llama-4-scout-17b-16e-instruct",
       messages: [
         { role: "system", content: getSystemPrompt() },
         { role: "user", content: userContent }
       ],
       temperature: 0.7,
       max_tokens: 2048,
-      stream: false,
     });
 
     const reply = completion.choices[0]?.message?.content || "Cevap alınamadı.";
