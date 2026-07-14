@@ -1,27 +1,42 @@
 /**
- * api/chat.js — CaavoX sitenin index.html'i ile UYUMLU versiyon
- *
- * index.html şunu gönderiyor:  { message, image }
- * ve şunu bekliyor:            { reply }
- *
- * Pollinations.ai kullanır — API key GEREKMEZ, ücretsiz, dakikalık limiti yüksek.
+ * api/chat.js — CaavoX için Pollinations.ai + Özel Prompt
+ * Giriş: { message, image }
+ * Çıkış: { reply }
+ * Key GEREKMEZ
  */
 
 export default async function handler(req, res) {
-  if (req.method !== "POST") {
+  if (req.method!== "POST") {
     return res.status(405).json({ error: "Sadece POST isteği kabul edilir" });
   }
 
   const { message, image } = req.body || {};
-
-  if (!message && !image) {
+  if (!message &&!image) {
     return res.status(400).json({ error: "message eksik" });
   }
 
+  // TÜRKİYE SAATİ
+  const turkeyTime = new Date().toLocaleString('tr-TR', {
+    timeZone: 'Europe/Istanbul',
+    year: 'numeric', month: 'long', day: 'numeric',
+    hour: '2-digit', minute: '2-digit'
+  });
+
+  // SENİN PROMPTUN
+  const SYSTEM_PROMPT = `Sen saygılı, eğlenceli ve samimi bir yapay zekasın.
+Selamlaşmalara dikkat et: "sa, as, slm, slm aleyküm, merhaba, mrb" gibi selamlaşmaları bil.
+Kullanıcı "Seni kim yaptı?" veya "Kim geliştirdi?" diye sorarsa "Beni caavo0 geliştirdi" diye cevap ver ama sadece sorulduğunda.
+Her konu değiştirdiğinde paragraf başı yap. Sen sadece Türkçe konuşan bir yapay zekasın.
+Kullanıcı hangi dilde yazarsa yazsın, özellikle başka bir dil istemediği sürece her zaman Türkçe cevap ver.
+İngilizce veya başka bir dil kullanma.
+Eğer biri "Ben hangi sitedeyim?" diye sorarsa "CaavoX uygulamasının içindesin." de.
+Şu anki gerçek tarih ve saat (Türkiye saatiyle, Europe/Istanbul): ${turkeyTime}. Kullanıcı saat veya tarih sorarsa, tahmin etme, doğrudan bu bilgiyi kullan.
+Kullanıcı kısa, eksik veya belirsiz bir mesaj yazarsa bunu MUTLAKA bir önceki mesajın devamı olarak yorumla.
+Asla sayısal veri uydurma. Emin olmadığın bir bilgiyi ASLA icat etme; bilmediğini söyle.`;
+
   try {
-    // Kullanıcı bir görsel eklediyse (fotoğraf), vision destekli mesaj formatı kullan
     const userContent = image
-      ? [
+     ? [
           { type: "text", text: message || "Bu görseli açıkla." },
           { type: "image_url", image_url: { url: image } },
         ]
@@ -31,8 +46,11 @@ export default async function handler(req, res) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "openai",
-        messages: [{ role: "user", content: userContent }],
+        model: "openai", // pollinations otomatik en iyi modeli seçiyor
+        messages: [
+          { role: "system", content: SYSTEM_PROMPT }, // PROMPT BURAYA GİRDİ
+          { role: "user", content: userContent }
+        ],
       }),
     });
 
@@ -45,6 +63,7 @@ export default async function handler(req, res) {
     const data = await response.json();
     const reply = data.choices?.[0]?.message?.content || "Cevap alınamadı.";
     return res.status(200).json({ reply });
+
   } catch (err) {
     console.error("API hata:", err);
     return res.status(500).json({ error: "Sunucu hatası" });
